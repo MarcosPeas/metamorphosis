@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "335502868627",
+    "project_id": "metamorphis-cfb55",
+    "storage_bucket": "metamorphis-cfb55.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:335502868627:android:64f103f02b95575321cd66",
+        "android_client_info": {
+          "package_name": "com.helmetsoft.metamorphis"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyUGurMzL9ydvxyUDD8Nj8mEUUeF7uhxI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
