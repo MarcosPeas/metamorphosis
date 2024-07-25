@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 
 import 'splash_controller.dart';
 
@@ -11,21 +10,22 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-
   late final SplashController controller;
 
   @override
   void initState() {
-    controller = GetIt.I.get<SplashController>();
-    controller.loadDependencies();
+    controller = SplashController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.loadDependencies(context);
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Splash Page'),
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }

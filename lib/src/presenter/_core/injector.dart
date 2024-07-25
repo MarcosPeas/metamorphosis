@@ -1,9 +1,18 @@
 import 'package:get_it/get_it.dart';
+import 'package:metamorphis/src/presenter/login/login_injector.dart';
 import 'package:metamorphis/src/presenter/splash/splash_injector.dart';
+
+import 'app_store.dart';
 
 class Injector {
   static void setup() {
+    _setupStores();
+    LoginInjector.setup();
+    SplashInjector.setup();
+  }
+
+  static void _setupStores() {
     final getIt = GetIt.instance;
-    SplashInjector.setup(getIt);
+    getIt.registerSingleton(AppStore());
   }
 }
