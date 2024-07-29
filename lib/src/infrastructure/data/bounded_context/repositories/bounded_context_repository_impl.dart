@@ -22,7 +22,7 @@ class BoundedContextRepositoryImpl implements BoundedContextRepository {
       );
     } catch (e, s) {
       throw DomainException(
-        message: 'Não foi possível encontrar o context delimitado',
+        message: 'Não foi possível encontrar o contexto delimitado',
         trace: s.toString(),
       );
     }
@@ -65,7 +65,7 @@ class BoundedContextRepositoryImpl implements BoundedContextRepository {
       );
     } catch (e, s) {
       throw DomainException(
-        message: 'Não foi possível salvar o context delimitado',
+        message: 'Não foi possível salvar o contexto delimitado',
         trace: s.toString(),
       );
     }
@@ -85,7 +85,7 @@ class BoundedContextRepositoryImpl implements BoundedContextRepository {
       );
     } catch (e, s) {
       throw DomainException(
-        message: 'Não foi possível salvar o context delimitado',
+        message: 'Não foi possível salvar o contexto delimitado',
         trace: s.toString(),
       );
     }
@@ -102,7 +102,7 @@ class BoundedContextRepositoryImpl implements BoundedContextRepository {
       );
     } catch (e, s) {
       throw DomainException(
-        message: 'Não foi possível remover o context delimitado',
+        message: 'Não foi possível remover o contexto delimitado',
         trace: s.toString(),
       );
     }
