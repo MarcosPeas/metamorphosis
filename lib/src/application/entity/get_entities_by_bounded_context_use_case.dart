@@ -1,24 +1,24 @@
 import 'package:dartz/dartz.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
-import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
-import 'package:metamorphis/src/domain/bounded_context/repositories/bounded_context_repository.dart';
+import 'package:metamorphis/src/domain/entity/entities/entity.dart';
+import 'package:metamorphis/src/domain/entity/repositories/entity_repository.dart';
 
-class GetBoundedContextByApplicationUseCase {
-  late final BoundedContextRepository _boundedContextRepository;
+class GetEntityByApplicationUseCase {
+  late final EntityRepository _entityRepository;
 
-  GetBoundedContextByApplicationUseCase({
-    required BoundedContextRepository boundedContextRepository,
+  GetEntityByApplicationUseCase({
+    required EntityRepository entityRepository,
   }) {
-    _boundedContextRepository = boundedContextRepository;
+    _entityRepository = entityRepository;
   }
 
-  Future<Either<DomainException, List<BoundedContext>>> execute(
-    Application application,
+  Future<Either<DomainException, List<Entity>>> execute(
+    BoundedContext boundedContext,
   ) async {
     try {
-      final result = await _boundedContextRepository.getByApplication(
-        application.id,
+      final result = await _entityRepository.getByBoundedContext(
+        boundedContext.id,
       );
       return Right(result);
     } on DomainException catch (e) {

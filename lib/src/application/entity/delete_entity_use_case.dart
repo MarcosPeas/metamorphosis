@@ -1,22 +1,22 @@
 import 'package:dartz/dartz.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
-import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
-import 'package:metamorphis/src/domain/bounded_context/repositories/bounded_context_repository.dart';
+import 'package:metamorphis/src/domain/entity/entities/entity.dart';
+import 'package:metamorphis/src/domain/entity/repositories/entity_repository.dart';
 
-class DeleteBoundedContextUseCase {
-  late final BoundedContextRepository _boundedContextRepository;
+class DeleteEntityUseCase {
+  late final EntityRepository _entityRepository;
 
-  DeleteBoundedContextUseCase({
-    required BoundedContextRepository boundedContextRepository,
+  DeleteEntityUseCase({
+    required EntityRepository entityRepository,
   }) {
-    _boundedContextRepository = boundedContextRepository;
+    _entityRepository = entityRepository;
   }
 
   Future<Either<DomainException, Unit>> execute(
-      BoundedContext boundedContext,
-      ) async {
+    Entity entity,
+  ) async {
     try {
-      await _boundedContextRepository.delete(boundedContext.id);
+      await _entityRepository.delete(entity.id);
       return const Right(unit);
     } on DomainException catch (e) {
       return Left(e);
