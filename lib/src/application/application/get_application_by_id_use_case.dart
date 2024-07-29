@@ -3,16 +3,18 @@ import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/application/repositories/application_repository.dart';
 
-class SaveApplicationUseCase {
+class GetApplicationByIdUseCase {
   late final ApplicationRepository _applicationRepository;
 
-  SaveApplicationUseCase({
+  GetApplicationByIdUseCase({
     required ApplicationRepository applicationRepository,
   }) {
     _applicationRepository = applicationRepository;
   }
 
-  Future<Either<DomainException, Application>> execute(String id) async {
+  Future<Either<DomainException, Application>> execute(
+    String id
+  ) async {
     try {
       final result = await _applicationRepository.getById(id);
       return Right(result);

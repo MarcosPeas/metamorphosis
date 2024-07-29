@@ -7,7 +7,7 @@ abstract class EntityRepository {
 
   Future<Entity> getById(String id);
 
-  Future<List<Entity>> getByEntity(String entityId);
+  Future<List<Entity>> getByBoundedContext(String boundedContextId);
 
   Future<void> delete(String id);
 }
