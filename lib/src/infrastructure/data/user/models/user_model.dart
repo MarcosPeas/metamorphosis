@@ -1,4 +1,4 @@
-import 'package:metamorphis/src/domain/user/entity/user.dart';
+import 'package:metamorphis/src/domain/user/entities/user.dart';
 
 class UserModel extends User {
   UserModel({

@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/project/entities/project.dart';
 import 'package:metamorphis/src/domain/project/repositories/project_repository.dart';
-import 'package:metamorphis/src/domain/user/entity/user.dart';
+import 'package:metamorphis/src/domain/user/entities/user.dart';
 
 class SaveProjectUseCase {
   late final ProjectRepository _projectRepository;

@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
-import 'package:metamorphis/src/domain/user/entity/user.dart';
+import 'package:metamorphis/src/domain/user/entities/user.dart';
 import 'package:metamorphis/src/domain/user/repositories/user_repository.dart';
 
 class SignInWithEmailAndPasswordUseCase {

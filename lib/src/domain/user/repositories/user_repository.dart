@@ -1,4 +1,4 @@
-import 'package:metamorphis/src/domain/user/entity/user.dart';
+import 'package:metamorphis/src/domain/user/entities/user.dart';
 
 abstract class UserRepository {
   Future<User> signInWithEmailAndPassword({
