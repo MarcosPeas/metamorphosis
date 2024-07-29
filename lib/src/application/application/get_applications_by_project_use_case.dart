@@ -4,10 +4,10 @@ import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/application/repositories/application_repository.dart';
 import 'package:metamorphis/src/domain/project/entities/project.dart';
 
-class SaveApplicationUseCase {
+class GetApplicationsByProjectUseCase {
   late final ApplicationRepository _applicationRepository;
 
-  SaveApplicationUseCase({
+  GetApplicationsByProjectUseCase({
     required ApplicationRepository applicationRepository,
   }) {
     _applicationRepository = applicationRepository;
