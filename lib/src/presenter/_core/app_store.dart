@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:metamorphis/src/domain/user/entities/user.dart';
+import 'package:metamorphis/src/presenter/_core/store.dart';
 
-class AppStore extends ChangeNotifier {
+class AppStore extends Store {
   User? _user;
 
   User? get user => _user;

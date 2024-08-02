@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:metamorphis/src/application/user/get_current_user_use_case.dart';
+import 'package:metamorphis/src/application/user/get_user_by_id_use_case.dart';
 import 'package:metamorphis/src/application/user/sign_in_with_email_and_password_use_case.dart';
 import 'package:metamorphis/src/application/user/sign_out_use_case.dart';
 import 'package:metamorphis/src/domain/user/repositories/user_repository.dart';
@@ -42,6 +43,11 @@ class LoginInjector {
     );
     getIt.registerFactory(
       () => GetCurrentUserUseCase(
+        userRepository: getIt.get(),
+      ),
+    );
+    getIt.registerFactory(
+      () => GetUserByIdUseCase(
         userRepository: getIt.get(),
       ),
     );

@@ -19,41 +19,97 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     controller = GetIt.instance.get();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.init(context);
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final store = controller.store;
     return Scaffold(
-      body: Column(
-        children: [
-          const Text('Login'),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _emailController,
-            decoration: const InputDecoration(
-              labelText: 'Email',
+      body: Center(
+        child: SizedBox(
+          width: 300,
+          child: Card(
+            margin: EdgeInsets.zero,
+            color: colorScheme.primaryContainer,
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: ListenableBuilder(
+                listenable: store,
+                builder: (context, _) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Login',
+                        style: textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        enabled: !store.loading,
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        enabled: !store.loading,
+                        obscureText: true,
+                        controller: _passwordController,
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      if (store.error.message.isNotEmpty) ...[
+                        Text(
+                          'Verifique os dados informados',
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.error,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                      ElevatedButton(
+                        onPressed: !store.loading
+                            ? () {
+                                controller.login(
+                                  context: context,
+                                  email: _emailController.text.trim(),
+                                  password: _passwordController.text.trim(),
+                                );
+                              }
+                            : null,
+                        child: loginButtonChild(store.loading),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _passwordController,
-            decoration: const InputDecoration(
-              labelText: 'Password',
-            ),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              controller.login(
-                _emailController.text.trim(),
-                _passwordController.text.trim(),
-              );
-            },
-            child: const Text('Login'),
-          ),
-        ],
+        ),
       ),
     );
+  }
+
+  Widget loginButtonChild(bool loading) {
+    if (loading) {
+      return const SizedBox(
+        height: 16,
+        width: 16,
+        child: CircularProgressIndicator(
+          strokeWidth: 3,
+        ),
+      );
+    }
+    return const Text('Login');
   }
 }

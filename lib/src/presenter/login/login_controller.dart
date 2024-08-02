@@ -1,9 +1,12 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/application/user/get_user_by_id_use_case.dart';
 import 'package:metamorphis/src/application/user/sign_in_with_email_and_password_use_case.dart';
 import 'package:metamorphis/src/presenter/_core/app_store.dart';
 import 'package:metamorphis/src/presenter/login/login_store.dart';
+import 'package:metamorphis/src/presenter/project/project_routers.dart';
 
 class LoginController {
   final LoginStore store;
@@ -18,6 +21,13 @@ class LoginController {
     required this.getUserByIdUseCase,
   });
 
+  void init(BuildContext context) {
+    store.loading = false;
+    if (appStore.user != null) {
+      context.pushReplacementNamed(ProjectRouters.projects);
+    }
+  }
+
   void togglePasswordVisibility() {
     store.togglePasswordVisibility();
   }
@@ -26,12 +36,12 @@ class LoginController {
     store.validateLoginButton(email, password);
   }
 
-  void setLoading(bool value) {
-    store.setLoading(value);
-  }
-
-  Future<void> login(String email, String password) async {
-    setLoading(true);
+  Future<void> login({
+    required BuildContext context,
+    required String email,
+    required String password,
+  }) async {
+    store.loading = true;
     final result = await signInWithEmailAndPasswordUseCase.execute(
       email: email,
       password: password,
@@ -39,23 +49,29 @@ class LoginController {
     result.fold(
       (error) {
         log(error.message);
+        store.error = error;
+        store.loading = false;
       },
-      (user) {
-        _loadCurrentUser(user.id);
+      (user) async {
+        await _loadCurrentUser(context: context, userId: user.id);
+        store.loading = false;
       },
     );
   }
 
-  Future<void> _loadCurrentUser(String userId) async {
+  Future<void> _loadCurrentUser({
+    required BuildContext context,
+    required String userId,
+  }) async {
     final result = await getUserByIdUseCase.execute(userId);
     result.fold(
       (error) {
         log(error.message);
       },
       (user) {
-        log('usuário logado: ${user.email}');
+        appStore.user = user;
+        context.pushReplacementNamed(ProjectRouters.projects);
       },
     );
-    setLoading(false);
   }
 }

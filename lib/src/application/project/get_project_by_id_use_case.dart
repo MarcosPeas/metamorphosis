@@ -3,10 +3,10 @@ import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/project/entities/project.dart';
 import 'package:metamorphis/src/domain/project/repositories/project_repository.dart';
 
-class SaveProjectUseCase {
+class GetProjectByIdUseCase {
   late final ProjectRepository _projectRepository;
 
-  SaveProjectUseCase({required ProjectRepository projectRepository}) {
+  GetProjectByIdUseCase({required ProjectRepository projectRepository}) {
     _projectRepository = projectRepository;
   }
 
