@@ -2,20 +2,21 @@ import 'package:uuid/uuid.dart';
 
 class BoundedContext {
   late final String id;
-  final String name;
-  final bool enabled;
+  String name;
+  bool enabled;
   final String applicationId;
-  final DateTime createdAt;
+  late final DateTime createdAt;
 
   BoundedContext({
     String? id,
     required this.name,
     required this.enabled,
     required this.applicationId,
-    required this.createdAt,
+    DateTime? createdAt,
   }) {
     {
       this.id = id ?? const Uuid().v4();
+      this.createdAt = createdAt ?? DateTime.now();
     }
   }
 }

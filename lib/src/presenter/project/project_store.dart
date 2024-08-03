@@ -28,4 +28,8 @@ class ProjectStore extends Store {
     _projects.removeWhere((p) => p.id == project.id);
     notifyListeners();
   }
+
+  void clear() {
+    _projects.clear();
+  }
 }

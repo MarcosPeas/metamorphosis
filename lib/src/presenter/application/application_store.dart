@@ -29,4 +29,8 @@ class ApplicationStore extends Store {
     _applications.removeWhere((p) => p.id == application.id);
     notifyListeners();
   }
+
+  void clear() {
+    _applications.clear();
+  }
 }

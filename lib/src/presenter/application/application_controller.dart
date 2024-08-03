@@ -10,6 +10,7 @@ import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/presenter/_core/app_store.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/application_view_model.dart';
 import 'package:metamorphis/src/presenter/application/application_store.dart';
+import 'package:metamorphis/src/presenter/bounded_context/bounded_context_routers.dart';
 
 class ApplicationController {
   final AppStore appStore;
@@ -30,6 +31,7 @@ class ApplicationController {
   });
 
   Future<void> init() async {
+    applicationStore.clear();
     if (appStore.project == null) {
       return;
     }
@@ -56,7 +58,7 @@ class ApplicationController {
     appStore.project!.application = ApplicationViewModel.fromEntity(
       application,
     );
-    context.pushReplacementNamed('contextos');
+    context.pushNamed(BoundedContextRouters.boundedContexts);
   }
 
   Future<void> saveApplication({

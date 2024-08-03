@@ -31,7 +31,8 @@ class ProjectController {
   });
 
   Future<void> init() async {
-    if (appStore.user == null || projectStore.projects.isNotEmpty) {
+    projectStore.clear();
+    if (appStore.user == null) {
       return;
     }
     projectStore.loading = true;
