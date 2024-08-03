@@ -33,7 +33,6 @@ class ApplicationController {
     if (appStore.project == null) {
       return;
     }
-    log(appStore.project!.id);
     applicationStore.loading = true;
     final result = await getApplicationsByProjectUseCase.execute(
       appStore.project!,

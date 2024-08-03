@@ -51,9 +51,7 @@ class ProjectController {
     required Project project,
     required BuildContext context,
   }) {
-    log(project.id);
     appStore.project = ProjectViewModel.fromEntity(project);
-    log(appStore.project!.id);
     context.pushNamed(ApplicationRouters.applications);
   }
 
