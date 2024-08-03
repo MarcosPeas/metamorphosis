@@ -56,7 +56,7 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
     try {
       final doc = _firestore.collection(collection).doc(application.id);
       final applicationModel = ApplicationModel.fromEntity(application);
-      await doc.update(applicationModel.toJson());
+      await doc.set(applicationModel.toJson());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(

@@ -38,7 +38,7 @@ class ProjectInjector {
     );
     getIt.registerFactory<ProjectController>(
       () => ProjectController(
-        store: getIt(),
+        projectStore: getIt(),
         getProjectsByUserUseCase: getIt(),
         saveProjectUseCase: getIt(),
         updateProjectUseCase: getIt(),

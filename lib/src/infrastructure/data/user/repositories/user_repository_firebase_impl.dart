@@ -15,7 +15,7 @@ class UserRepositoryFirebaseImpl implements UserRepository {
     try {
       final model = UserModel.fromEntity(user);
       final dr = _firestore.collection(collection).doc(user.id);
-      await dr.update(model.toMap());
+      await dr.set(model.toMap());
       return model;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(

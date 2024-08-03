@@ -1,17 +1,21 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/application/project/delete_project_use_case.dart';
 import 'package:metamorphis/src/application/project/get_projects_by_user_use_case.dart';
 import 'package:metamorphis/src/application/project/save_project_use_case.dart';
 import 'package:metamorphis/src/application/project/update_project_use_case.dart';
 import 'package:metamorphis/src/domain/project/entities/project.dart';
 import 'package:metamorphis/src/presenter/_core/app_store.dart';
+import 'package:metamorphis/src/presenter/_core/view_models/project_view_model.dart';
+import 'package:metamorphis/src/presenter/application/application_routers.dart';
 
 import 'project_store.dart';
 
 class ProjectController {
   final AppStore appStore;
-  final ProjectStore store;
+  final ProjectStore projectStore;
   final GetProjectsByUserUseCase getProjectsByUserUseCase;
   final SaveProjectUseCase saveProjectUseCase;
   final UpdateProjectUseCase updateProjectUseCase;
@@ -19,7 +23,7 @@ class ProjectController {
 
   ProjectController({
     required this.appStore,
-    required this.store,
+    required this.projectStore,
     required this.getProjectsByUserUseCase,
     required this.saveProjectUseCase,
     required this.updateProjectUseCase,
@@ -27,20 +31,30 @@ class ProjectController {
   });
 
   Future<void> init() async {
-    if (appStore.user == null || store.projects.isNotEmpty) {
+    if (appStore.user == null || projectStore.projects.isNotEmpty) {
       return;
     }
-    store.loading = true;
+    projectStore.loading = true;
     final result = await getProjectsByUserUseCase.execute(appStore.user!);
     result.fold(
       (error) {
-        store.error = error;
+        projectStore.error = error;
       },
       (projects) {
-        store.setProjects(projects);
+        projectStore.setProjects(projects);
       },
     );
-    store.loading = false;
+    projectStore.loading = false;
+  }
+
+  void selectProject({
+    required Project project,
+    required BuildContext context,
+  }) {
+    log(project.id);
+    appStore.project = ProjectViewModel.fromEntity(project);
+    log(appStore.project!.id);
+    context.pushNamed(ApplicationRouters.applications);
   }
 
   Future<void> saveProject({
@@ -56,11 +70,11 @@ class ProjectController {
     result.fold(
       (error) {
         log(error.message);
-        store.error = error;
+        projectStore.error = error;
       },
       (project) {
         log('Project saved: ${project.id}');
-        store.addProject(project);
+        projectStore.addProject(project);
       },
     );
   }
@@ -72,11 +86,11 @@ class ProjectController {
     result.fold(
       (error) {
         log(error.message);
-        store.error = error;
+        projectStore.error = error;
       },
       (project) {
         log('Project updated: ${project.id}');
-        store.updateProject(project);
+        projectStore.updateProject(project);
       },
     );
   }
@@ -88,11 +102,11 @@ class ProjectController {
     result.fold(
       (error) {
         log(error.message);
-        store.error = error;
+        projectStore.error = error;
       },
       (_) {
         log('Project deleted: ${project.id}');
-        store.deleteProject(project);
+        projectStore.deleteProject(project);
       },
     );
   }

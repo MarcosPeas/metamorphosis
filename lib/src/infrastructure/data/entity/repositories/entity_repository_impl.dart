@@ -54,7 +54,7 @@ class EntityRepositoryImpl implements EntityRepository {
     try {
       final doc = _firestore.collection(collection).doc(application.id);
       final applicationModel = EntityModel.fromEntity(application);
-      await doc.update(applicationModel.toJson());
+      await doc.set(applicationModel.toJson());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(

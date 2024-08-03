@@ -56,7 +56,7 @@ class EntityRuleRepositoryImpl implements EntityRuleRepository {
     try {
       final doc = _firestore.collection(collection).doc(entityRule.id);
       final entityRuleModel = EntityRuleModel.fromEntity(entityRule);
-      await doc.update(entityRuleModel.toJson());
+      await doc.set(entityRuleModel.toJson());
       return entityRuleModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(

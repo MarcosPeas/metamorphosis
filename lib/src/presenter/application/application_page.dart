@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:metamorphis/src/domain/project/entities/project.dart';
+import 'package:metamorphis/src/domain/application/entities/application.dart';
+import 'package:metamorphis/src/presenter/_core/widgets/add_element_widget.dart';
+import 'package:metamorphis/src/presenter/application/application_controller.dart';
 
-import 'project_controller.dart';
-
-class ProjectPage extends StatefulWidget {
-  const ProjectPage({super.key});
+class ApplicationPage extends StatefulWidget {
+  const ApplicationPage({super.key});
 
   @override
-  State<ProjectPage> createState() => _ProjectPageState();
+  State<ApplicationPage> createState() => _ApplicationPageState();
 }
 
-class _ProjectPageState extends State<ProjectPage> {
-  late final ProjectController controller;
+class _ApplicationPageState extends State<ApplicationPage> {
+
+  late final ApplicationController controller;
 
   @override
   void initState() {
@@ -26,17 +27,17 @@ class _ProjectPageState extends State<ProjectPage> {
 
   @override
   Widget build(BuildContext context) {
-    final store = controller.projectStore;
+    final store = controller.applicationStore;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Projetos'),
+        title: const Text('Aplicações'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListenableBuilder(
           listenable: store,
           builder: (context, _) {
-            final projects = store.projects;
+            final applications = store.applications;
             if (store.loading) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -46,26 +47,26 @@ class _ProjectPageState extends State<ProjectPage> {
               direction: Axis.horizontal,
               alignment: WrapAlignment.center,
               children: [
-                for (final project in projects)
+                for (final application in applications)
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
-                    child: _ProjectCard(
-                        project: project,
+                    child: _ApplicationCard(
+                        application: application,
                         onTap: () {
-                          controller.selectProject(
-                            project: project,
+                          controller.selectApplication(
+                            application: application,
                             context: context,
                           );
                         },
                         onTapEdit: () {
-                          showEditProjectDialog(project);
+                          showEditApplicationDialog(application);
                         }),
                   ),
-                _AddElementWidget(
+                AddElementWidget(
                   onTap: () {
-                    showCreateProjectDialog();
+                    showCreateApplicationDialog();
                   },
-                  text: 'Novo projeto',
+                  text: 'Nova aplicação',
                 ),
               ],
             );
@@ -75,14 +76,14 @@ class _ProjectPageState extends State<ProjectPage> {
     );
   }
 
-  void showCreateProjectDialog() {
-    final projectName = ValueNotifier('');
-    String projectDescription = '';
+  void showCreateApplicationDialog() {
+    final applicationName = ValueNotifier('');
+    String applicationDescription = '';
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Novo projeto'),
+          title: const Text('Nova aplicação'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -91,13 +92,13 @@ class _ProjectPageState extends State<ProjectPage> {
                   labelText: 'Nome',
                 ),
                 onChanged: (text) {
-                  projectName.value = text.trim();
+                  applicationName.value = text.trim();
                 },
               ),
               const SizedBox(height: 16),
               TextField(
                 onChanged: (text) {
-                  projectDescription = text.trim();
+                  applicationDescription = text.trim();
                 },
                 decoration: const InputDecoration(
                   labelText: 'Descrição',
@@ -113,17 +114,17 @@ class _ProjectPageState extends State<ProjectPage> {
               child: const Text('Cancelar'),
             ),
             ValueListenableBuilder(
-              valueListenable: projectName,
+              valueListenable: applicationName,
               builder: (_, name, __) {
                 return TextButton(
                   onPressed: name.length > 2
                       ? () {
-                          controller.saveProject(
-                            name: projectName.value,
-                            description: projectDescription,
-                          );
-                          context.pop();
-                        }
+                    controller.saveApplication(
+                      name: applicationName.value,
+                      description: applicationDescription,
+                    );
+                    context.pop();
+                  }
                       : null,
                   child: const Text('Salvar'),
                 );
@@ -135,14 +136,14 @@ class _ProjectPageState extends State<ProjectPage> {
     );
   }
 
-  void showEditProjectDialog(Project project) {
-    final projectName = ValueNotifier(project.name);
-    String projectDescription = project.description;
+  void showEditApplicationDialog(Application application) {
+    final applicationName = ValueNotifier(application.name);
+    String applicationDescription = application.description;
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Editar projeto'),
+          title: const Text('Editar aplicação'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -150,16 +151,16 @@ class _ProjectPageState extends State<ProjectPage> {
                 decoration: const InputDecoration(
                   labelText: 'Nome',
                 ),
-                controller: TextEditingController(text: project.name),
+                controller: TextEditingController(text: application.name),
                 onChanged: (text) {
-                  projectName.value = text.trim();
+                  applicationName.value = text.trim();
                 },
               ),
               const SizedBox(height: 16),
               TextField(
-                controller: TextEditingController(text: project.description),
+                controller: TextEditingController(text: application.description),
                 onChanged: (text) {
-                  projectDescription = text.trim();
+                  applicationDescription = text.trim();
                 },
                 decoration: const InputDecoration(
                   labelText: 'Descrição',
@@ -169,10 +170,10 @@ class _ProjectPageState extends State<ProjectPage> {
               TextButton(
                 onPressed: () {
                   context.pop();
-                  showRemoveProjectDialog(project);
+                  showRemoveApplicationDialog(application);
                 },
                 child: Text(
-                  'Remover este projeto',
+                  'Remover este aplicação',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.error,
                   ),
@@ -188,18 +189,18 @@ class _ProjectPageState extends State<ProjectPage> {
               child: const Text('Cancelar'),
             ),
             ValueListenableBuilder(
-              valueListenable: projectName,
+              valueListenable: applicationName,
               builder: (_, name, __) {
                 return TextButton(
                   onPressed: name.length > 2
                       ? () {
-                          project.name = projectName.value;
-                          project.description = projectDescription;
-                          controller.updateProject(
-                            project: project,
-                          );
-                          context.pop();
-                        }
+                    application.name = applicationName.value;
+                    application.description = applicationDescription;
+                    controller.updateApplication(
+                      application: application,
+                    );
+                    context.pop();
+                  }
                       : null,
                   child: const Text('Salvar'),
                 );
@@ -211,23 +212,23 @@ class _ProjectPageState extends State<ProjectPage> {
     );
   }
 
-  void showRemoveProjectDialog(Project project) {
+  void showRemoveApplicationDialog(Application application) {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Remover projeto'),
+          title: const Text('Remover aplicação'),
           content: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Tem certeza que deseja remover o seguinte projeto?'),
+              const Text('Tem certeza que deseja remover o seguinte aplicação?'),
               const SizedBox(height: 8),
               Text(
-                project.name,
+                application.name,
                 style: textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -243,7 +244,7 @@ class _ProjectPageState extends State<ProjectPage> {
             ),
             TextButton(
               onPressed: () {
-                controller.deleteProject(project: project);
+                controller.deleteApplication(application: application);
                 context.pop();
               },
               child: Text(
@@ -260,51 +261,14 @@ class _ProjectPageState extends State<ProjectPage> {
   }
 }
 
-class _AddElementWidget extends StatelessWidget {
-  final VoidCallback onTap;
-  final String text;
 
-  const _AddElementWidget({required this.onTap, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 120,
-      width: 160,
-      child: Card(
-        margin: EdgeInsets.zero,
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            margin: const EdgeInsets.all(16),
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.add,
-                  size: 42,
-                ),
-                const SizedBox(height: 4),
-                Text(text),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ProjectCard extends StatelessWidget {
-  final Project project;
+class _ApplicationCard extends StatelessWidget {
+  final Application application;
   final VoidCallback onTap;
   final VoidCallback onTapEdit;
 
-  const _ProjectCard({
-    required this.project,
+  const _ApplicationCard({
+    required this.application,
     required this.onTap,
     required this.onTapEdit,
   });
@@ -340,7 +304,7 @@ class _ProjectCard extends StatelessWidget {
                 margin: const EdgeInsets.all(16),
                 alignment: Alignment.center,
                 child: Text(
-                  project.name,
+                  application.name,
                   style: textTheme.bodyMedium?.copyWith(
                     color: colorScheme.primary,
                     fontWeight: FontWeight.bold,

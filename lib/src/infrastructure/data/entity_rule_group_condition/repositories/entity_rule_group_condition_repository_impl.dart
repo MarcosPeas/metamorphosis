@@ -56,7 +56,7 @@ class EntityRuleGroupConditionRepositoryImpl implements EntityRuleGroupCondition
     try {
       final doc = _firestore.collection(collection).doc(entityRuleGroupCondition.id);
       final entityRuleGroupConditionModel = EntityRuleGroupConditionModel.fromEntity(entityRuleGroupCondition);
-      await doc.update(entityRuleGroupConditionModel.toJson());
+      await doc.set(entityRuleGroupConditionModel.toJson());
       return entityRuleGroupConditionModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(
