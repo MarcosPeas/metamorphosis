@@ -9,6 +9,7 @@ import 'package:metamorphis/src/application/bounded_context/update_bounded_conte
 import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
 import 'package:metamorphis/src/presenter/_core/app_store.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/bounded_context_view_model.dart';
+import 'package:metamorphis/src/presenter/home/home_routers.dart';
 
 import 'bounded_context_store.dart';
 
@@ -32,7 +33,7 @@ class BoundedContextController {
 
   Future<void> init() async {
     boundedContextStore.clear();
-    final application = appStore.project?.application;
+    final application = appStore.application;
     if (application == null) {
       return;
     }
@@ -55,9 +56,10 @@ class BoundedContextController {
     required BoundedContext boundedContext,
     required BuildContext context,
   }) {
-    appStore.project!.application!.boundedContext =
-        BoundedContextViewModel.fromEntity(boundedContext);
-    context.pushNamed('home');
+    appStore.boundedContext = BoundedContextViewModel.fromEntity(
+      boundedContext,
+    );
+    context.pushReplacementNamed(HomeRouters.home);
   }
 
   Future<void> saveBoundedContext({
@@ -66,7 +68,7 @@ class BoundedContextController {
     final boundedContext = BoundedContext(
       name: name,
       enabled: true,
-      applicationId: appStore.project!.application!.id,
+      applicationId: appStore.application!.id,
     );
     final result = await saveBoundedContextUseCase.execute(boundedContext);
     result.fold(
@@ -75,7 +77,6 @@ class BoundedContextController {
         boundedContextStore.error = error;
       },
       (boundedContext) {
-        log('BoundedContext saved: ${boundedContext.id}');
         boundedContextStore.addBoundedContext(boundedContext);
       },
     );
@@ -91,7 +92,6 @@ class BoundedContextController {
         boundedContextStore.error = error;
       },
       (boundedContext) {
-        log('BoundedContext updated: ${boundedContext.id}');
         boundedContextStore.updateBoundedContext(boundedContext);
       },
     );
@@ -107,7 +107,6 @@ class BoundedContextController {
         boundedContextStore.error = error;
       },
       (_) {
-        log('BoundedContext deleted: ${boundedContext.id}');
         boundedContextStore.deleteBoundedContext(boundedContext);
       },
     );

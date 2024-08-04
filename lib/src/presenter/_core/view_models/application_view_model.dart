@@ -1,10 +1,6 @@
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 
-import 'bounded_context_view_model.dart';
-
 class ApplicationViewModel extends Application {
-  BoundedContextViewModel? boundedContext;
-
   ApplicationViewModel({
     required super.id,
     required super.name,

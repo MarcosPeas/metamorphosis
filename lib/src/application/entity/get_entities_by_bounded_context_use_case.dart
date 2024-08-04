@@ -4,10 +4,10 @@ import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/entity/repositories/entity_repository.dart';
 
-class GetEntityByApplicationUseCase {
+class GetEntitiesByBoundedContextUseCase {
   late final EntityRepository _entityRepository;
 
-  GetEntityByApplicationUseCase({
+  GetEntitiesByBoundedContextUseCase({
     required EntityRepository entityRepository,
   }) {
     _entityRepository = entityRepository;

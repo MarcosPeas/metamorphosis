@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
@@ -70,12 +72,12 @@ class EntityRepositoryImpl implements EntityRepository {
   }
 
   @override
-  Future<Entity> update(Entity application) async {
+  Future<Entity> update(Entity entity) async {
     try {
-      final doc = _firestore.collection(collection).doc(application.id);
-      final applicationModel = EntityModel.fromEntity(application);
-      await doc.update(applicationModel.toJson());
-      return applicationModel;
+      final doc = _firestore.collection(collection).doc(entity.id);
+      final entityModel = EntityModel.fromEntity(entity);
+      await doc.set(entityModel.toJson());
+      return entityModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(
         message: e.code,

@@ -1,10 +1,6 @@
 import 'package:metamorphis/src/domain/project/entities/project.dart';
 
-import 'application_view_model.dart';
-
 class ProjectViewModel extends Project {
-  ApplicationViewModel? application;
-
   ProjectViewModel({
     required super.id,
     required super.name,

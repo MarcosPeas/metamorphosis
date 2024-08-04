@@ -55,7 +55,7 @@ class ApplicationController {
     required Application application,
     required BuildContext context,
   }) {
-    appStore.project!.application = ApplicationViewModel.fromEntity(
+    appStore.application = ApplicationViewModel.fromEntity(
       application,
     );
     context.pushNamed(BoundedContextRouters.boundedContexts);
