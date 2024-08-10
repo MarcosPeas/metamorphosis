@@ -3,38 +3,71 @@ import 'package:metamorphis/src/application/entity/delete_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/get_entities_by_bounded_context_use_case.dart';
 import 'package:metamorphis/src/application/entity/save_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
+import 'package:metamorphis/src/application/value_object/delete_value_object_use_case.dart';
+import 'package:metamorphis/src/application/value_object/get_value_objects_by_entity_use_case.dart';
+import 'package:metamorphis/src/application/value_object/save_value_object_use_case.dart';
+import 'package:metamorphis/src/application/value_object/update_value_object_use_case.dart';
 import 'package:metamorphis/src/domain/entity/repositories/entity_repository.dart';
+import 'package:metamorphis/src/domain/value_object/repositories/value_object_repository.dart';
 import 'package:metamorphis/src/infrastructure/data/entity/repositories/entity_repository_impl.dart';
+import 'package:metamorphis/src/infrastructure/data/value_object/repositories/value_object_repository_impl.dart';
+import 'package:metamorphis/src/presenter/home/entity/entity_controller.dart';
+import 'package:metamorphis/src/presenter/home/entity/entity_store.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/home_store.dart';
 
 class HomeInjector {
   static void setup() {
+    _injectStores();
+    _injectRepositories();
+    _injectUseCases();
+    _injectControllers();
+  }
+
+  static void _injectStores() {
     final getIt = GetIt.instance;
     getIt.registerSingleton(HomeStore());
-    getIt.registerFactory<EntityRepository>(
-      () => EntityRepositoryImpl(),
+    getIt.registerSingleton(EntityStore());
+  }
+
+  static void _injectRepositories() {
+    final getIt = GetIt.instance;
+    getIt.registerFactory<EntityRepository>(() => EntityRepositoryImpl());
+    getIt.registerFactory<ValueObjectRepository>(
+      () => ValueObjectRepositoryImpl(),
     );
+  }
+
+  static void _injectUseCases() {
+    final getIt = GetIt.instance;
     getIt.registerFactory<GetEntitiesByBoundedContextUseCase>(
-      () => GetEntitiesByBoundedContextUseCase(
-        entityRepository: getIt(),
-      ),
+      () => GetEntitiesByBoundedContextUseCase(entityRepository: getIt()),
     );
     getIt.registerFactory<SaveEntityUseCase>(
-      () => SaveEntityUseCase(
-        entityRepository: getIt(),
-      ),
+      () => SaveEntityUseCase(entityRepository: getIt()),
     );
     getIt.registerFactory<UpdateEntityUseCase>(
-      () => UpdateEntityUseCase(
-        entityRepository: getIt(),
-      ),
+      () => UpdateEntityUseCase(entityRepository: getIt()),
     );
     getIt.registerFactory<DeleteEntityUseCase>(
-      () => DeleteEntityUseCase(
-        entityRepository: getIt(),
-      ),
+      () => DeleteEntityUseCase(entityRepository: getIt()),
     );
+    getIt.registerFactory<GetValueObjectsByEntityUseCase>(
+      () => GetValueObjectsByEntityUseCase(valueObjectRepository: getIt()),
+    );
+    getIt.registerFactory<SaveValueObjectUseCase>(
+      () => SaveValueObjectUseCase(valueObjectRepository: getIt()),
+    );
+    getIt.registerFactory<UpdateValueObjectUseCase>(
+      () => UpdateValueObjectUseCase(valueObjectRepository: getIt()),
+    );
+    getIt.registerFactory<DeleteValueObjectUseCase>(
+      () => DeleteValueObjectUseCase(valueObjectRepository: getIt()),
+    );
+  }
+
+  static void _injectControllers() {
+    final getIt = GetIt.instance;
     getIt.registerFactory<HomeController>(
       () => HomeController(
         appStore: getIt(),
@@ -43,6 +76,15 @@ class HomeInjector {
         saveEntityUseCase: getIt(),
         updateEntityUseCase: getIt(),
         getEntitiesByBoundedContextUseCase: getIt(),
+      ),
+    );
+    getIt.registerFactory<EntityController>(
+      () => EntityController(
+        entityStore: getIt(),
+        getValueObjectsByEntityUseCase: getIt(),
+        saveValueObjectUseCase: getIt(),
+        updateValueObjectUseCase: getIt(),
+        deleteValueObjectUseCase: getIt(),
       ),
     );
   }

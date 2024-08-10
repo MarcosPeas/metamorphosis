@@ -72,12 +72,12 @@ class ValueObjectRepositoryImpl implements ValueObjectRepository {
   }
 
   @override
-  Future<ValueObject> update(ValueObject application) async {
+  Future<ValueObject> update(ValueObject valueObject) async {
     try {
-      final doc = _firestore.collection(collection).doc(application.id);
-      final applicationModel = ValueObjectModel.fromValueObject(application);
-      await doc.update(applicationModel.toJson());
-      return applicationModel;
+      final doc = _firestore.collection(collection).doc(valueObject.id);
+      final valueObjectModel = ValueObjectModel.fromValueObject(valueObject);
+      await doc.set(valueObjectModel.toJson());
+      return valueObjectModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(
         message: e.code,

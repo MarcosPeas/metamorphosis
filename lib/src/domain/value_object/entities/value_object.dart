@@ -2,9 +2,9 @@ import 'package:uuid/uuid.dart';
 
 class ValueObject {
   late final String id;
-  final String name;
-  final String type;
-  final bool nullable;
+  String name;
+  String type;
+  bool nullable;
   final String entityId;
 
   ValueObject({

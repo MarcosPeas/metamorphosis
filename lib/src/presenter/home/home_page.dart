@@ -1,9 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
+import 'package:metamorphis/src/presenter/home/entity/entity_page.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/widgets/selected_entity_widget.dart';
 
@@ -16,6 +15,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final HomeController controller;
+  final pageController = PageController();
 
   @override
   void initState() {
@@ -71,16 +71,25 @@ class _HomePageState extends State<HomePage> {
             children: [
               SizedBox(
                 width: 200,
-                child: _MenuWidget(
-                  entity: entity,
-                  onTap: () {
-                    showEntitiesOptionsDialog(entity);
-                  },
+                child: ColoredBox(
+                  color: colorScheme.primaryContainer,
+                  child: _MenuWidget(
+                    entity: entity,
+                    onTap: () {
+                      showEntitiesOptionsDialog(entity);
+                    },
+                  ),
                 ),
               ),
               Expanded(
-                child: Container(
-                  color: Colors.red,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: PageView(
+                    controller: pageController,
+                    children: [
+                      EntityPage(entity: entity),
+                    ],
+                  ),
                 ),
               ),
             ],
