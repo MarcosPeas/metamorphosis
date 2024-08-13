@@ -1,3 +1,4 @@
+import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_rule.dart';
 import 'package:uuid/uuid.dart';
 
 class ValueObject {
@@ -6,6 +7,7 @@ class ValueObject {
   String type;
   bool nullable;
   final String entityId;
+  late final List<ValueObjectRule> rules;
 
   ValueObject({
     String? id,
@@ -13,9 +15,26 @@ class ValueObject {
     required this.type,
     required this.nullable,
     required this.entityId,
+    List<ValueObjectRule>? rules,
   }) {
     {
       this.id = id ?? const Uuid().v4();
+      this.rules = rules ?? [];
+    }
+  }
+
+  void addRule(ValueObjectRule rule) {
+    rules.add(rule);
+  }
+
+  void removeRule(ValueObjectRule rule) {
+    rules.remove(rule);
+  }
+
+  void updateRule(ValueObjectRule rule) {
+    final index = rules.indexWhere((r) => r.id == rule.id);
+    if (index != -1) {
+      rules[index] = rule;
     }
   }
 }

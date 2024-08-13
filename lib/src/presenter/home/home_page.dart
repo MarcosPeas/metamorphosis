@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                   child: PageView(
                     controller: pageController,
                     children: [
-                      EntityPage(entity: entity),
+                      EntityPage(entity: entity, key: ValueKey(entity.id)),
                     ],
                   ),
                 ),

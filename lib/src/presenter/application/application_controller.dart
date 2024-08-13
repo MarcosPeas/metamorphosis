@@ -44,7 +44,6 @@ class ApplicationController {
         applicationStore.error = error;
       },
       (applications) {
-        log(applications.length.toString());
         applicationStore.setApplications(applications);
       },
     );
@@ -78,7 +77,6 @@ class ApplicationController {
         applicationStore.error = error;
       },
       (application) {
-        log('Application saved: ${application.id}');
         applicationStore.addApplication(application);
       },
     );
@@ -94,7 +92,6 @@ class ApplicationController {
         applicationStore.error = error;
       },
       (application) {
-        log('Application updated: ${application.id}');
         applicationStore.updateApplication(application);
       },
     );
@@ -110,7 +107,6 @@ class ApplicationController {
         applicationStore.error = error;
       },
       (_) {
-        log('Application deleted: ${application.id}');
         applicationStore.deleteApplication(application);
       },
     );

@@ -57,7 +57,7 @@ class ValueObjectRuleRepositoryImpl implements ValueObjectRuleRepository {
       final doc = _firestore.collection(collection).doc(application.id);
       final applicationModel =
           ValueObjectRuleModel.fromValueObjectRule(application);
-      await doc.set(applicationModel.toJson());
+      await doc.set(applicationModel.toMap());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(
@@ -78,7 +78,7 @@ class ValueObjectRuleRepositoryImpl implements ValueObjectRuleRepository {
       final doc = _firestore.collection(collection).doc(application.id);
       final applicationModel =
           ValueObjectRuleModel.fromValueObjectRule(application);
-      await doc.update(applicationModel.toJson());
+      await doc.update(applicationModel.toMap());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(

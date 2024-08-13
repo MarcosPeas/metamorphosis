@@ -37,7 +37,7 @@ class ValueObjectGroupConditionRepositoryImpl
           _firestore.collection(collection).doc(valueObjectGroupCondition.id);
       final valueObjectGroupConditionModel =
           ValueObjectGroupConditionModel.fromEntity(valueObjectGroupCondition);
-      await doc.set(valueObjectGroupConditionModel.toJson());
+      await doc.set(valueObjectGroupConditionModel.toMap());
       return valueObjectGroupConditionModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(
@@ -60,7 +60,7 @@ class ValueObjectGroupConditionRepositoryImpl
           _firestore.collection(collection).doc(valueObjectGroupCondition.id);
       final valueObjectGroupConditionModel =
           ValueObjectGroupConditionModel.fromEntity(valueObjectGroupCondition);
-      await doc.update(valueObjectGroupConditionModel.toJson());
+      await doc.update(valueObjectGroupConditionModel.toMap());
       return valueObjectGroupConditionModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(

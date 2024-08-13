@@ -81,10 +81,7 @@ class HomeInjector {
     getIt.registerFactory<EntityController>(
       () => EntityController(
         entityStore: getIt(),
-        getValueObjectsByEntityUseCase: getIt(),
-        saveValueObjectUseCase: getIt(),
-        updateValueObjectUseCase: getIt(),
-        deleteValueObjectUseCase: getIt(),
+        updateEntityUseCase: getIt(),
       ),
     );
   }

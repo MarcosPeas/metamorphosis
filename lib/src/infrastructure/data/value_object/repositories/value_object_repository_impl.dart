@@ -56,7 +56,7 @@ class ValueObjectRepositoryImpl implements ValueObjectRepository {
     try {
       final doc = _firestore.collection(collection).doc(application.id);
       final applicationModel = ValueObjectModel.fromValueObject(application);
-      await doc.set(applicationModel.toJson());
+      await doc.set(applicationModel.toMap());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(
@@ -76,7 +76,7 @@ class ValueObjectRepositoryImpl implements ValueObjectRepository {
     try {
       final doc = _firestore.collection(collection).doc(valueObject.id);
       final valueObjectModel = ValueObjectModel.fromValueObject(valueObject);
-      await doc.set(valueObjectModel.toJson());
+      await doc.set(valueObjectModel.toMap());
       return valueObjectModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(

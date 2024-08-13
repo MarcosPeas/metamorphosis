@@ -67,7 +67,7 @@ class ValueObjectRuleConditionRepositoryImpl
           _firestore.collection(collection).doc(valueObjectRuleCondition.id);
       final valueObjectRuleConditionModel =
           ValueObjectRuleConditionModel.fromEntity(valueObjectRuleCondition);
-      await doc.set(valueObjectRuleConditionModel.toJson());
+      await doc.set(valueObjectRuleConditionModel.toMap());
       return valueObjectRuleConditionModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(
@@ -91,7 +91,7 @@ class ValueObjectRuleConditionRepositoryImpl
           _firestore.collection(collection).doc(valueObjectRuleCondition.id);
       final valueObjectRuleConditionModel =
           ValueObjectRuleConditionModel.fromEntity(valueObjectRuleCondition);
-      await doc.update(valueObjectRuleConditionModel.toJson());
+      await doc.update(valueObjectRuleConditionModel.toMap());
       return valueObjectRuleConditionModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException(

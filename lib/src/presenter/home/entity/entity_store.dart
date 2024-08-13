@@ -1,34 +1,17 @@
-import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
+import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/presenter/_core/store.dart';
 
 class EntityStore extends Store {
-  final List<ValueObject> _valueObjects = [];
+  late Entity _entity;
 
-  List<ValueObject> get valueObjects => _valueObjects;
+  Entity get entity => _entity;
 
-  set valueObjects(List<ValueObject> valueObjects) {
-    _valueObjects.clear();
-    _valueObjects.addAll(valueObjects);
+  set entity(Entity entity) {
+    _entity = entity;
     notifyListeners();
   }
 
-  void addValueObject(ValueObject valueObject) {
-    _valueObjects.add(valueObject);
-    notifyListeners();
-  }
-
-  void clearValueObjects() {
-    _valueObjects.clear();
-    notifyListeners();
-  }
-
-  void setValueObject(int viewIndex, ValueObject valueObject) {
-    _valueObjects[viewIndex] = valueObject;
-    notifyListeners();
-  }
-
-  void removeValueObject(int viewIndex) {
-    _valueObjects.removeAt(viewIndex);
+  void notifyUpdate() {
     notifyListeners();
   }
 }

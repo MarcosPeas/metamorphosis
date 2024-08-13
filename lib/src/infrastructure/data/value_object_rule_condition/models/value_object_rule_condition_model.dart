@@ -32,7 +32,7 @@ class ValueObjectRuleConditionModel extends ValueObjectRuleCondition {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'id': super.id,
       'logicOperator': super.logicOperator,
