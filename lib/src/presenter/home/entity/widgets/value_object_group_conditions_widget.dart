@@ -18,14 +18,14 @@ class ValueObjectGroupConditionsWidget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Conditions'),
+        const Text('Conditions'),
         TextButton(
           onPressed: () {
             _showDialogCreateValueObjectGroupCondition(
               context,
             );
           },
-          child: Text('Add condition group'),
+          child: const Text('Add condition group'),
         ),
       ],
     );
@@ -77,6 +77,10 @@ class ValueObjectGroupConditionsWidget extends StatelessWidget {
             TextButton(
               onPressed: () {
                 context.pop();
+                controller.createValueObjectGroupCondition(
+                  rule: rule,
+                  value: selectedType.value,
+                );
               },
               child: const Text('OK'),
             ),

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
+import 'package:metamorphis/src/domain/value_object_group_condition/entities/value_object_group_condition.dart';
 import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_rule.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
 import 'package:metamorphis/src/presenter/home/entity/entity_store.dart';
@@ -95,5 +96,24 @@ class EntityController {
       },
       (_) => entityStore.notifyUpdate(),
     );
+  }
+
+  void createValueObjectGroupCondition({
+    required ValueObjectRule rule,
+    required String value,
+  }) {
+    rule.groupConditions.add(
+      ValueObjectGroupCondition(
+        logicOperator: value,
+        valueObjectRuleId: rule.id,
+      ),
+    );
+    final viewIndex = entityStore.entity.valueObjects.indexWhere(
+      (element) => element.rules.any((item) => item.id == rule.id),
+    );
+    final entity = entityStore.entity;
+    final valueObject = entity.valueObjects[viewIndex];
+    valueObject.updateRule(rule);
+    updateEntity();
   }
 }

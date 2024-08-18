@@ -27,7 +27,7 @@ class ValueObjectGroupConditionModel extends ValueObjectGroupCondition {
       logicOperator: json['logicOperator'],
       valueObjectRuleId: json['valueObjectRuleId'],
       groupConditions: json['groupConditions'] != null
-          ? (json['groupCondition'] as List)
+          ? (json['groupConditions'] as List)
               .map((item) => ValueObjectGroupConditionModel.fromMap(item))
               .toList()
           : [],
