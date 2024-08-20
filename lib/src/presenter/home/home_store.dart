@@ -3,6 +3,7 @@ import 'package:metamorphis/src/presenter/_core/store.dart';
 
 class HomeStore extends Store {
   final _entities = <Entity>[];
+  int _page = 0;
 
   List<Entity> get entities => List.unmodifiable(_entities);
 
@@ -11,6 +12,14 @@ class HomeStore extends Store {
     _entities.addAll(entities);
     notifyListeners();
   }
+
+  set page(int page) {
+    if (page == _page) return;
+    _page = page;
+    notifyListeners();
+  }
+
+  int get page => _page;
 
   void addEntity(Entity entity) {
     _entities.add(entity);

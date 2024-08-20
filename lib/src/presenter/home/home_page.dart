@@ -15,7 +15,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final HomeController controller;
-  final pageController = PageController();
 
   @override
   void initState() {
@@ -32,69 +31,92 @@ class _HomePageState extends State<HomePage> {
     final homeStore = controller.homeStore;
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      body: ListenableBuilder(
-        listenable: appStore,
-        builder: (_, __) {
-          if (homeStore.loading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          final entity = appStore.entity;
-          if (entity == null) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Nenhuma entidade',
-                    style: textTheme.bodyLarge?.copyWith(
-                      color: colorScheme.onSurface,
+    return SafeArea(
+      child: Scaffold(
+        body: ListenableBuilder(
+          listenable: appStore,
+          builder: (_, __) {
+            if (homeStore.loading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            final entity = appStore.entity;
+            if (entity == null) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Nenhuma entidade',
+                      style: textTheme.bodyLarge?.copyWith(
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        showCreateEntityDialog();
+                      },
+                      child: const Text('Criar entidade'),
+                    ),
+                  ],
+                ),
+              );
+            }
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ListenableBuilder(
+                    listenable: homeStore,
+                    builder: (context, _) {
+                      return Container(
+                        width: 200,
+                        height: double.infinity,
+                        color: colorScheme.primaryContainer,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            ColoredBox(
+                              color: colorScheme.primaryContainer,
+                              child: _MenuWidget(
+                                entity: entity,
+                                onTap: () {
+                                  showEntitiesOptionsDialog(entity);
+                                },
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            _MenuItems(
+                              index: homeStore.page,
+                              onTap: (index) {
+                                controller.pageController.jumpToPage(index);
+                                homeStore.page = index;
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: PageView(
+                      controller: controller.pageController,
+                      children: [
+                        EntityPage(entity: entity, key: ValueKey(entity.id)),
+                        const Text('Rules'),
+                        const Text('Use Cases'),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      showCreateEntityDialog();
-                    },
-                    child: const Text('Criar entidade'),
-                  ),
-                ],
-              ),
+                ),
+              ],
             );
-          }
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              SizedBox(
-                width: 200,
-                child: ColoredBox(
-                  color: colorScheme.primaryContainer,
-                  child: _MenuWidget(
-                    entity: entity,
-                    onTap: () {
-                      showEntitiesOptionsDialog(entity);
-                    },
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: PageView(
-                    controller: pageController,
-                    children: [
-                      EntityPage(entity: entity, key: ValueKey(entity.id)),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
+          },
+        ),
       ),
     );
   }
@@ -387,6 +409,77 @@ class _MenuWidget extends StatelessWidget {
           SelectedEntityWidget(entity: entity, onTap: onTap),
         ],
       ),
+    );
+  }
+}
+
+class _MenuItems extends StatelessWidget {
+  final int index;
+  final void Function(int index) onTap;
+
+  const _MenuItems({required this.index, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _MenuItem(
+          selected: index == 0,
+          index: 0,
+          onTap: onTap,
+          title: 'Value Objects',
+        ),
+        _MenuItem(
+          selected: index == 1,
+          index: 1,
+          onTap: onTap,
+          title: 'Entity Rules',
+        ),
+        _MenuItem(
+          selected: index == 2,
+          index: 2,
+          onTap: onTap,
+          title: 'Use Cases',
+        ),
+      ],
+    );
+  }
+}
+
+class _MenuItem extends StatelessWidget {
+  final int index;
+  final bool selected;
+  final void Function(int index) onTap;
+  final String title;
+
+  const _MenuItem({
+    required this.selected,
+    required this.index,
+    required this.onTap,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    return InkWell(
+      child: Container(
+        color: selected ? colorScheme.primary : colorScheme.inversePrimary,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Text(
+          title,
+          style: textTheme.bodyMedium?.copyWith(
+            color: selected ? colorScheme.onPrimary : colorScheme.onSurface,
+            fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ),
+      onTap: () {
+        onTap(index);
+      },
     );
   }
 }

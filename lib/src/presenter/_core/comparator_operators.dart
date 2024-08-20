@@ -1,4 +1,4 @@
-class ComparatorOperators {
+/*class ComparatorOperators {
   static List<String> types = [
     'String',
     'Integer',
@@ -100,3 +100,4 @@ class ComparatorOperators {
     }
   }
 }
+*/

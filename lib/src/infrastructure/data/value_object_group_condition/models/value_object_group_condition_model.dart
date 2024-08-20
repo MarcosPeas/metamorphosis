@@ -1,4 +1,5 @@
 import 'package:metamorphis/src/domain/value_object_group_condition/entities/value_object_group_condition.dart';
+import 'package:metamorphis/src/domain/value_object_rule_condition/entities/value_object_rule_condition.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object_rule_condition/models/value_object_rule_condition_model.dart';
 
 class ValueObjectGroupConditionModel extends ValueObjectGroupCondition {
@@ -11,7 +12,8 @@ class ValueObjectGroupConditionModel extends ValueObjectGroupCondition {
   });
 
   factory ValueObjectGroupConditionModel.fromEntity(
-      ValueObjectGroupCondition application) {
+    ValueObjectGroupCondition application,
+  ) {
     return ValueObjectGroupConditionModel(
       id: application.id,
       logicOperator: application.logicOperator,
@@ -22,20 +24,30 @@ class ValueObjectGroupConditionModel extends ValueObjectGroupCondition {
   }
 
   factory ValueObjectGroupConditionModel.fromMap(Map<String, dynamic> json) {
+    final conditions = <ValueObjectRuleCondition>[];
+    final groupConditions = <ValueObjectGroupCondition>[];
+    if (json['conditions'] != null) {
+      final rules = json['conditions'] as List;
+      conditions.addAll(
+        rules.map((rule) {
+          return ValueObjectRuleConditionModel.fromMap(rule);
+        }).toList(),
+      );
+    }
+    if (json['groupConditions'] != null) {
+      final groupConditionsJson = json['groupConditions'] as List;
+      groupConditions.addAll(
+        groupConditionsJson.map((groupCondition) {
+          return ValueObjectGroupConditionModel.fromMap(groupCondition);
+        }).toList(),
+      );
+    }
     return ValueObjectGroupConditionModel(
       id: json['id'],
       logicOperator: json['logicOperator'],
       valueObjectRuleId: json['valueObjectRuleId'],
-      groupConditions: json['groupConditions'] != null
-          ? (json['groupConditions'] as List)
-              .map((item) => ValueObjectGroupConditionModel.fromMap(item))
-              .toList()
-          : [],
-      conditions: json['conditions'] != null
-          ? (json['conditions'] as List)
-              .map((item) => ValueObjectRuleConditionModel.fromMap(item))
-              .toList()
-          : [],
+      groupConditions: groupConditions,
+      conditions: conditions,
     );
   }
 

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:metamorphis/src/domain/_core/constants/types.dart';
+import 'package:metamorphis/src/domain/_core/utils/types_utils.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/domain/value_object_group_condition/entities/value_object_group_condition.dart';
 import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_rule.dart';
-import 'package:metamorphis/src/presenter/_core/comparator_operators.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
 import 'package:metamorphis/src/presenter/home/entity/entity_controller.dart';
 
@@ -153,7 +152,7 @@ class _EntityPageState extends State<EntityPage> {
                     onChanged: (value) {
                       selectedType.value = value.toString();
                     },
-                    items: Types.types.map((type) {
+                    items: TypesUtils.types.map((type) {
                       return DropdownMenuItem(
                         value: type,
                         child: Text(type),
@@ -244,7 +243,7 @@ class _EntityPageState extends State<EntityPage> {
                     onChanged: (value) {
                       selectedType.value = value.toString();
                     },
-                    items: Types.types.map((type) {
+                    items: TypesUtils.types.map((type) {
                       return DropdownMenuItem(
                         value: type,
                         child: Text(type),
@@ -606,6 +605,13 @@ class _EntityRuleWidget extends StatelessWidget {
     required BuildContext context,
   }) {
     final selectedType = ValueNotifier('AND');
+    if (rule.groupConditions.isEmpty) {
+      controller.createValueObjectGroupCondition(
+        rule: rule,
+        value: selectedType.value,
+      );
+      return;
+    }
     showDialog(
       context: context,
       builder: (context) {
@@ -708,9 +714,27 @@ class _GroupConditionWidget extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('Group ${index + 1}'),
+                          Row(
+                            children: [
+                              Text('Group ${index + 1}'),
+                              const SizedBox(width: 4),
+                              IconButton(
+                                icon: const Icon(Icons.delete, size: 18),
+                                onPressed: () {
+                                  controller.removeValueObjectGroupCondition(
+                                    rule: rule,
+                                    groupCondition: groupCondition,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
                           const SizedBox(width: 16),
                         ],
+                      ),
+                      _ConditionsWidget(
+                        controller: controller,
+                        groupCondition: groupCondition,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
@@ -771,6 +795,14 @@ class _GroupConditionWidget extends StatelessWidget {
     required BuildContext context,
     required bool isFirst,
   }) {
+    final numbers = [
+      'byte/int8',
+      'short/int16',
+      'int/int32',
+      'long/int64',
+      'float/float32',
+      'double/float64',
+    ];
     if (valueObject.type == 'String') {
       _showDialogCreateValueObjectConditionWithString(
         groupIndex: groupIndex,
@@ -779,7 +811,7 @@ class _GroupConditionWidget extends StatelessWidget {
         context: context,
         isFirst: isFirst,
       );
-    } else if (['Integer', 'Long', 'Double'].contains(valueObject.type)) {
+    } else if (numbers.contains(valueObject.type)) {
       _showDialogCreateValueObjectConditionWithNumber(
         groupIndex: groupIndex,
         valueObject: valueObject,
@@ -806,7 +838,7 @@ class _GroupConditionWidget extends StatelessWidget {
     required bool isFirst,
   }) {
     final selectedLogicOperator = ValueNotifier('AND');
-    final comparatorOperators = ComparatorOperators.getOperators(
+    final comparatorOperators = TypesUtils.conditions(
       valueObject.type,
     );
     final selectedComparatorOperator = ValueNotifier(
@@ -911,10 +943,13 @@ class _GroupConditionWidget extends StatelessWidget {
             TextButton(
               onPressed: () {
                 context.pop();
-                /*controller.createValueObjectCondition(
-                  rule: rule,
-                  value: selectedType.value,
-                );*/
+                controller.createValueObjectRuleCondition(
+                  group: groupCondition,
+                  logicOperator: selectedLogicOperator.value,
+                  comparatorOperator: selectedComparatorOperator.value,
+                  targetValue: targetValueController.text.trim(),
+                  regex: regexController.text.trim(),
+                );
               },
               child: const Text('OK'),
             ),
@@ -932,7 +967,7 @@ class _GroupConditionWidget extends StatelessWidget {
     required bool isFirst,
   }) {
     final selectedLogicOperator = ValueNotifier('AND');
-    final comparatorOperators = ComparatorOperators.getOperators(
+    final comparatorOperators = TypesUtils.conditions(
       valueObject.type,
     );
     final selectedComparatorOperator = ValueNotifier(
@@ -1022,10 +1057,13 @@ class _GroupConditionWidget extends StatelessWidget {
             TextButton(
               onPressed: () {
                 context.pop();
-                /*controller.createValueObjectCondition(
-                  rule: rule,
-                  value: selectedType.value,
-                );*/
+                controller.createValueObjectRuleCondition(
+                  group: groupCondition,
+                  logicOperator: selectedLogicOperator.value,
+                  comparatorOperator: selectedComparatorOperator.value,
+                  targetValue: targetValueController.text.trim(),
+                  regex: '',
+                );
               },
               child: const Text('OK'),
             ),
@@ -1043,7 +1081,7 @@ class _GroupConditionWidget extends StatelessWidget {
     required bool isFirst,
   }) {
     final selectedLogicOperator = ValueNotifier('AND');
-    final comparatorOperators = ComparatorOperators.getOperators(
+    final comparatorOperators = TypesUtils.conditions(
       valueObject.type,
     );
     final selectedComparatorOperator = ValueNotifier(
@@ -1122,15 +1160,6 @@ class _GroupConditionWidget extends StatelessWidget {
                             labelText: 'Target value',
                           ),
                         ),
-                      if (selectedComparatorOperator.value == 'matches')
-                        const SizedBox(height: 8),
-                      if (selectedComparatorOperator.value == 'matches')
-                        TextField(
-                          controller: regexController,
-                          decoration: const InputDecoration(
-                            labelText: 'Regex',
-                          ),
-                        ),
                       const SizedBox(height: 8),
                     ],
                   );
@@ -1148,14 +1177,77 @@ class _GroupConditionWidget extends StatelessWidget {
             TextButton(
               onPressed: () {
                 context.pop();
-                /*controller.createValueObjectCondition(
-                  rule: rule,
-                  value: selectedType.value,
-                );*/
+                controller.createValueObjectRuleCondition(
+                  group: groupCondition,
+                  logicOperator: selectedLogicOperator.value,
+                  comparatorOperator: selectedComparatorOperator.value,
+                  targetValue: targetValueController.text.trim(),
+                  regex: regexController.text.trim(),
+                );
               },
               child: const Text('OK'),
             ),
           ],
+        );
+      },
+    );
+  }
+}
+
+class _ConditionsWidget extends StatelessWidget {
+  final EntityController controller;
+  final ValueObjectGroupCondition groupCondition;
+
+  const _ConditionsWidget({
+    required this.controller,
+    required this.groupCondition,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final conditions = groupCondition.conditions;
+    final colorScheme = Theme.of(context).colorScheme;
+    /*final textTheme = Theme.of(context).textTheme;*/
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: conditions.length,
+      itemBuilder: (_, index) {
+        final condition = conditions[index];
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (index > 0)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(condition.logicOperator ?? ''),
+                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '${condition.comparatorOperator}: ${condition.targetValue}',
+                  ),
+                  const SizedBox(width: 4),
+                  IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      size: 16,
+                      color: colorScheme.error,
+                    ),
+                    onPressed: () {
+                      controller.removeValueObjectRuleCondition(
+                        group: groupCondition,
+                        condition: condition,
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
         );
       },
     );

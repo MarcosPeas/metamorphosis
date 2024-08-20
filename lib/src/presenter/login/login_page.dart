@@ -60,6 +60,13 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 16),
                       TextField(
+                        onSubmitted: (_) {
+                          controller.login(
+                            context: context,
+                            email: _emailController.text.trim(),
+                            password: _passwordController.text.trim(),
+                          );
+                        },
                         enabled: !store.loading,
                         obscureText: true,
                         controller: _passwordController,

@@ -41,6 +41,9 @@ class LoginController {
     required String email,
     required String password,
   }) async {
+    if (store.loading) {
+      return;
+    }
     store.loading = true;
     final result = await signInWithEmailAndPasswordUseCase.execute(
       email: email,

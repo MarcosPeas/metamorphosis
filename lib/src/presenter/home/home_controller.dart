@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:metamorphis/src/application/entity/delete_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/get_entities_by_bounded_context_use_case.dart';
 import 'package:metamorphis/src/application/entity/save_entity_use_case.dart';
@@ -13,6 +14,7 @@ import 'home_store.dart';
 class HomeController {
   final HomeStore homeStore;
   final AppStore appStore;
+  final pageController = PageController();
 
   final GetEntitiesByBoundedContextUseCase getEntitiesByBoundedContextUseCase;
   final SaveEntityUseCase saveEntityUseCase;
@@ -58,6 +60,8 @@ class HomeController {
       appStore.entity = null;
       return;
     }
+    homeStore.page = 0;
+    pageController.jumpToPage(0);
     appStore.entity = EntityViewModel.fromEntity(
       entity,
     );
