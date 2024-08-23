@@ -6,6 +6,7 @@ class EntityViewModel extends Entity {
     required super.name,
     required super.boundedContextId,
     super.valueObjects,
+    super.useCases,
   });
 
   factory EntityViewModel.fromEntity(Entity entity) {
@@ -14,6 +15,7 @@ class EntityViewModel extends Entity {
       name: entity.name,
       boundedContextId: entity.boundedContextId,
       valueObjects: entity.valueObjects,
+      useCases: entity.useCases,
     );
   }
 
@@ -27,6 +29,7 @@ class EntityViewModel extends Entity {
       name: name ?? this.name,
       boundedContextId: boundedContextId ?? this.boundedContextId,
       valueObjects: valueObjects,
+      useCases: useCases,
     );
   }
 }

@@ -16,6 +16,8 @@ import 'package:metamorphis/src/presenter/home/entity/entity_store.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/home_store.dart';
 
+import 'use_cases/use_cases_controller.dart';
+
 class HomeInjector {
   static void setup() {
     _injectStores();
@@ -80,6 +82,12 @@ class HomeInjector {
     );
     getIt.registerFactory<EntityController>(
       () => EntityController(
+        entityStore: getIt(),
+        updateEntityUseCase: getIt(),
+      ),
+    );
+    getIt.registerFactory<UseCasesController>(
+      () => UseCasesController(
         entityStore: getIt(),
         updateEntityUseCase: getIt(),
       ),
