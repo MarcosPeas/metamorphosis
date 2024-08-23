@@ -82,4 +82,9 @@ class UseCasesController {
     entityStore.entity.useCases.add(paginateUseCase);
     updateEntity();
   }
+
+  void deleteUseCase(UseCase useCase) {
+    entityStore.entity.useCases.remove(useCase);
+    updateEntity();
+  }
 }

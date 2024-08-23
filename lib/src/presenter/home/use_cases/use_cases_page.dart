@@ -1,9 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:metamorphis/src/domain/_core/utils/types_utils.dart';
+import 'package:metamorphis/src/domain/_core/utils/cases_utils.dart';
 import 'package:metamorphis/src/domain/use_case/entities/use_case.dart';
 import 'package:metamorphis/src/presenter/home/use_cases/use_cases_controller.dart';
 
@@ -45,17 +43,6 @@ class _UseCasesPageState extends State<UseCasesPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(width: 4),
-                IconButton(
-                  onPressed: () {
-                    _showDialogCreateValueObject();
-                  },
-                  icon: Icon(
-                    color: colorScheme.primary,
-                    Icons.add,
-                    size: 22,
-                  ),
-                ),
               ],
             ),
             ListView.builder(
@@ -63,7 +50,10 @@ class _UseCasesPageState extends State<UseCasesPage> {
               itemCount: useCases.length,
               itemBuilder: (_, index) {
                 final useCase = useCases[index];
-                return Text(useCase.name);
+                return _UseCaseItemList(
+                  useCase: useCase,
+                  controller: controller,
+                );
               },
             ),
             Expanded(
@@ -146,7 +136,7 @@ class _UseCasesPageState extends State<UseCasesPage> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            log('Modal de criar paginação');
+                            _showDialogCreateValueObject();
                           },
                           child: Text(
                             'Create Paginate ${entity.name} Use Case',
@@ -166,14 +156,19 @@ class _UseCasesPageState extends State<UseCasesPage> {
   }
 
   void _showDialogCreateValueObject() {
-    final nameController = TextEditingController();
-    final selectedType = ValueNotifier('String');
-    final isNullable = ValueNotifier(false);
+    final entity = controller.entityStore.entity;
+    final valueObjects = entity.valueObjects.map((item) => item.name).toList();
+    final nameController = TextEditingController(
+      text: 'Paginate${entity.name}UseCase',
+    );
+    final searchField = ValueNotifier('none');
+    final orderByField = ValueNotifier(valueObjects.first);
+    final descending = ValueNotifier(true);
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Create a value object'),
+          title: const Text('Create a pagination use case'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -191,20 +186,46 @@ class _UseCasesPageState extends State<UseCasesPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text('Data type'),
+              const Text('Search field'),
               ValueListenableBuilder(
-                valueListenable: selectedType,
-                builder: (_, type, __) {
+                valueListenable: searchField,
+                builder: (_, search, __) {
                   return DropdownButton(
-                    value: type,
+                    value: search,
                     isExpanded: true,
                     onChanged: (value) {
-                      selectedType.value = value.toString();
+                      searchField.value = value.toString();
+                      if (value == 'none') {
+                        nameController.text = 'Paginate${entity.name}UseCase';
+                        return;
+                      }
+                      nameController.text =
+                          'Paginate${entity.name}By${CasesUtils.toTitleCase(value.toString())}UseCase';
                     },
-                    items: TypesUtils.types.map((type) {
+                    items: ['none', ...valueObjects].map((name) {
                       return DropdownMenuItem(
-                        value: type,
-                        child: Text(type),
+                        value: name,
+                        child: Text(name),
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+              const Text('Order by field'),
+              ValueListenableBuilder(
+                valueListenable: orderByField,
+                builder: (_, field, __) {
+                  return DropdownButton(
+                    value: field,
+                    isExpanded: true,
+                    onChanged: (value) {
+                      orderByField.value = value.toString();
+                    },
+                    items: valueObjects.map((name) {
+                      return DropdownMenuItem(
+                        value: name,
+                        child: Text(name),
                       );
                     }).toList(),
                   );
@@ -212,13 +233,13 @@ class _UseCasesPageState extends State<UseCasesPage> {
               ),
               const SizedBox(height: 16),
               ValueListenableBuilder(
-                valueListenable: isNullable,
+                valueListenable: descending,
                 builder: (_, value, __) {
-                  return CheckboxListTile(
-                    title: const Text('Nullable'),
+                  return SwitchListTile(
+                    title: const Text('Descending'),
                     value: value,
-                    onChanged: (changedValue) {
-                      isNullable.value = changedValue ?? false;
+                    onChanged: (newValue) {
+                      descending.value = newValue;
                     },
                   );
                 },
@@ -235,12 +256,76 @@ class _UseCasesPageState extends State<UseCasesPage> {
             TextButton(
               onPressed: () {
                 context.pop();
+                controller.createPaginateUseCase(
+                  name: nameController.text,
+                  isAscending: !descending.value,
+                  orderByField: orderByField.value,
+                  searchField: searchField.value,
+                );
               },
               child: const Text('Create'),
             ),
           ],
         );
       },
+    );
+  }
+}
+
+class _UseCaseItemList extends StatelessWidget {
+  final UseCase useCase;
+  final UseCasesController controller;
+
+  const _UseCaseItemList({
+    required this.useCase,
+    required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Text(
+            useCase.name,
+            style: textTheme.bodyLarge?.copyWith(
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          subtitle: subtitle(),
+          trailing: IconButton(
+            icon: Icon(
+              Icons.delete,
+              size: 18,
+              color: colorScheme.error,
+            ),
+            onPressed: () {
+              controller.deleteUseCase(useCase);
+            },
+          ),
+        ),
+        const Divider(),
+      ],
+    );
+  }
+
+  Widget? subtitle() {
+    if (useCase.useCaseType != UseCaseType.paginate) {
+      return null;
+    }
+    if (useCase.searchField == 'none') {
+      return Text(
+        'Order by ${useCase.orderByField} ${useCase.isAscending ? 'ascending' : 'descending'}',
+      );
+    }
+    return Text(
+      'Search by ${useCase.searchField}, order by ${useCase.orderByField} ${useCase.isAscending ? 'ascending' : 'descending'}',
     );
   }
 }
