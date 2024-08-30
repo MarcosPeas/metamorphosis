@@ -6,6 +6,7 @@ import 'package:metamorphis/src/presenter/home/entity/entity_page.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/widgets/selected_entity_widget.dart';
 
+import 'entity_rules/entity_rules_page.dart';
 import 'use_cases/use_cases_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -109,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                       controller: controller.pageController,
                       children: [
                         EntityPage(entity: entity, key: ValueKey(entity.id)),
-                        const Text('Rules'),
+                        EntityRulesPage(key: ValueKey(entity.id)),
                         UseCasesPage(key: ValueKey(entity.id)),
                       ],
                     ),
