@@ -1,11 +1,14 @@
+import 'package:metamorphis/src/domain/entity_rule_condition/entity_rule_condition.dart';
 import 'package:metamorphis/src/domain/entity_rule_group_condition/entities/entity_rule_group_condition.dart';
+import 'package:metamorphis/src/infrastructure/data/entity_rule_condition/models/entity_rule_condition_model.dart';
 
 class EntityRuleGroupConditionModel extends EntityRuleGroupCondition {
   EntityRuleGroupConditionModel({
     required super.id,
-    super.logicOperator,
-    super.entityRuleId,
-    super.entityRuleGroupCondition,
+    required super.logicOperator,
+    required super.entityRuleId,
+    required super.entityRuleGroupCondition,
+    required super.conditions,
   });
 
   factory EntityRuleGroupConditionModel.fromEntity(
@@ -16,6 +19,7 @@ class EntityRuleGroupConditionModel extends EntityRuleGroupCondition {
       logicOperator: application.logicOperator,
       entityRuleId: application.entityRuleId,
       entityRuleGroupCondition: application.entityRuleGroupCondition,
+      conditions: application.conditions,
     );
   }
 
@@ -24,7 +28,14 @@ class EntityRuleGroupConditionModel extends EntityRuleGroupCondition {
       id: json['id'],
       logicOperator: json['logicOperator'],
       entityRuleId: json['entityRuleId'],
-      entityRuleGroupCondition: json['entityRuleGroupCondition'],
+      entityRuleGroupCondition: json['entityRuleGroupCondition'] != null
+          ? EntityRuleGroupConditionModel.fromMap(
+              json['entityRuleGroupCondition'],
+            )
+          : null,
+      conditions: json['conditions'].map<EntityRuleCondition>((condition) {
+        return EntityRuleConditionModel.fromMap(condition);
+      }).toList(),
     );
   }
 
@@ -40,6 +51,9 @@ class EntityRuleGroupConditionModel extends EntityRuleGroupCondition {
       'logicOperator': logicOperator,
       'entityRuleId': entityRuleId,
       'entityRuleGroupCondition': model?.toJson(),
+      'conditions': conditions.map((condition) {
+        return EntityRuleConditionModel.fromEntity(condition).toJson();
+      }).toList(),
     };
   }
 }

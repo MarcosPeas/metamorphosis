@@ -2,6 +2,9 @@ import 'dart:developer';
 
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
 import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
+import 'package:metamorphis/src/domain/entity_rule_condition/entity_rule_condition.dart';
+import 'package:metamorphis/src/domain/entity_rule_group_condition/entities/entity_rule_group_condition.dart';
+import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/presenter/home/entity/entity_store.dart';
 
 class EntityRulesController {
@@ -40,6 +43,61 @@ class EntityRulesController {
   void removeEntityRule(EntityRule entityRule) {
     final entity = entityStore.entity;
     entity.entityRules.remove(entityRule);
+    updateEntity();
+  }
+
+  void createEntityRuleCondition({
+    required EntityRuleGroupCondition group,
+    required String logicOperator,
+    required String targetValue,
+    required comparatorOperator,
+    required String regex,
+    required ValueObject leftValueObject,
+    required ValueObject rightValueObject,
+  }) {
+    final entityRuleCondition = EntityRuleCondition(
+      logicOperator: logicOperator,
+      targetValue: targetValue,
+      comparatorOperator: comparatorOperator,
+      regex: regex,
+      leftValueObject: leftValueObject,
+      rightValueObject: rightValueObject,
+    );
+    group.conditions.add(entityRuleCondition);
+    updateEntity();
+  }
+
+  void createEntityRuleGroupCondition({
+    required EntityRule rule,
+    required String value,
+  }) {
+    final group = EntityRuleGroupCondition(
+      logicOperator: value,
+      entityRuleId: rule.id,
+    );
+    rule.groupConditions.add(group);
+    updateEntity();
+  }
+
+  void editEntityRule({
+    required EntityRule entityRule,
+    required String errorMessage,
+  }) {
+    entityRule.errorMessage = errorMessage;
+    updateEntity();
+  }
+
+  void deleteEntityRule(EntityRule entityRule) {
+    final entity = entityStore.entity;
+    entity.entityRules.remove(entityRule);
+    updateEntity();
+  }
+
+  void removeGroupCondition({
+    required List<EntityRuleGroupCondition> groupsConditions,
+    required EntityRuleGroupCondition groupCondition,
+  }) {
+    groupsConditions.remove(groupCondition);
     updateEntity();
   }
 }
