@@ -348,6 +348,8 @@ class _EntityRuleWidget extends StatelessWidget {
                                               _showDialogCreateEntityRuleCondition(
                                                 context: context,
                                                 groupCondition: groupCondition,
+                                                isFirst: groupCondition
+                                                    .conditions.isEmpty,
                                               );
                                             },
                                             child: Text(
@@ -489,25 +491,162 @@ class _EntityRuleWidget extends StatelessWidget {
   void _showDialogCreateEntityRuleCondition({
     required BuildContext context,
     required EntityRuleGroupCondition groupCondition,
+    required bool isFirst,
   }) {
+    final logicOperator = ValueNotifier('AND');
+    final entity = controller.entityStore.entity;
+    final leftField = ValueNotifier<ValueObject?>(null);
+    final operators = ValueNotifier<List<String>>([]);
+    final selectedOperator = ValueNotifier<String?>(null);
+    final rightField = ValueNotifier<ValueObject?>(null);
+    final usesValueObjectTarget = ValueNotifier(false);
+    final targetTextController = TextEditingController();
     showDialog(
       context: context,
       builder: (_) {
         return AlertDialog(
-          title: const Text('Create a entity rule condition'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text('Error message'),
-              const SizedBox(height: 16),
-              const Text('Logic Operator'),
-              const SizedBox(height: 8),
-              const Text('Comparator Operator'),
-              const SizedBox(height: 8),
-              const Text('Target value'),
-              const SizedBox(height: 8),
-            ],
+          title: const Text('Create an entity rule condition'),
+          content: ValueListenableBuilder(
+            valueListenable: leftField,
+            builder: (_, leftFieldValue, __) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (!isFirst) ...[
+                    const Text('Logic Operator'),
+                    ValueListenableBuilder(
+                      valueListenable: logicOperator,
+                      builder: (_, operator, __) {
+                        return DropdownButton(
+                          value: operator,
+                          isExpanded: true,
+                          onChanged: (value) {
+                            logicOperator.value = value.toString();
+                          },
+                          items: const [
+                            DropdownMenuItem(
+                              value: 'AND',
+                              child: Text('AND'),
+                            ),
+                            DropdownMenuItem(
+                              value: 'OR',
+                              child: Text('OR'),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  const Text('Field'),
+                  DropdownButton(
+                    value: leftFieldValue,
+                    isExpanded: true,
+                    onChanged: (value) {
+                      leftField.value = value;
+                      final valueObject = entity.valueObjects.firstWhere(
+                            (element) => element == value,
+                      );
+                      selectedOperator.value = null;
+                      rightField.value = null;
+                      operators.value = TypesUtils.conditionsForEntity(
+                        valueObject.type,
+                      );
+                    },
+                    items: [
+                      for (final valueObject in entity.valueObjects)
+                        DropdownMenuItem(
+                          value: valueObject,
+                          child: Text(valueObject.name),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('Comparator Operator'),
+                  const SizedBox(height: 8),
+                  ValueListenableBuilder(
+                    valueListenable: operators,
+                    builder: (_, values, __) {
+                      return ValueListenableBuilder(
+                        valueListenable: selectedOperator,
+                        builder: (_, currentOperator, __) {
+                          return DropdownButton(
+                            value: currentOperator,
+                            isExpanded: true,
+                            onChanged: (value) {
+                              selectedOperator.value = value.toString();
+                            },
+                            items: [
+                              for (final type in values)
+                                DropdownMenuItem(
+                                  value: type,
+                                  child: Text(type),
+                                ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  ValueListenableBuilder(
+                    valueListenable: usesValueObjectTarget,
+                    builder: (_, value, __) {
+                      return SwitchListTile(
+                        title: const Text('Compare with another value object'),
+                        value: value,
+                        onChanged: leftFieldValue != null ? (newValue) {
+                          usesValueObjectTarget.value = newValue;
+                        } : null,
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  ValueListenableBuilder(
+                    valueListenable: usesValueObjectTarget,
+                    builder: (_, value, __) {
+                      if (value) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Text('Another field'),
+                            ValueListenableBuilder(
+                              valueListenable: rightField,
+                              builder: (_, value, __) {
+                                final valueObjects = [...entity.valueObjects];
+                                valueObjects.remove(leftField.value);
+                                return DropdownButton(
+                                  value: value,
+                                  isExpanded: true,
+                                  onChanged: (value) {
+                                    rightField.value = value;
+                                  },
+                                  items: [
+                                    for (final valueObject in valueObjects)
+                                      DropdownMenuItem(
+                                        value: valueObject,
+                                        child: Text(valueObject.name),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      }
+                      return TextField(
+                        controller: targetTextController,
+                        decoration: const InputDecoration(
+                          labelText: 'Target value',
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              );
+            }
           ),
           actions: [
             TextButton(
@@ -528,7 +667,7 @@ class _EntityRuleWidget extends StatelessWidget {
     );
   }
 }
-
+/*
 class _GroupConditionWidget extends StatelessWidget {
   final EntityRule rule;
   final EntityRulesController controller;
@@ -1136,3 +1275,4 @@ class _ConditionsWidget extends StatelessWidget {
     );
   }
 }
+*/

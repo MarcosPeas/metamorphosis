@@ -8,6 +8,7 @@ class EntityViewModel extends Entity {
     required super.valueObjects,
     required super.useCases,
     required super.entityRules,
+    required super.lists,
   });
 
   factory EntityViewModel.fromEntity(Entity entity) {
@@ -18,6 +19,7 @@ class EntityViewModel extends Entity {
       valueObjects: entity.valueObjects,
       useCases: entity.useCases,
       entityRules: entity.entityRules,
+      lists: entity.lists,
     );
   }
 
@@ -33,6 +35,7 @@ class EntityViewModel extends Entity {
       valueObjects: valueObjects,
       useCases: useCases,
       entityRules: entityRules,
+      lists: lists,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
 import 'package:metamorphis/src/presenter/home/entity/entity_page.dart';
+import 'package:metamorphis/src/presenter/home/entity_lists/entity_lists_page.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/widgets/selected_entity_widget.dart';
 
@@ -110,6 +111,10 @@ class _HomePageState extends State<HomePage> {
                       controller: controller.pageController,
                       children: [
                         EntityPage(entity: entity, key: ValueKey(entity.id)),
+                        EntityListsPage(
+                          entities: homeStore.entities,
+                          key: ValueKey(entity.id),
+                        ),
                         EntityRulesPage(key: ValueKey(entity.id)),
                         UseCasesPage(key: ValueKey(entity.id)),
                       ],
@@ -428,7 +433,35 @@ class _MenuItems extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        _MenuItem(
+        ListTile(
+          title: const Text('Value Objects'),
+          selected: index == 0,
+          onTap: () {
+            onTap(0);
+          },
+        ),
+        ListTile(
+          title: const Text('Lists'),
+          selected: index == 1,
+          onTap: () {
+            onTap(1);
+          },
+        ),
+        ListTile(
+          title: const Text('Entity Rules'),
+          selected: index == 2,
+          onTap: () {
+            onTap(2);
+          },
+        ),
+        ListTile(
+          title: const Text('Use Cases'),
+          selected: index == 3,
+          onTap: () {
+            onTap(3);
+          },
+        ),
+        /*_MenuItem(
           selected: index == 0,
           index: 0,
           onTap: onTap,
@@ -445,12 +478,12 @@ class _MenuItems extends StatelessWidget {
           index: 2,
           onTap: onTap,
           title: 'Use Cases',
-        ),
+        ),*/
       ],
     );
   }
 }
-
+/*
 class _MenuItem extends StatelessWidget {
   final int index;
   final bool selected;
@@ -486,3 +519,4 @@ class _MenuItem extends StatelessWidget {
     );
   }
 }
+*/

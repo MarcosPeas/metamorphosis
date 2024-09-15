@@ -1,7 +1,9 @@
+import 'package:metamorphis/src/domain/collections/entities/entity_list.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
 import 'package:metamorphis/src/domain/use_case/entities/use_case.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
+import 'package:metamorphis/src/infrastructure/data/collections/models/entity_list_model.dart';
 import 'package:metamorphis/src/infrastructure/data/entity_rule/models/entity_rule_model.dart';
 import 'package:metamorphis/src/infrastructure/data/use_case/models/use_case_model.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object/models/value_object_model.dart';
@@ -14,6 +16,7 @@ class EntityModel extends Entity {
     required super.valueObjects,
     required super.useCases,
     required super.entityRules,
+    required super.lists,
   });
 
   factory EntityModel.fromEntity(Entity entity) {
@@ -24,6 +27,7 @@ class EntityModel extends Entity {
       valueObjects: entity.valueObjects,
       useCases: entity.useCases,
       entityRules: entity.entityRules,
+      lists: entity.lists,
     );
   }
 
@@ -31,6 +35,7 @@ class EntityModel extends Entity {
     final valueObjects = <ValueObject>[];
     final useCases = <UseCase>[];
     final entityRules = <EntityRule>[];
+    final lists = <EntityList>[];
     if (json['valueObjects'] != null) {
       json['valueObjects'].forEach((valueObject) {
         valueObjects.add(ValueObjectModel.fromMap(valueObject));
@@ -46,6 +51,11 @@ class EntityModel extends Entity {
         entityRules.add(EntityRuleModel.fromMap(entityRule));
       });
     }
+    if (json['lists'] != null) {
+      json['lists'].forEach((entityList) {
+        lists.add(EntityListModel.fromMap(entityList));
+      });
+    }
     return EntityModel(
       id: json['id'],
       name: json['name'],
@@ -53,6 +63,7 @@ class EntityModel extends Entity {
       valueObjects: valueObjects,
       useCases: useCases,
       entityRules: entityRules,
+      lists: lists,
     );
   }
 
@@ -66,6 +77,9 @@ class EntityModel extends Entity {
     final entityRulesModel = entityRules.map((entityRule) {
       return EntityRuleModel.fromEntity(entityRule).toJson();
     }).toList();
+    final listsModel = lists.map((entityList) {
+      return EntityListModel.fromEntity(entityList).toJson();
+    }).toList();
     return {
       'id': id,
       'name': name,
@@ -73,6 +87,7 @@ class EntityModel extends Entity {
       'valueObjects': valueObjectsModel,
       'useCases': useCasesModel,
       'entityRules': entityRulesModel,
+      'lists': listsModel,
     };
   }
 }

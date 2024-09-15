@@ -50,10 +50,10 @@ class EntityRepositoryImpl implements EntityRepository {
   }
 
   @override
-  Future<Entity> save(Entity application) async {
+  Future<Entity> save(Entity entity) async {
     try {
-      final doc = _firestore.collection(collection).doc(application.id);
-      final applicationModel = EntityModel.fromEntity(application);
+      final doc = _firestore.collection(collection).doc(entity.id);
+      final applicationModel = EntityModel.fromEntity(entity);
       await doc.set(applicationModel.toJson());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
