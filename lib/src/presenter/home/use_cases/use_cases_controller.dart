@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
 import 'package:metamorphis/src/domain/use_case/entities/use_case.dart';
-import 'package:metamorphis/src/presenter/home/entity/entity_store.dart';
+import 'package:metamorphis/src/presenter/home/_core/entity_store.dart';
 
 class UseCasesController {
   final EntityStore entityStore;

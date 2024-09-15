@@ -11,14 +11,14 @@ import 'package:metamorphis/src/domain/entity/repositories/entity_repository.dar
 import 'package:metamorphis/src/domain/value_object/repositories/value_object_repository.dart';
 import 'package:metamorphis/src/infrastructure/data/entity/repositories/entity_repository_impl.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object/repositories/value_object_repository_impl.dart';
-import 'package:metamorphis/src/presenter/home/entity/entity_controller.dart';
-import 'package:metamorphis/src/presenter/home/entity/entity_store.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/home_store.dart';
 
 import 'entity_lists/entity_lists_controller.dart';
 import 'entity_rules/entity_rules_controller.dart';
 import 'use_cases/use_cases_controller.dart';
+import 'value_objects/value_objects_controller.dart';
+import '_core/entity_store.dart';
 
 class HomeInjector {
   static void setup() {
@@ -82,8 +82,8 @@ class HomeInjector {
         getEntitiesByBoundedContextUseCase: getIt(),
       ),
     );
-    getIt.registerFactory<EntityController>(
-      () => EntityController(
+    getIt.registerFactory<ValueObjectsController>(
+      () => ValueObjectsController(
         entityStore: getIt(),
         updateEntityUseCase: getIt(),
       ),

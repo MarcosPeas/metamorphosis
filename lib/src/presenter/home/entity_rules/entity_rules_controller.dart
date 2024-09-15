@@ -5,7 +5,7 @@ import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
 import 'package:metamorphis/src/domain/entity_rule_condition/entity_rule_condition.dart';
 import 'package:metamorphis/src/domain/entity_rule_group_condition/entities/entity_rule_group_condition.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
-import 'package:metamorphis/src/presenter/home/entity/entity_store.dart';
+import 'package:metamorphis/src/presenter/home/_core/entity_store.dart';
 
 class EntityRulesController {
   final EntityStore entityStore;

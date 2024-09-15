@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
 import 'package:metamorphis/src/domain/collections/entities/entity_list.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
-import 'package:metamorphis/src/presenter/home/entity/entity_store.dart';
+import 'package:metamorphis/src/presenter/home/_core/entity_store.dart';
 
 class EntityListsController {
   final EntityStore entityStore;

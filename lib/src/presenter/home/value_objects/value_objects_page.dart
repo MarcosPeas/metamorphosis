@@ -6,21 +6,21 @@ import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/domain/value_object_group_condition/entities/value_object_group_condition.dart';
 import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_rule.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
-import 'package:metamorphis/src/presenter/home/entity/entity_controller.dart';
 
+import 'value_objects_controller.dart';
 import 'widgets/value_object_group_conditions_widget.dart';
 
-class EntityPage extends StatefulWidget {
+class ValueObjectsPage extends StatefulWidget {
   final EntityViewModel entity;
 
-  const EntityPage({super.key, required this.entity});
+  const ValueObjectsPage({super.key, required this.entity});
 
   @override
-  State<EntityPage> createState() => _EntityPageState();
+  State<ValueObjectsPage> createState() => _ValueObjectsPageState();
 }
 
-class _EntityPageState extends State<EntityPage> {
-  late final EntityController controller;
+class _ValueObjectsPageState extends State<ValueObjectsPage> {
+  late final ValueObjectsController controller;
 
   @override
   void initState() {
@@ -416,7 +416,7 @@ class _EntityRuleWidget extends StatelessWidget {
   final void Function(ValueObjectRule rule) onValueObjectRuleTap;
   final hoverIndex = ValueNotifier(-1);
   final hoverAddRule = ValueNotifier(false);
-  final EntityController controller;
+  final ValueObjectsController controller;
 
   _EntityRuleWidget({
     required this.valueObject,
@@ -674,7 +674,7 @@ class _EntityRuleWidget extends StatelessWidget {
 class _GroupConditionWidget extends StatelessWidget {
   final ValueObject valueObject;
   final ValueObjectRule rule;
-  final EntityController controller;
+  final ValueObjectsController controller;
 
   const _GroupConditionWidget({
     required this.valueObject,
@@ -1195,7 +1195,7 @@ class _GroupConditionWidget extends StatelessWidget {
 }
 
 class _ConditionsWidget extends StatelessWidget {
-  final EntityController controller;
+  final ValueObjectsController controller;
   final ValueObjectGroupCondition groupCondition;
 
   const _ConditionsWidget({

@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
-import 'package:metamorphis/src/presenter/home/entity/entity_page.dart';
 import 'package:metamorphis/src/presenter/home/entity_lists/entity_lists_page.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/widgets/selected_entity_widget.dart';
 
 import 'entity_rules/entity_rules_page.dart';
 import 'use_cases/use_cases_page.dart';
+import 'value_objects/value_objects_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                     child: PageView(
                       controller: controller.pageController,
                       children: [
-                        EntityPage(entity: entity, key: ValueKey(entity.id)),
+                        ValueObjectsPage(entity: entity, key: ValueKey(entity.id)),
                         EntityListsPage(
                           entities: homeStore.entities,
                           key: ValueKey(entity.id),

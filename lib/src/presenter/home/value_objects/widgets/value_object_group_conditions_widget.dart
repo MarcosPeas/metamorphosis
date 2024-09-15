@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_rule.dart';
-import 'package:metamorphis/src/presenter/home/entity/entity_controller.dart';
+import 'package:metamorphis/src/presenter/home/value_objects/value_objects_controller.dart';
 
 class ValueObjectGroupConditionsWidget extends StatelessWidget {
-  final EntityController controller;
+  final ValueObjectsController controller;
   final ValueObjectRule rule;
 
   const ValueObjectGroupConditionsWidget({

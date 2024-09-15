@@ -6,14 +6,15 @@ import 'package:metamorphis/src/domain/value_object_group_condition/entities/val
 import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_rule.dart';
 import 'package:metamorphis/src/domain/value_object_rule_condition/entities/value_object_rule_condition.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
-import 'package:metamorphis/src/presenter/home/entity/entity_store.dart';
 import 'package:uuid/uuid.dart';
 
-class EntityController {
+import '../_core/entity_store.dart';
+
+class ValueObjectsController {
   final EntityStore entityStore;
   final UpdateEntityUseCase updateEntityUseCase;
 
-  EntityController({
+  ValueObjectsController({
     required this.entityStore,
     required this.updateEntityUseCase,
   }) {
