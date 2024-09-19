@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:metamorphis/src/domain/collections/entities/entity_list.dart';
+import 'package:metamorphis/src/domain/composition/entities/composition.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 
-import 'entity_lists_controller.dart';
+import 'compositions_controller.dart';
 
-class EntityListsPage extends StatefulWidget {
+class CompositionsPage extends StatefulWidget {
   final List<Entity> entities;
 
-  const EntityListsPage({required this.entities, super.key});
+  const CompositionsPage({required this.entities, super.key});
 
   @override
-  State<EntityListsPage> createState() => _EntityListsPageState();
+  State<CompositionsPage> createState() => _CompositionsPageState();
 }
 
-class _EntityListsPageState extends State<EntityListsPage> {
-  late final EntityListsController controller;
+class _CompositionsPageState extends State<CompositionsPage> {
+  late final CompositionsController controller;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _EntityListsPageState extends State<EntityListsPage> {
         Row(
           children: [
             Text(
-              'Lists',
+              'Compositions',
               style: textTheme.titleMedium?.copyWith(
                 color: colorScheme.primary,
                 fontWeight: FontWeight.bold,
@@ -67,15 +67,15 @@ class _EntityListsPageState extends State<EntityListsPage> {
               final entity = entityStore.entity;
               if (entity.valueObjects.isEmpty) {
                 return const Center(
-                  child: Text('No lists'),
+                  child: Text('No compositions'),
                 );
               }
-              final lists = entity.lists;
+              final compositions = entity.compositions;
               return ListView.builder(
                 shrinkWrap: true,
-                itemCount: lists.length,
+                itemCount: compositions.length,
                 itemBuilder: (_, index) {
-                  final list = lists[index];
+                  final composition = compositions[index];
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -83,20 +83,20 @@ class _EntityListsPageState extends State<EntityListsPage> {
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          list.name,
+                          composition.name,
                           style: textTheme.bodyLarge?.copyWith(
                             color: colorScheme.onSurface,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        subtitle: Text('List<${list.entity.name}>'),
+                        subtitle: Text(_compositionLabel(composition)),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
                               icon: const Icon(Icons.edit, size: 18),
                               onPressed: () {
-                                _showDialogUpdateList(list);
+                                _showDialogUpdateList(composition);
                               },
                             ),
                             const SizedBox(width: 1),
@@ -107,7 +107,7 @@ class _EntityListsPageState extends State<EntityListsPage> {
                                 color: colorScheme.error,
                               ),
                               onPressed: () {
-                                controller.removeEntityList(list);
+                                controller.removeComposition(composition);
                               },
                             ),
                           ],
@@ -125,14 +125,23 @@ class _EntityListsPageState extends State<EntityListsPage> {
     );
   }
 
+  String _compositionLabel(Composition composition) {
+    if (composition.compositionType == CompositionType.listOfEntities) {
+      return 'Type: List<${composition.entity.name}>';
+    } else {
+      return 'Type: ${composition.entity.name}';
+    }
+  }
+
   void _showDialogCreateList() {
     final nameController = TextEditingController();
     final selectedEntity = ValueNotifier<Entity?>(null);
+    final compositionType = ValueNotifier(CompositionType.singleEntity);
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Create a list of entities'),
+          title: const Text('Create a composition of entities'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -143,9 +152,10 @@ class _EntityListsPageState extends State<EntityListsPage> {
                   if (text.isEmpty) {
                     return;
                   }
-                  controller.createList(
+                  controller.createComposition(
                     name: nameController.text.trim(),
                     entity: selectedEntity.value,
+                    compositionType: compositionType.value,
                   );
                   context.pop();
                 },
@@ -159,9 +169,6 @@ class _EntityListsPageState extends State<EntityListsPage> {
                 valueListenable: selectedEntity,
                 builder: (_, entity, __) {
                   final entities = [...widget.entities];
-                  entities.removeWhere((item) {
-                    return item.id == controller.entityStore.entity.id;
-                  });
                   return DropdownButton(
                     value: selectedEntity.value,
                     isExpanded: true,
@@ -178,6 +185,29 @@ class _EntityListsPageState extends State<EntityListsPage> {
                 },
               ),
               const SizedBox(height: 16),
+              ValueListenableBuilder(
+                valueListenable: compositionType,
+                builder: (_, currentType, __) {
+                  return DropdownButton(
+                    value: currentType,
+                    isExpanded: true,
+                    onChanged: (value) {
+                      compositionType.value = value!;
+                    },
+                    items: const [
+                      DropdownMenuItem(
+                        value: CompositionType.singleEntity,
+                        child: Text('Single entity'),
+                      ),
+                      DropdownMenuItem(
+                        value: CompositionType.listOfEntities,
+                        child: Text('List of entities'),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
             ],
           ),
           actions: [
@@ -189,9 +219,10 @@ class _EntityListsPageState extends State<EntityListsPage> {
             ),
             TextButton(
               onPressed: () {
-                controller.createList(
+                controller.createComposition(
                   name: nameController.text.trim(),
                   entity: selectedEntity.value,
+                  compositionType: compositionType.value,
                 );
                 context.pop();
               },
@@ -203,14 +234,15 @@ class _EntityListsPageState extends State<EntityListsPage> {
     );
   }
 
-  void _showDialogUpdateList(EntityList list) {
-    final nameController = TextEditingController(text: list.name);
-    final selectedEntity = ValueNotifier<Entity>(list.entity);
+  void _showDialogUpdateList(Composition composition) {
+    final nameController = TextEditingController(text: composition.name);
+    final selectedEntity = ValueNotifier<Entity>(composition.entity);
+    final compositionType = ValueNotifier(composition.compositionType);
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Update the list of entities'),
+          title: const Text('Update the composition of entities'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -221,10 +253,11 @@ class _EntityListsPageState extends State<EntityListsPage> {
                   if (text.isEmpty) {
                     return;
                   }
-                  controller.updateEntityList(
+                  controller.updateComposition(
                     entity: selectedEntity.value,
                     name: nameController.text.trim(),
-                    list: list,
+                    list: composition,
+                    compositionType: compositionType.value,
                   );
                   context.pop();
                 },
@@ -257,6 +290,29 @@ class _EntityListsPageState extends State<EntityListsPage> {
                 },
               ),
               const SizedBox(height: 16),
+              ValueListenableBuilder(
+                valueListenable: compositionType,
+                builder: (_, currentType, __) {
+                  return DropdownButton(
+                    value: currentType,
+                    isExpanded: true,
+                    onChanged: (value) {
+                      compositionType.value = value!;
+                    },
+                    items: const [
+                      DropdownMenuItem(
+                        value: CompositionType.singleEntity,
+                        child: Text('Single entity'),
+                      ),
+                      DropdownMenuItem(
+                        value: CompositionType.listOfEntities,
+                        child: Text('List of entities'),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
             ],
           ),
           actions: [
@@ -268,10 +324,11 @@ class _EntityListsPageState extends State<EntityListsPage> {
             ),
             TextButton(
               onPressed: () {
-                controller.updateEntityList(
+                controller.updateComposition(
                   entity: selectedEntity.value,
                   name: nameController.text.trim(),
-                  list: list,
+                  list: composition,
+                  compositionType: compositionType.value,
                 );
                 context.pop();
               },

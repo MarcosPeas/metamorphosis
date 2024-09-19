@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
 
-import 'home_page.dart';
+import '../home_page.dart';
 
 class HomeRouters {
   static const String home = '/home';

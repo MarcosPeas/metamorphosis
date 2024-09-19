@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
-import 'package:metamorphis/src/presenter/home/entity_lists/entity_lists_page.dart';
+import 'package:metamorphis/src/presenter/home/entity_lists/compositions_page.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/widgets/selected_entity_widget.dart';
 
@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Nenhuma entidade',
+                      'No entity',
                       style: textTheme.bodyLarge?.copyWith(
                         color: colorScheme.onSurface,
                       ),
@@ -64,7 +64,7 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () {
                         showCreateEntityDialog();
                       },
-                      child: const Text('Criar entidade'),
+                      child: const Text('Create entity'),
                     ),
                   ],
                 ),
@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
                       controller: controller.pageController,
                       children: [
                         ValueObjectsPage(entity: entity, key: ValueKey(entity.id)),
-                        EntityListsPage(
+                        CompositionsPage(
                           entities: homeStore.entities,
                           key: ValueKey(entity.id),
                         ),
@@ -135,12 +135,12 @@ class _HomePageState extends State<HomePage> {
       builder: (context) {
         final colorScheme = Theme.of(context).colorScheme;
         return AlertDialog(
-          title: const Text('Opções'),
+          title: const Text('Options'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: const Text('Adicionar entidade'),
+                title: const Text('Add entity'),
                 onTap: () {
                   context.pop();
                   showCreateEntityDialog();
@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                 leading: const Icon(Icons.add),
               ),
               ListTile(
-                title: const Text('Editar entidade'),
+                title: const Text('Edit entity'),
                 onTap: () {
                   context.pop();
                   showEditEntityDialog(entity);
@@ -156,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                 leading: const Icon(Icons.edit),
               ),
               ListTile(
-                title: const Text('Mudar para outra entidade'),
+                title: const Text('Change to another entity'),
                 onTap: () {
                   context.pop();
                   showSelectEntityDialog(entity);
@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
               ),
               ListTile(
                 title: Text(
-                  'Remover entidade',
+                  'Remover entity',
                   style: TextStyle(
                     color: colorScheme.error,
                   ),
@@ -186,7 +186,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 context.pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
           ],
         );
@@ -200,7 +200,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Selecionar entidade'),
+          title: const Text('Select entity'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -221,7 +221,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 context.pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
           ],
         );
@@ -235,7 +235,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Nova entidade'),
+          title: const Text('New entity'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -249,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
                 decoration: const InputDecoration(
-                  labelText: 'Nome',
+                  labelText: 'Name',
                 ),
                 onChanged: (text) {
                   applicationName.value = text.trim();
@@ -262,7 +262,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 context.pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
             ValueListenableBuilder(
               valueListenable: applicationName,
@@ -276,7 +276,7 @@ class _HomePageState extends State<HomePage> {
                           context.pop();
                         }
                       : null,
-                  child: const Text('Salvar'),
+                  child: const Text('Save'),
                 );
               },
             ),
@@ -293,22 +293,24 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Editar entidade'),
+          title: const Text('Edit entity'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 onSubmitted: (value) {
                   if (applicationName.value.length > 2) {
-                    controller.saveEntity(
-                      name: applicationName.value,
+                    controller.updateEntity(
+                      entity: entity.copyWith(
+                        name: applicationName.value,
+                      ),
                     );
                     context.pop();
                   }
                 },
                 controller: nameController,
                 decoration: const InputDecoration(
-                  labelText: 'Nome',
+                  labelText: 'Name',
                 ),
                 onChanged: (text) {
                   applicationName.value = text.trim();
@@ -321,7 +323,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 context.pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
             ValueListenableBuilder(
               valueListenable: applicationName,
@@ -337,7 +339,7 @@ class _HomePageState extends State<HomePage> {
                           context.pop();
                         }
                       : null,
-                  child: const Text('Salvar'),
+                  child: const Text('Save'),
                 );
               },
             ),
@@ -354,13 +356,13 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Remover entidade'),
+          title: const Text('Remove entity'),
           content: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Tem certeza que deseja remover a seguinte entidade?'),
+              const Text('Are you sure you want to remove the following entity?'),
               const SizedBox(height: 8),
               Text(
                 entity.name,
@@ -375,7 +377,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 context.pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -383,7 +385,7 @@ class _HomePageState extends State<HomePage> {
                 context.pop();
               },
               child: Text(
-                'Remover',
+                'Remove',
                 style: TextStyle(
                   color: colorScheme.error,
                 ),
@@ -441,7 +443,7 @@ class _MenuItems extends StatelessWidget {
           },
         ),
         ListTile(
-          title: const Text('Lists'),
+          title: const Text('Compositions'),
           selected: index == 1,
           onTap: () {
             onTap(1);

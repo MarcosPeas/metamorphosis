@@ -170,6 +170,26 @@ class TypesUtils {
 
   static List<String> conditions(String dataType) {
     final conditionsMap = {
+      'list': [
+        'isEmpty',
+        'isNotEmpty',
+        'lengthEquals',
+        'lengthNotEquals',
+        'lengthLessThan',
+        'lengthLessThanOrEqualTo',
+        'lengthGreaterThan',
+        'lengthGreaterThanOrEqualTo',
+      ],
+      'listOfEntities': [
+        'isEmpty',
+        'isNotEmpty',
+        'lengthEquals',
+        'lengthNotEquals',
+        'lengthLessThan',
+        'lengthLessThanOrEqualTo',
+        'lengthGreaterThan',
+        'lengthGreaterThanOrEqualTo',
+      ],
       'bool': ['isTrue', 'isFalse'],
       'short/int16': [
         'isEqualTo',
@@ -316,6 +336,26 @@ class TypesUtils {
 
   static List<String> conditionsForEntity(String dataType) {
     final conditionsMap = {
+      'list': [
+        'isEmpty',
+        'isNotEmpty',
+        'lengthEquals',
+        'lengthNotEquals',
+        'lengthLessThan',
+        'lengthLessThanOrEqualTo',
+        'lengthGreaterThan',
+        'lengthGreaterThanOrEqualTo',
+      ],
+      'listOfEntities': [
+        'isEmpty',
+        'isNotEmpty',
+        'lengthEquals',
+        'lengthNotEquals',
+        'lengthLessThan',
+        'lengthLessThanOrEqualTo',
+        'lengthGreaterThan',
+        'lengthGreaterThanOrEqualTo',
+      ],
       'bool': ['isTrue', 'isFalse'],
       'short/int16': [
         'isEqualTo',

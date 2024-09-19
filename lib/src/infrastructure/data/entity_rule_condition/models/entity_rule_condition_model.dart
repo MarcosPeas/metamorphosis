@@ -1,5 +1,7 @@
+import 'package:metamorphis/src/domain/composition/entities/composition.dart';
 import 'package:metamorphis/src/domain/entity_rule_condition/entity_rule_condition.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
+import 'package:metamorphis/src/infrastructure/data/composition/models/composition_model.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object/models/value_object_model.dart';
 
 class EntityRuleConditionModel extends EntityRuleCondition {
@@ -8,20 +10,21 @@ class EntityRuleConditionModel extends EntityRuleCondition {
     required super.logicOperator,
     required super.targetValue,
     required super.comparatorOperator,
-    required super.regex,
     required super.leftValueObject,
     required super.rightValueObject,
+    required super.composition,
   });
 
-  factory EntityRuleConditionModel.fromEntity(EntityRuleCondition entityRuleCondition) {
+  factory EntityRuleConditionModel.fromEntity(
+      EntityRuleCondition entityRuleCondition) {
     return EntityRuleConditionModel._(
       id: entityRuleCondition.id,
       logicOperator: entityRuleCondition.logicOperator,
       targetValue: entityRuleCondition.targetValue,
       comparatorOperator: entityRuleCondition.comparatorOperator,
-      regex: entityRuleCondition.regex,
       leftValueObject: entityRuleCondition.leftValueObject,
       rightValueObject: entityRuleCondition.rightValueObject,
+      composition: entityRuleCondition.composition,
     );
   }
 
@@ -33,67 +36,77 @@ class EntityRuleConditionModel extends EntityRuleCondition {
     String? regex,
     ValueObject? leftValueObject,
     ValueObject? rightValueObject,
+    Composition? composition,
   }) {
     return EntityRuleConditionModel._(
       id: id ?? this.id,
       logicOperator: logicOperator ?? this.logicOperator,
       targetValue: targetValue ?? this.targetValue,
       comparatorOperator: comparatorOperator ?? this.comparatorOperator,
-      regex: regex ?? this.regex,
       leftValueObject: leftValueObject ?? this.leftValueObject,
       rightValueObject: rightValueObject ?? this.rightValueObject,
+      composition: composition ?? this.composition,
     );
   }
 
-  EntityRuleCondition toEntityRuleCondition() {
+  EntityRuleCondition toEntity() {
     return EntityRuleCondition(
       id: id,
       logicOperator: logicOperator,
       targetValue: targetValue,
       comparatorOperator: comparatorOperator,
-      regex: regex,
       leftValueObject: leftValueObject,
       rightValueObject: rightValueObject,
+      composition: composition,
     );
   }
 
   Map<String, dynamic> toJson() {
     ValueObjectModel? leftValueObject;
     ValueObjectModel? rightValueObject;
+    CompositionModel? composition;
     if (this.leftValueObject != null) {
       leftValueObject = ValueObjectModel.fromValueObject(this.leftValueObject!);
     }
     if (this.rightValueObject != null) {
-      rightValueObject = ValueObjectModel.fromValueObject(this.rightValueObject!);
+      rightValueObject =
+          ValueObjectModel.fromValueObject(this.rightValueObject!);
+    }
+    if (this.composition != null) {
+      composition = CompositionModel.fromEntity(this.composition!);
     }
     return {
       'id': id,
       'logicOperator': logicOperator,
       'targetValue': targetValue,
       'comparatorOperator': comparatorOperator,
-      'regex': regex,
       'leftValueObject': leftValueObject?.toMap(),
       'rightValueObject': rightValueObject?.toMap(),
+      'composition': composition?.toMap(),
     };
   }
 
   factory EntityRuleConditionModel.fromMap(Map<String, dynamic> json) {
     ValueObject? leftValueObject;
     ValueObject? rightValueObject;
+    Composition? composition;
     if (json['leftValueObject'] != null) {
       leftValueObject = ValueObjectModel.fromMap(json['leftValueObject']);
     }
     if (json['rightValueObject'] != null) {
       rightValueObject = ValueObjectModel.fromMap(json['rightValueObject']);
     }
+    if (json['composition'] != null) {
+      composition = CompositionModel.fromMap(json['composition']);
+    }
     return EntityRuleConditionModel._(
       id: json['id'],
       logicOperator: json['logicOperator'],
       targetValue: json['targetValue'],
       comparatorOperator: json['comparatorOperator'],
-      regex: json['regex'],
       leftValueObject: leftValueObject,
       rightValueObject: rightValueObject,
+      composition: composition,
     );
   }
 }

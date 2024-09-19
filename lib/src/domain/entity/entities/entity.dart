@@ -1,4 +1,4 @@
-import 'package:metamorphis/src/domain/collections/entities/entity_list.dart';
+import 'package:metamorphis/src/domain/composition/entities/composition.dart';
 import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
 import 'package:metamorphis/src/domain/use_case/entities/use_case.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
@@ -11,7 +11,7 @@ class Entity {
   late final List<ValueObject> valueObjects;
   late final List<UseCase> useCases;
   late final List<EntityRule> entityRules;
-  late final List<EntityList> lists;
+  late final List<Composition> compositions;
 
   Entity({
     String? id,
@@ -20,14 +20,14 @@ class Entity {
     List<ValueObject>? valueObjects,
     List<UseCase>? useCases,
     List<EntityRule>? entityRules,
-    List<EntityList>? lists,
+    List<Composition>? compositions,
   }) {
     {
       this.id = id ?? const Uuid().v4();
       this.valueObjects = valueObjects ?? [];
       this.useCases = useCases ?? [];
       this.entityRules = entityRules ?? [];
-      this.lists = lists ?? [];
+      this.compositions = compositions ?? [];
     }
   }
 

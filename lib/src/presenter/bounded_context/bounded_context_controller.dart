@@ -9,7 +9,7 @@ import 'package:metamorphis/src/application/bounded_context/update_bounded_conte
 import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
 import 'package:metamorphis/src/presenter/_core/app_store.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/bounded_context_view_model.dart';
-import 'package:metamorphis/src/presenter/home/home_routers.dart';
+import 'package:metamorphis/src/presenter/home/_core/home_routers.dart';
 
 import 'bounded_context_store.dart';
 

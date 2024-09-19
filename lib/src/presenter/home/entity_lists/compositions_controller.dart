@@ -1,15 +1,15 @@
 import 'dart:developer';
 
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
-import 'package:metamorphis/src/domain/collections/entities/entity_list.dart';
+import 'package:metamorphis/src/domain/composition/entities/composition.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/presenter/home/_core/entity_store.dart';
 
-class EntityListsController {
+class CompositionsController {
   final EntityStore entityStore;
   final UpdateEntityUseCase updateEntityUseCase;
 
-  EntityListsController({
+  CompositionsController({
     required this.entityStore,
     required this.updateEntityUseCase,
   });
@@ -28,30 +28,37 @@ class EntityListsController {
     );
   }
 
-  void createList({
+  void createComposition({
     required String name,
     Entity? entity,
+    required CompositionType compositionType,
   }) {
     if (entity == null) {
       return;
     }
-    final entityList = EntityList(name: name, entity: entity);
-    entityStore.entity.lists.add(entityList);
+    final entityList = Composition(
+      name: name,
+      entity: entity,
+      compositionType: compositionType,
+    );
+    entityStore.entity.compositions.add(entityList);
     updateEntity();
   }
 
-  void updateEntityList({
+  void updateComposition({
     required String name,
     required Entity entity,
-    required EntityList list,
+    required Composition list,
+    required CompositionType compositionType,
   }) {
     list.name = name;
+    list.compositionType = compositionType;
     list.entity = entity;
     updateEntity();
   }
 
-  void removeEntityList(EntityList list) {
-    entityStore.entity.lists.remove(list);
+  void removeComposition(Composition list) {
+    entityStore.entity.compositions.remove(list);
     updateEntity();
   }
 }

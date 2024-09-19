@@ -1,3 +1,4 @@
+import 'package:metamorphis/src/domain/composition/entities/composition.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:uuid/uuid.dart';
 
@@ -6,21 +7,19 @@ class EntityRuleCondition {
   String logicOperator;
   String targetValue;
   String comparatorOperator;
-  String regex;
   ValueObject? leftValueObject;
   ValueObject? rightValueObject;
+  Composition? composition;
 
   EntityRuleCondition({
     String? id,
     required this.logicOperator,
     required this.targetValue,
     required this.comparatorOperator,
-    required this.regex,
     this.leftValueObject,
     this.rightValueObject,
+    this.composition,
   }) {
-    {
-      this.id = id ?? const Uuid().v4();
-    }
+    this.id = id ?? const Uuid().v4();
   }
 }

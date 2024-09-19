@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
+import 'package:metamorphis/src/domain/composition/entities/composition.dart';
 import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
 import 'package:metamorphis/src/domain/entity_rule_condition/entity_rule_condition.dart';
 import 'package:metamorphis/src/domain/entity_rule_group_condition/entities/entity_rule_group_condition.dart';
@@ -50,17 +51,16 @@ class EntityRulesController {
     required EntityRuleGroupCondition group,
     required String logicOperator,
     required String targetValue,
-    required comparatorOperator,
-    required String regex,
-    required ValueObject leftValueObject,
-    required ValueObject rightValueObject,
+    required String comparatorOperator,
+    required dynamic leftObject,
+    required ValueObject? rightValueObject,
   }) {
     final entityRuleCondition = EntityRuleCondition(
       logicOperator: logicOperator,
       targetValue: targetValue,
       comparatorOperator: comparatorOperator,
-      regex: regex,
-      leftValueObject: leftValueObject,
+      leftValueObject: leftObject is ValueObject ? leftObject : null,
+      composition: leftObject is Composition ? leftObject : null,
       rightValueObject: rightValueObject,
     );
     group.conditions.add(entityRuleCondition);

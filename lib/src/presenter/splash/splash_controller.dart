@@ -16,9 +16,10 @@ class SplashController {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     Injector.setup();
-    await Future.delayed(const Duration(seconds: 2));
-    _getCurrentUserUseCase = GetIt.instance.get<GetCurrentUserUseCase>();
-    _validateLoggedUser(context);
+    Future.delayed(const Duration(seconds: 2)).then((_) {
+      _getCurrentUserUseCase = GetIt.instance.get<GetCurrentUserUseCase>();
+      _validateLoggedUser(context);
+    });
   }
 
   Future<void> _validateLoggedUser(BuildContext context) async {

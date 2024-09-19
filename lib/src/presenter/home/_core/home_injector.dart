@@ -14,11 +14,11 @@ import 'package:metamorphis/src/infrastructure/data/value_object/repositories/va
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/home_store.dart';
 
-import 'entity_lists/entity_lists_controller.dart';
-import 'entity_rules/entity_rules_controller.dart';
-import 'use_cases/use_cases_controller.dart';
-import 'value_objects/value_objects_controller.dart';
-import '_core/entity_store.dart';
+import '../entity_lists/compositions_controller.dart';
+import '../entity_rules/entity_rules_controller.dart';
+import '../use_cases/use_cases_controller.dart';
+import '../value_objects/value_objects_controller.dart';
+import 'entity_store.dart';
 
 class HomeInjector {
   static void setup() {
@@ -100,8 +100,8 @@ class HomeInjector {
         updateEntityUseCase: getIt(),
       ),
     );
-    getIt.registerFactory<EntityListsController>(
-      () => EntityListsController(
+    getIt.registerFactory<CompositionsController>(
+      () => CompositionsController(
         entityStore: getIt(),
         updateEntityUseCase: getIt(),
       ),
