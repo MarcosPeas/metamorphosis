@@ -1,11 +1,14 @@
 import 'dart:developer';
+import 'dart:html' as html;
 
+import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:metamorphis/src/application/entity/delete_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/get_entities_by_bounded_context_use_case.dart';
 import 'package:metamorphis/src/application/entity/save_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
+import 'package:metamorphis/src/infrastructure/code_generators/code_generators.dart';
 import 'package:metamorphis/src/presenter/_core/app_store.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
 
@@ -120,5 +123,18 @@ class HomeController {
         selectEntity(entity: homeStore.entities.firstOrNull);
       },
     );
+  }
+
+  void generateCode() {
+    final archive = CodeGenerators.generateCode(
+      project: appStore.project!,
+    );
+    final zipData = ZipEncoder().encode(archive)!;
+    final blob = html.Blob([zipData], 'application/zip');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.AnchorElement(href: url);
+    anchor.setAttribute('download', 'archive.zip');
+    anchor.click();
+    html.Url.revokeObjectUrl(url);
   }
 }
