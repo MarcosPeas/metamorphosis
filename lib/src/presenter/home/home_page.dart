@@ -74,43 +74,56 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ListenableBuilder(
-                    listenable: homeStore,
-                    builder: (context, _) {
-                      return Container(
-                        width: 200,
-                        height: double.infinity,
-                        color: colorScheme.primaryContainer,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            ColoredBox(
-                              color: colorScheme.primaryContainer,
-                              child: _MenuWidget(
-                                entity: entity,
-                                onTap: () {
-                                  showEntitiesOptionsDialog(entity);
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            _MenuItems(
-                              index: homeStore.page,
-                              onTap: (index) {
-                                controller.pageController.jumpToPage(index);
-                                homeStore.page = index;
+                  listenable: homeStore,
+                  builder: (context, _) {
+                    return Container(
+                      width: 200,
+                      height: double.infinity,
+                      color: colorScheme.primaryContainer,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          ColoredBox(
+                            color: colorScheme.primaryContainer,
+                            child: _MenuWidget(
+                              entity: entity,
+                              onTap: () {
+                                showEntitiesOptionsDialog(entity);
                               },
                             ),
-                          ],
-                        ),
-                      );
-                    }),
+                          ),
+                          const SizedBox(height: 12),
+                          _MenuItems(
+                            index: homeStore.page,
+                            onTap: (index) {
+                              controller.pageController.jumpToPage(index);
+                              homeStore.page = index;
+                            },
+                          ),
+                          const Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                                onPressed: () {
+                                  controller.generateCode();
+                                },
+                                child: const Text('Generate Code')),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: PageView(
                       controller: controller.pageController,
                       children: [
-                        ValueObjectsPage(entity: entity, key: ValueKey(entity.id)),
+                        ValueObjectsPage(
+                          entity: entity,
+                          key: ValueKey(entity.id),
+                        ),
                         CompositionsPage(
                           entities: homeStore.entities,
                           key: ValueKey(entity.id),
@@ -362,7 +375,8 @@ class _HomePageState extends State<HomePage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Are you sure you want to remove the following entity?'),
+              const Text(
+                  'Are you sure you want to remove the following entity?'),
               const SizedBox(height: 8),
               Text(
                 entity.name,
