@@ -115,6 +115,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
     final nameController = TextEditingController();
     final selectedType = ValueNotifier('String');
     final isNullable = ValueNotifier(false);
+    final isUnique = ValueNotifier(false);
     showDialog(
       context: context,
       builder: (context) {
@@ -134,6 +135,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                     name: nameController.text.trim(),
                     type: selectedType.value,
                     nullable: isNullable.value,
+                    isUnique: isUnique.value,
                   );
                   context.pop();
                 },
@@ -165,11 +167,24 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
               ValueListenableBuilder(
                 valueListenable: isNullable,
                 builder: (_, value, __) {
-                  return CheckboxListTile(
+                  return SwitchListTile(
                     title: const Text('Nullable'),
                     value: value,
                     onChanged: (changedValue) {
-                      isNullable.value = changedValue ?? false;
+                      isNullable.value = changedValue;
+                    },
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+              ValueListenableBuilder(
+                valueListenable: isUnique,
+                builder: (_, value, __) {
+                  return SwitchListTile(
+                    title: const Text('Unique'),
+                    value: value,
+                    onChanged: (newVale) {
+                      isUnique.value = newVale;
                     },
                   );
                 },
@@ -189,6 +204,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                   name: nameController.text.trim(),
                   type: selectedType.value,
                   nullable: isNullable.value,
+                  isUnique: isUnique.value,
                 );
                 context.pop();
               },
@@ -203,7 +219,8 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
   void _showDialogUpdateValueObject(int viewIndex, ValueObject valueObject) {
     final nameController = TextEditingController();
     final selectedType = ValueNotifier(valueObject.type);
-    final isNullable = ValueNotifier(valueObject.nullable);
+    final isNullable = ValueNotifier(valueObject.isNullable);
+    final isUnique = ValueNotifier(valueObject.isUnique);
     nameController.text = valueObject.name;
     showDialog(
       context: context,
@@ -256,11 +273,24 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
               ValueListenableBuilder(
                 valueListenable: isNullable,
                 builder: (_, value, __) {
-                  return CheckboxListTile(
+                  return SwitchListTile(
                     title: const Text('Nullable'),
                     value: value,
                     onChanged: (changedValue) {
-                      isNullable.value = changedValue ?? false;
+                      isNullable.value = changedValue;
+                    },
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+              ValueListenableBuilder(
+                valueListenable: isUnique,
+                builder: (_, value, __) {
+                  return SwitchListTile(
+                    title: const Text('Unique'),
+                    value: value,
+                    onChanged: (newVale) {
+                      isUnique.value = newVale;
                     },
                   );
                 },

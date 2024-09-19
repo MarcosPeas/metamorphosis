@@ -5,7 +5,8 @@ class ValueObject {
   late final String id;
   String name;
   String type;
-  bool nullable;
+  bool isNullable;
+  bool isUnique;
   final String entityId;
   late final List<ValueObjectRule> rules;
 
@@ -13,9 +14,10 @@ class ValueObject {
     String? id,
     required this.name,
     required this.type,
-    required this.nullable,
+    required this.isNullable,
     required this.entityId,
     List<ValueObjectRule>? rules,
+    required this.isUnique,
   }) {
     {
       this.id = id ?? const Uuid().v4();
