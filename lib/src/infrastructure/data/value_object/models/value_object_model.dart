@@ -7,8 +7,9 @@ class ValueObjectModel extends ValueObject {
     required super.id,
     required super.name,
     required super.type,
-    required super.nullable,
+    required super.isNullable,
     required super.entityId,
+    required super.isUnique,
     super.rules,
   });
 
@@ -17,8 +18,9 @@ class ValueObjectModel extends ValueObject {
       id: valueObject.id,
       name: valueObject.name,
       type: valueObject.type,
-      nullable: valueObject.nullable,
+      isNullable: valueObject.isNullable,
       entityId: valueObject.entityId,
+      isUnique: valueObject.isUnique,
       rules: valueObject.rules,
     );
   }
@@ -35,8 +37,9 @@ class ValueObjectModel extends ValueObject {
       id: json['id'],
       name: json['name'],
       type: json['type'],
-      nullable: json['nullable'],
+      isNullable: json['isNullable'] ?? false,
       entityId: json['entityId'],
+      isUnique: json['isUnique'] ?? false,
       rules: rulesModel,
     );
   }
@@ -52,8 +55,9 @@ class ValueObjectModel extends ValueObject {
       'id': id,
       'name': name,
       'type': type,
-      'nullable': nullable,
+      'isNullable': isNullable,
       'entityId': entityId,
+      'isUnique': isUnique,
       'rules': rulesJson,
     };
   }

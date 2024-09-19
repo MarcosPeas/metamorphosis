@@ -29,6 +29,7 @@ class ValueObjectsController {
   Future<void> createValueObject({
     required String name,
     required String type,
+    required bool isUnique,
     required bool nullable,
   }) async {
     final entity = entityStore.entity;
@@ -36,7 +37,8 @@ class ValueObjectsController {
       name: name,
       entityId: entity.id,
       type: type,
-      nullable: nullable,
+      isUnique: isUnique,
+      isNullable: nullable,
     );
     entity.valueObjects.add(valueObject);
     updateEntity();
@@ -52,7 +54,7 @@ class ValueObjectsController {
     final valueObject = entity.valueObjects[viewIndex];
     valueObject.name = name;
     valueObject.type = type;
-    valueObject.nullable = nullable;
+    valueObject.isNullable = nullable;
     updateEntity();
   }
 
