@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
 import 'package:metamorphis/src/domain/entity_rule_condition/entity_rule_condition.dart';
 import 'package:metamorphis/src/domain/entity_rule_group_condition/entities/entity_rule_group_condition.dart';
 import 'package:metamorphis/src/presenter/home/entity_rules/entity_rules_controller.dart';
@@ -10,6 +11,7 @@ class EntityRuleCard extends StatelessWidget {
   final int index;
   final EntityRuleGroupCondition groupCondition;
   final VoidCallback onAddTap;
+  final EntityRule entityRule;
 
   EntityRuleCard({
     super.key,
@@ -17,6 +19,7 @@ class EntityRuleCard extends StatelessWidget {
     required this.index,
     required this.groupCondition,
     required this.onAddTap,
+    required this.entityRule,
   });
 
   @override
@@ -52,7 +55,12 @@ class EntityRuleCard extends StatelessWidget {
                     Icons.delete,
                     size: 18,
                   ),
-                  onPressed: onAddTap,
+                  onPressed: () {
+                    controller.deleteEntityRuleGroupCondition(
+                      entityRule: entityRule,
+                      groupCondition: groupCondition,
+                    );
+                  },
                 ),
               ],
             ),
@@ -134,11 +142,26 @@ class EntityRuleCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (!isFirst) Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(condition.logicOperator),
+          if (!isFirst)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(condition.logicOperator),
+            ),
+          Row(
+            children: [
+              Text('${leftValueObject.name}$rightValue'),
+              const SizedBox(width: 4),
+              IconButton(
+                onPressed: () {
+                  controller.removeCondition(
+                    groupCondition,
+                    condition,
+                  );
+                },
+                icon: const Icon(Icons.delete, size: 18),
+              ),
+            ],
           ),
-          Text('${leftValueObject.name}$rightValue'),
         ],
       ),
     );
@@ -155,11 +178,26 @@ class EntityRuleCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (!isFirst) Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(condition.logicOperator),
+          if (!isFirst)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(condition.logicOperator),
+            ),
+          Row(
+            children: [
+              Text('${composition.name}: ${condition.comparatorOperator}'),
+              const SizedBox(width: 4),
+              IconButton(
+                onPressed: () {
+                  controller.removeCondition(
+                    groupCondition,
+                    condition,
+                  );
+                },
+                icon: const Icon(Icons.delete, size: 18),
+              ),
+            ],
           ),
-          Text('${composition.name}: ${condition.comparatorOperator}'),
         ],
       ),
     );

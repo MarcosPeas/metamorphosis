@@ -273,6 +273,7 @@ class _EntityRuleWidget extends StatelessWidget {
                         ),
                       EntityRuleCard(
                         controller: controller,
+                        entityRule: entityRule,
                         index: index,
                         groupCondition: groupCondition,
                         onAddTap: () {

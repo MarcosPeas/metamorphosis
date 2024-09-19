@@ -100,4 +100,20 @@ class EntityRulesController {
     groupsConditions.remove(groupCondition);
     updateEntity();
   }
+
+  void deleteEntityRuleGroupCondition({
+    required EntityRule entityRule,
+    required EntityRuleGroupCondition groupCondition,
+  }) {
+    entityRule.groupConditions.remove(groupCondition);
+    updateEntity();
+  }
+
+  void removeCondition(
+    EntityRuleGroupCondition groupCondition,
+    EntityRuleCondition condition,
+  ) {
+    groupCondition.conditions.remove(condition);
+    updateEntity();
+  }
 }
