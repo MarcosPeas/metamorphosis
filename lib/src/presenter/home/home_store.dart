@@ -5,6 +5,15 @@ class HomeStore extends Store {
   final _entities = <Entity>[];
   int _page = 0;
 
+  bool _generating = false;
+
+  bool get generating => _generating;
+
+  set generating(bool value) {
+    _generating = value;
+    notifyListeners();
+  }
+
   List<Entity> get entities => List.unmodifiable(_entities);
 
   void setEntities(List<Entity> entities) {

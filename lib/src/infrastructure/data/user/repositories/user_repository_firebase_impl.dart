@@ -18,14 +18,16 @@ class UserRepositoryFirebaseImpl implements UserRepository {
       await dr.set(model.toMap());
       return model;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'UserRepositoryFirebaseImpl.save',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível registrar o usuário',
         trace: s.toString(),
+        context: 'UserRepositoryFirebaseImpl.save',
       );
     }
   }
@@ -38,14 +40,16 @@ class UserRepositoryFirebaseImpl implements UserRepository {
       await dr.update(model.toMap());
       return model;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'UserRepositoryFirebaseImpl.update',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível registrar o usuário',
         trace: s.toString(),
+        context: 'UserRepositoryFirebaseImpl.update',
       );
     }
   }
@@ -66,14 +70,16 @@ class UserRepositoryFirebaseImpl implements UserRepository {
         name: result.user!.displayName ?? '-',
       );
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'UserRepositoryFirebaseImpl.signInWithEmailAndPassword',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível fazer login',
         trace: s.toString(),
+        context: 'UserRepositoryFirebaseImpl.signInWithEmailAndPassword',
       );
     }
   }
@@ -83,9 +89,10 @@ class UserRepositoryFirebaseImpl implements UserRepository {
     try {
       await _auth.signOut();
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível fazer logout',
         trace: s.toString(),
+        context: 'UserRepositoryFirebaseImpl.signOut',
       );
     }
   }
@@ -94,9 +101,10 @@ class UserRepositoryFirebaseImpl implements UserRepository {
   Future<User> getCurrentUser() async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não há usuário logado',
         trace: '',
+        context: 'UserRepositoryFirebaseImpl.getCurrentUser',
       );
     }
     return User(
@@ -113,14 +121,16 @@ class UserRepositoryFirebaseImpl implements UserRepository {
       final data = result.data() ?? {};
       return UserModel.fromMap(data);
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'UserRepositoryFirebaseImpl.getUserById',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível carregar o usuário',
         trace: s.toString(),
+        context: 'UserRepositoryFirebaseImpl.getUserById',
       );
     }
   }

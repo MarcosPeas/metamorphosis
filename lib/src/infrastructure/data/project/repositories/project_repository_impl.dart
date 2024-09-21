@@ -16,14 +16,16 @@ class ProjectRepositoryImpl implements ProjectRepository {
       final data = result.data() ?? {};
       return ProjectModel.fromMap(data);
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ProjectRepositoryImpl.getById',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar o projeto',
         trace: s.toString(),
+        context: 'ProjectRepositoryImpl.getById',
       );
     }
   }
@@ -37,14 +39,16 @@ class ProjectRepositoryImpl implements ProjectRepository {
           .get();
       return result.docs.map((e) => ProjectModel.fromMap(e.data())).toList();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ProjectRepositoryImpl.getByUser',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar os projetos',
         trace: s.toString(),
+        context: 'ProjectRepositoryImpl.getByUser',
       );
     }
   }
@@ -57,14 +61,16 @@ class ProjectRepositoryImpl implements ProjectRepository {
       await doc.set(projectModel.toJson());
       return projectModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ProjectRepositoryImpl.save',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar o projeto',
         trace: s.toString(),
+        context: 'ProjectRepositoryImpl.save',
       );
     }
   }
@@ -77,14 +83,16 @@ class ProjectRepositoryImpl implements ProjectRepository {
       await doc.update(projectModel.toJson());
       return projectModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ProjectRepositoryImpl.update',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar o projeto',
         trace: s.toString(),
+        context: 'ProjectRepositoryImpl.update',
       );
     }
   }
@@ -94,14 +102,16 @@ class ProjectRepositoryImpl implements ProjectRepository {
     try {
       _firestore.collection(collection).doc(id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ProjectRepositoryImpl.delete',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível remover o projeto',
         trace: s.toString(),
+        context: 'ProjectRepositoryImpl.delete',
       );
     }
   }

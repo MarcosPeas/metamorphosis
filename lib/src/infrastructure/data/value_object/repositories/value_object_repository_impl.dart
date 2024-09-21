@@ -16,14 +16,16 @@ class ValueObjectRepositoryImpl implements ValueObjectRepository {
       final data = result.data() ?? {};
       return ValueObjectModel.fromMap(data);
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRepositoryImpl.getById',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar o objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectRepositoryImpl.getById',
       );
     }
   }
@@ -39,14 +41,16 @@ class ValueObjectRepositoryImpl implements ValueObjectRepository {
           .map((e) => ValueObjectModel.fromMap(e.data()))
           .toList();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRepositoryImpl.getByEntity',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar os objetos de valor',
         trace: s.toString(),
+        context: 'ValueObjectRepositoryImpl.getByEntity',
       );
     }
   }
@@ -59,14 +63,16 @@ class ValueObjectRepositoryImpl implements ValueObjectRepository {
       await doc.set(applicationModel.toMap());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRepositoryImpl.save',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar o objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectRepositoryImpl.save',
       );
     }
   }
@@ -79,14 +85,16 @@ class ValueObjectRepositoryImpl implements ValueObjectRepository {
       await doc.set(valueObjectModel.toMap());
       return valueObjectModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRepositoryImpl.update',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar o objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectRepositoryImpl.update',
       );
     }
   }
@@ -96,14 +104,16 @@ class ValueObjectRepositoryImpl implements ValueObjectRepository {
     try {
       _firestore.collection(collection).doc(id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRepositoryImpl.delete',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível remover o objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectRepositoryImpl.delete',
       );
     }
   }

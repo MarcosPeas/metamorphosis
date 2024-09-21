@@ -17,15 +17,17 @@ class ValueObjectRuleConditionRepositoryImpl
       final data = result.data() ?? {};
       return ValueObjectRuleConditionModel.fromMap(data);
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRuleConditionRepositoryImpl.getById',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message:
             'Não foi possível encontrar a condição da regra do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectRuleConditionRepositoryImpl.getById',
       );
     }
   }
@@ -46,15 +48,19 @@ class ValueObjectRuleConditionRepositoryImpl
           .map((e) => ValueObjectRuleConditionModel.fromMap(e.data()))
           .toList();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context:
+            'ValueObjectRuleConditionRepositoryImpl.getByValueObjectGroupCondition',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message:
             'Não foi possível encontrar as condições da regra do objeto de valor',
         trace: s.toString(),
+        context:
+            'ValueObjectRuleConditionRepositoryImpl.getByValueObjectGroupCondition',
       );
     }
   }
@@ -70,15 +76,17 @@ class ValueObjectRuleConditionRepositoryImpl
       await doc.set(valueObjectRuleConditionModel.toMap());
       return valueObjectRuleConditionModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRuleConditionRepositoryImpl.save',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message:
             'Não foi possível salvar a condição da regra do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectRuleConditionRepositoryImpl.save',
       );
     }
   }
@@ -94,15 +102,17 @@ class ValueObjectRuleConditionRepositoryImpl
       await doc.update(valueObjectRuleConditionModel.toMap());
       return valueObjectRuleConditionModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRuleConditionRepositoryImpl.update',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message:
             'Não foi possível salvar a condição da regra do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectRuleConditionRepositoryImpl.update',
       );
     }
   }
@@ -112,15 +122,17 @@ class ValueObjectRuleConditionRepositoryImpl
     try {
       _firestore.collection(collection).doc(id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRuleConditionRepositoryImpl.delete',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message:
             'Não foi possível remover a condição da regra do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectRuleConditionRepositoryImpl.delete',
       );
     }
   }

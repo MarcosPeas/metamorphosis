@@ -1,12 +1,17 @@
 import 'package:archive/archive.dart';
+import 'package:change_case/change_case.dart';
+import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/project/entities/project.dart';
+
+import 'flutter_entities_generator.dart';
 
 class FlutterGenerator {
   FlutterGenerator._();
 
   static Archive generate({
-    required Project project,
+    required Application application,
   }) {
+    final project = application.project!;
     final archive = Archive();
     final projectName = project.name;
     final pubspecYaml = _pubspecYaml(project);
@@ -20,6 +25,26 @@ class FlutterGenerator {
 
     archive.addFile(file);
     archive.addFile(ArchiveFile('$libDirectory/main.dart', 0, mainContent));
+
+    final contexts = application.contexts;
+    List<ArchiveFile> archivesEntities = [];
+    if (contexts.length == 1) {
+      archivesEntities = FlutterEntitiesGenerator.generate(
+        entities: application.contexts.first.entities,
+        rootPath: '$libDirectory/src',
+      );
+    } else {
+      for (final context in contexts) {
+        archivesEntities ==
+            FlutterEntitiesGenerator.generate(
+              entities: context.entities,
+              rootPath: '$libDirectory/src/${ChangeCase(context.name).toSnakeCase()}',
+            );
+      }
+    }
+    for (final value in archivesEntities) {
+      archive.addFile(value);
+    }
     return archive;
   }
 

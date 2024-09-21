@@ -73,7 +73,7 @@ class ApplicationController {
     final result = await saveApplicationUseCase.execute(application);
     result.fold(
       (error) {
-        log(error.message);
+        log(error.toString());
         applicationStore.error = error;
       },
       (application) {
@@ -88,7 +88,7 @@ class ApplicationController {
     final result = await updateApplicationUseCase.execute(application);
     result.fold(
       (error) {
-        log(error.message);
+        log(error.toString());
         applicationStore.error = error;
       },
       (application) {
@@ -103,7 +103,7 @@ class ApplicationController {
     final result = await deleteApplicationUseCase.execute(application);
     result.fold(
       (error) {
-        log(error.message);
+        log(error.toString());
         applicationStore.error = error;
       },
       (_) {

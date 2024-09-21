@@ -80,6 +80,7 @@ class HomeInjector {
         saveEntityUseCase: getIt(),
         updateEntityUseCase: getIt(),
         getEntitiesByBoundedContextUseCase: getIt(),
+        getBoundedContextsByApplicationUseCase: getIt(),
       ),
     );
     getIt.registerFactory<ValueObjectsController>(

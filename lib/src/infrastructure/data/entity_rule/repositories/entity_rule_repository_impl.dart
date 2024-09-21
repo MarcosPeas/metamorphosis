@@ -16,14 +16,16 @@ class EntityRuleRepositoryImpl implements EntityRuleRepository {
       final data = result.data() ?? {};
       return EntityRuleModel.fromMap(data);
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'EntityRuleRepositoryImpl.getById',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar a regra da entidade',
         trace: s.toString(),
+        context: 'EntityRuleRepositoryImpl.getById',
       );
     }
   }
@@ -39,14 +41,16 @@ class EntityRuleRepositoryImpl implements EntityRuleRepository {
           .map((e) => EntityRuleModel.fromMap(e.data()))
           .toList();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'EntityRuleRepositoryImpl.getByEntity',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar as aplicações',
         trace: s.toString(),
+        context: 'EntityRuleRepositoryImpl.getByEntity',
       );
     }
   }
@@ -59,14 +63,16 @@ class EntityRuleRepositoryImpl implements EntityRuleRepository {
       await doc.set(entityRuleModel.toJson());
       return entityRuleModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'EntityRuleRepositoryImpl.save',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar a regra da entidade',
         trace: s.toString(),
+        context: 'EntityRuleRepositoryImpl.save',
       );
     }
   }
@@ -79,14 +85,16 @@ class EntityRuleRepositoryImpl implements EntityRuleRepository {
       await doc.update(entityRuleModel.toJson());
       return entityRuleModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'EntityRuleRepositoryImpl.update',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar a regra da entidade',
         trace: s.toString(),
+        context: 'EntityRuleRepositoryImpl.update',
       );
     }
   }
@@ -96,14 +104,16 @@ class EntityRuleRepositoryImpl implements EntityRuleRepository {
     try {
       _firestore.collection(collection).doc(id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'EntityRuleRepositoryImpl.delete',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível remover a regra da entidade',
         trace: s.toString(),
+        context: 'EntityRuleRepositoryImpl.delete',
       );
     }
   }

@@ -3,10 +3,13 @@ import 'dart:html' as html;
 
 import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
+import 'package:metamorphis/src/application/bounded_context/get_bounded_contexts_by_application_use_case.dart';
 import 'package:metamorphis/src/application/entity/delete_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/get_entities_by_bounded_context_use_case.dart';
 import 'package:metamorphis/src/application/entity/save_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
+import 'package:metamorphis/src/domain/application/entities/application.dart';
+import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/code_generators.dart';
 import 'package:metamorphis/src/presenter/_core/app_store.dart';
@@ -23,6 +26,8 @@ class HomeController {
   final SaveEntityUseCase saveEntityUseCase;
   final UpdateEntityUseCase updateEntityUseCase;
   final DeleteEntityUseCase deleteEntityUseCase;
+  final GetBoundedContextsByApplicationUseCase
+      getBoundedContextsByApplicationUseCase;
 
   HomeController({
     required this.appStore,
@@ -31,6 +36,7 @@ class HomeController {
     required this.saveEntityUseCase,
     required this.updateEntityUseCase,
     required this.deleteEntityUseCase,
+    required this.getBoundedContextsByApplicationUseCase,
   });
 
   Future<void> init() async {
@@ -126,8 +132,32 @@ class HomeController {
   }
 
   void generateCode() {
+    _loadBoundedContexts();
+  }
+
+  Future<void> _loadBoundedContexts() async {
+    homeStore.generating = true;
+    final result = await getBoundedContextsByApplicationUseCase.execute(
+      appStore.application!,
+    );
+    result.fold(
+      (error) {
+        homeStore.error = error;
+        homeStore.generating = false;
+      },
+      (boundedContexts) async {
+        final application = appStore.application!;
+        await Future.forEach(boundedContexts, _loadEntities);
+        application.contexts = boundedContexts;
+        application.project = appStore.project;
+        _generateCode(application);
+      },
+    );
+  }
+
+  void _generateCode(Application application) {
     final archive = CodeGenerators.generateCode(
-      project: appStore.project!,
+      application: application,
     );
     final zipData = ZipEncoder().encode(archive)!;
     final blob = html.Blob([zipData], 'application/zip');
@@ -136,5 +166,21 @@ class HomeController {
     anchor.setAttribute('download', 'archive.zip');
     anchor.click();
     html.Url.revokeObjectUrl(url);
+    homeStore.generating = false;
+  }
+
+  Future<void> _loadEntities(BoundedContext boundedContext) async {
+    final result = await getEntitiesByBoundedContextUseCase.execute(
+      boundedContext,
+    );
+    result.fold(
+      (error) {
+        homeStore.error = error;
+        homeStore.generating = false;
+      },
+      (entities) {
+        boundedContext.entities = entities;
+      },
+    );
   }
 }
