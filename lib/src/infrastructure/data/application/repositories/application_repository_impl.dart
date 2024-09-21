@@ -16,14 +16,16 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
       final data = result.data() ?? {};
       return ApplicationModel.fromMap(data);
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ApplicationRepositoryImpl.getById',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar a aplicação',
         trace: s.toString(),
+        context: 'ApplicationRepositoryImpl.getById',
       );
     }
   }
@@ -39,14 +41,16 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
           .map((e) => ApplicationModel.fromMap(e.data()))
           .toList();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ApplicationRepositoryImpl.getByProject',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar as aplicações',
         trace: s.toString(),
+        context: 'ApplicationRepositoryImpl.getByProject',
       );
     }
   }
@@ -59,14 +63,16 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
       await doc.set(applicationModel.toJson());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ApplicationRepositoryImpl.save',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar a aplicação',
         trace: s.toString(),
+        context: 'ApplicationRepositoryImpl.save',
       );
     }
   }
@@ -79,14 +85,16 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
       await doc.update(applicationModel.toJson());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ApplicationRepositoryImpl.update',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar a aplicação',
         trace: s.toString(),
+        context: 'ApplicationRepositoryImpl.update',
       );
     }
   }
@@ -96,14 +104,16 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
     try {
       _firestore.collection(collection).doc(id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ApplicationRepositoryImpl.delete',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível remover a aplicação',
         trace: s.toString(),
+        context: 'ApplicationRepositoryImpl.delete',
       );
     }
   }

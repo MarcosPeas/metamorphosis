@@ -27,9 +27,10 @@ class GetEntityRuleGroupConditionsByEntityRuleUseCase {
       return Left(e);
     } catch (e, s) {
       return Left(
-        DomainException(
+        DomainException.of(
           message: e.toString(),
           trace: s.toString(),
+          context: 'GetEntityRuleGroupConditionsByEntityRuleUseCase',
         ),
       );
     }

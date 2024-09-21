@@ -73,7 +73,7 @@ class BoundedContextController {
     final result = await saveBoundedContextUseCase.execute(boundedContext);
     result.fold(
       (error) {
-        log(error.message);
+        log(error.toString());
         boundedContextStore.error = error;
       },
       (boundedContext) {
@@ -88,7 +88,7 @@ class BoundedContextController {
     final result = await updateBoundedContextUseCase.execute(boundedContext);
     result.fold(
       (error) {
-        log(error.message);
+        log(error.toString());
         boundedContextStore.error = error;
       },
       (boundedContext) {
@@ -103,7 +103,7 @@ class BoundedContextController {
     final result = await deleteBoundedContextUseCase.execute(boundedContext);
     result.fold(
       (error) {
-        log(error.message);
+        log(error.toString());
         boundedContextStore.error = error;
       },
       (_) {

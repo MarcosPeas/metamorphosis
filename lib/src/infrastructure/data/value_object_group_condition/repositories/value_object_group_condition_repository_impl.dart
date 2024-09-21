@@ -17,14 +17,17 @@ class ValueObjectGroupConditionRepositoryImpl
       final data = result.data() ?? {};
       return ValueObjectGroupConditionModel.fromMap(data);
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectGroupConditionRepositoryImpl.getById',
       );
     } catch (e, s) {
-      throw DomainException(
-        message: 'Não foi possível encontrar o grupo de condições do objeto de valor',
+      throw DomainException.of(
+        message:
+            'Não foi possível encontrar o grupo de condições do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectGroupConditionRepositoryImpl.getById',
       );
     }
   }
@@ -40,14 +43,17 @@ class ValueObjectGroupConditionRepositoryImpl
       await doc.set(valueObjectGroupConditionModel.toMap());
       return valueObjectGroupConditionModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectGroupConditionRepositoryImpl.save',
       );
     } catch (e, s) {
-      throw DomainException(
-        message: 'Não foi possível salvar o grupo de condições do objeto de valor',
+      throw DomainException.of(
+        message:
+            'Não foi possível salvar o grupo de condições do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectGroupConditionRepositoryImpl.save',
       );
     }
   }
@@ -63,14 +69,17 @@ class ValueObjectGroupConditionRepositoryImpl
       await doc.update(valueObjectGroupConditionModel.toMap());
       return valueObjectGroupConditionModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectGroupConditionRepositoryImpl.update',
       );
     } catch (e, s) {
-      throw DomainException(
-        message: 'Não foi possível salvar o grupo de condições do objeto de valor',
+      throw DomainException.of(
+        message:
+            'Não foi possível salvar o grupo de condições do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectGroupConditionRepositoryImpl.update',
       );
     }
   }
@@ -80,14 +89,17 @@ class ValueObjectGroupConditionRepositoryImpl
     try {
       _firestore.collection(collection).doc(id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectGroupConditionRepositoryImpl.delete',
       );
     } catch (e, s) {
-      throw DomainException(
-        message: 'Não foi possível remover o grupo de condições do objeto de valor',
+      throw DomainException.of(
+        message:
+            'Não foi possível remover o grupo de condições do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectGroupConditionRepositoryImpl.delete',
       );
     }
   }
@@ -105,14 +117,17 @@ class ValueObjectGroupConditionRepositoryImpl
           .map((e) => ValueObjectGroupConditionModel.fromMap(e.data()))
           .toList();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectGroupConditionRepositoryImpl.getByValueObjectRule',
       );
     } catch (e, s) {
-      throw DomainException(
-        message: 'Não foi possível encontrar os grupos de condições do objeto de valor',
+      throw DomainException.of(
+        message:
+            'Não foi possível encontrar os grupos de condições do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectGroupConditionRepositoryImpl.getByValueObjectRule',
       );
     }
   }

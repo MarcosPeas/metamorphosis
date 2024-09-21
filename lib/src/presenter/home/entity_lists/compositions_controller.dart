@@ -20,8 +20,7 @@ class CompositionsController {
     final result = await updateEntityUseCase.execute(entityStore.entity);
     result.fold(
       (exception) {
-        log(exception.message);
-        log(exception.trace);
+        log(exception.toString());
         entityStore.error = exception;
       },
       (_) => entityStore.notifyUpdate(),

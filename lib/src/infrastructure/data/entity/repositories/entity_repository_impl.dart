@@ -16,14 +16,16 @@ class EntityRepositoryImpl implements EntityRepository {
       final data = result.data() ?? {};
       return EntityModel.fromMap(data);
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'EntityRepositoryImpl.getById',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar a entidade',
         trace: s.toString(),
+        context: 'EntityRepositoryImpl.getById',
       );
     }
   }
@@ -37,14 +39,16 @@ class EntityRepositoryImpl implements EntityRepository {
           .get();
       return result.docs.map((e) => EntityModel.fromMap(e.data())).toList();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'EntityRepositoryImpl.getByBoundedContext',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar as entidades',
         trace: s.toString(),
+        context: 'EntityRepositoryImpl.getByBoundedContext',
       );
     }
   }
@@ -57,14 +61,16 @@ class EntityRepositoryImpl implements EntityRepository {
       await doc.set(applicationModel.toJson());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'EntityRepositoryImpl.save',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar a entidade',
         trace: s.toString(),
+        context: 'EntityRepositoryImpl.save',
       );
     }
   }
@@ -77,14 +83,16 @@ class EntityRepositoryImpl implements EntityRepository {
       await doc.set(entityModel.toJson());
       return entityModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'EntityRepositoryImpl.update',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar a entidade',
         trace: s.toString(),
+        context: 'EntityRepositoryImpl.update',
       );
     }
   }
@@ -94,14 +102,16 @@ class EntityRepositoryImpl implements EntityRepository {
     try {
       _firestore.collection(collection).doc(id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'EntityRepositoryImpl.delete',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível remover a entidade',
         trace: s.toString(),
+        context: 'EntityRepositoryImpl.delete',
       );
     }
   }

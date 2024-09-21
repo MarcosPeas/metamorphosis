@@ -16,14 +16,16 @@ class ValueObjectRuleRepositoryImpl implements ValueObjectRuleRepository {
       final data = result.data() ?? {};
       return ValueObjectRuleModel.fromMap(data);
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRuleRepositoryImpl.getById',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar a regra do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectRuleRepositoryImpl.getById',
       );
     }
   }
@@ -39,14 +41,16 @@ class ValueObjectRuleRepositoryImpl implements ValueObjectRuleRepository {
           .map((e) => ValueObjectRuleModel.fromMap(e.data()))
           .toList();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRuleRepositoryImpl.getByValueObject',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar as regras do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectRuleRepositoryImpl.getByValueObject',
       );
     }
   }
@@ -60,14 +64,16 @@ class ValueObjectRuleRepositoryImpl implements ValueObjectRuleRepository {
       await doc.set(applicationModel.toMap());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRuleRepositoryImpl.save',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar a regra do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectRuleRepositoryImpl.save',
       );
     }
   }
@@ -81,14 +87,16 @@ class ValueObjectRuleRepositoryImpl implements ValueObjectRuleRepository {
       await doc.update(applicationModel.toMap());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRuleRepositoryImpl.update',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar a regra do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectRuleRepositoryImpl.update',
       );
     }
   }
@@ -98,14 +106,16 @@ class ValueObjectRuleRepositoryImpl implements ValueObjectRuleRepository {
     try {
       _firestore.collection(collection).doc(id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'ValueObjectRuleRepositoryImpl.delete',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível remover a regra do objeto de valor',
         trace: s.toString(),
+        context: 'ValueObjectRuleRepositoryImpl.delete',
       );
     }
   }

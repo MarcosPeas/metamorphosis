@@ -16,7 +16,8 @@ class CasesUtils {
   }
 
   static String toSnakeCase(String text) {
-    return text.toLowerCase().replaceAll(' ', '_');
+    return text.replaceAll(' ', '').replaceAllMapped(RegExp(r'^([a-z])|[A-Z]'),
+        (Match m) => m[1] == null ? " ${m[0]}" : m[1]?.toUpperCase() ?? '');
   }
 
   static String toKebabCase(String text) {

@@ -16,14 +16,16 @@ class UseCaseRepositoryImpl implements UseCaseRepository {
       final data = result.data() ?? {};
       return UseCaseModel.fromMap(data);
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'UseCaseRepositoryImpl.getById',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar o caso de uso',
         trace: s.toString(),
+        context: 'UseCaseRepositoryImpl.getById',
       );
     }
   }
@@ -35,18 +37,18 @@ class UseCaseRepositoryImpl implements UseCaseRepository {
           .collection(collection)
           .where('entityId', isEqualTo: entityId)
           .get();
-      return result.docs
-          .map((e) => UseCaseModel.fromMap(e.data()))
-          .toList();
+      return result.docs.map((e) => UseCaseModel.fromMap(e.data())).toList();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'UseCaseRepositoryImpl.getByEntity',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar os casos de uso',
         trace: s.toString(),
+        context: 'UseCaseRepositoryImpl.getByEntity',
       );
     }
   }
@@ -59,14 +61,16 @@ class UseCaseRepositoryImpl implements UseCaseRepository {
       await doc.set(useCaseModel.toJson());
       return useCaseModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'UseCaseRepositoryImpl.save',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar o caso de uso',
         trace: s.toString(),
+        context: 'UseCaseRepositoryImpl.save',
       );
     }
   }
@@ -79,14 +83,16 @@ class UseCaseRepositoryImpl implements UseCaseRepository {
       await doc.update(useCaseModel.toJson());
       return useCaseModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'UseCaseRepositoryImpl.update',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar o caso de uso',
         trace: s.toString(),
+        context: 'UseCaseRepositoryImpl.update',
       );
     }
   }
@@ -96,14 +102,16 @@ class UseCaseRepositoryImpl implements UseCaseRepository {
     try {
       _firestore.collection(collection).doc(id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'UseCaseRepositoryImpl.delete',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível remover o caso de uso',
         trace: s.toString(),
+        context: 'UseCaseRepositoryImpl.delete',
       );
     }
   }

@@ -16,14 +16,16 @@ class BoundedContextRepositoryImpl implements BoundedContextRepository {
       final data = result.data() ?? {};
       return BoundedContextModel.fromMap(data);
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'BoundedContextRepositoryImpl.getById',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar o contexto delimitado',
         trace: s.toString(),
+        context: 'BoundedContextRepositoryImpl.getById',
       );
     }
   }
@@ -39,14 +41,16 @@ class BoundedContextRepositoryImpl implements BoundedContextRepository {
           .map((e) => BoundedContextModel.fromMap(e.data()))
           .toList();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'BoundedContextRepositoryImpl.getByApplication',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível encontrar os contextos delimitados',
         trace: s.toString(),
+        context: 'BoundedContextRepositoryImpl.getByApplication',
       );
     }
   }
@@ -59,14 +63,16 @@ class BoundedContextRepositoryImpl implements BoundedContextRepository {
       await doc.set(applicationModel.toJson());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'BoundedContextRepositoryImpl.save',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar o contexto delimitado',
         trace: s.toString(),
+        context: 'BoundedContextRepositoryImpl.save',
       );
     }
   }
@@ -79,14 +85,16 @@ class BoundedContextRepositoryImpl implements BoundedContextRepository {
       await doc.update(applicationModel.toJson());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'BoundedContextRepositoryImpl.update',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível salvar o contexto delimitado',
         trace: s.toString(),
+        context: 'BoundedContextRepositoryImpl.update',
       );
     }
   }
@@ -96,14 +104,16 @@ class BoundedContextRepositoryImpl implements BoundedContextRepository {
     try {
       _firestore.collection(collection).doc(id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: e.code,
         trace: s.toString(),
+        context: 'BoundedContextRepositoryImpl.delete',
       );
     } catch (e, s) {
-      throw DomainException(
+      throw DomainException.of(
         message: 'Não foi possível remover o contexto delimitado',
         trace: s.toString(),
+        context: 'BoundedContextRepositoryImpl.delete',
       );
     }
   }

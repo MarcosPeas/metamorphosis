@@ -1,3 +1,4 @@
+import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:uuid/uuid.dart';
 
 class BoundedContext {
@@ -6,6 +7,7 @@ class BoundedContext {
   bool enabled;
   final String applicationId;
   late final DateTime createdAt;
+  List<Entity> entities = [];
 
   BoundedContext({
     String? id,

@@ -3,7 +3,7 @@ import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 
 class Store extends ChangeNotifier {
   bool _isLoading = false;
-  DomainException _error = DomainException(message: '', trace: '');
+  DomainException _error = DomainException();
 
   bool get loading => _isLoading;
 
