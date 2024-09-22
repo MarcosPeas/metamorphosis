@@ -4,19 +4,18 @@ import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/flutter/flutter_value_objects_generator.dart';
 
 class FlutterEntitiesGenerator {
-  static const _domainPath = 'domain';
 
   FlutterEntitiesGenerator._();
 
   static List<ArchiveFile> generate({
     required List<Entity> entities,
-    required String rootPath,
+    required String domainPath,
   }) {
     final files = <ArchiveFile>[];
     for (final entity in entities) {
       _generateEntity(
         entity: entity,
-        rootPath: rootPath,
+        domainPath: domainPath,
         files: files,
       );
     }
@@ -25,10 +24,10 @@ class FlutterEntitiesGenerator {
 
   static void _generateEntity({
     required Entity entity,
-    required String rootPath,
+    required String domainPath,
     required List<ArchiveFile> files,
   }) {
-    final entityPath = '$rootPath/$_domainPath/${ChangeCase(entity.name).toSnakeCase()}';
+    final entityPath = '$domainPath/${ChangeCase(entity.name).toSnakeCase()}';
     final result = FlutterValueObjectsGenerator.generate(
       entity: entity,
       entityPath: entityPath,
