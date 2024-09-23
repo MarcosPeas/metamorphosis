@@ -67,7 +67,8 @@ class FlutterEntitiesGenerator {
   }
 
   static String _generateImports(Entity entity) {
-    final valueObjects = entity.valueObjects;
+    final valueObjects = [...entity.valueObjects];
+    valueObjects.removeWhere((vo) => vo.ignoreRules());
     final imports = valueObjects.map((valueObject) {
       final entityName = ChangeCase(entity.name).toPascalCase();
       final valueObjectName = ChangeCase(valueObject.name).toPascalCase();
@@ -84,7 +85,7 @@ class FlutterEntitiesGenerator {
     final fields = valueObjects.map((valueObject) {
       final entityName = ChangeCase(entity.name).toPascalCase();
       final valueObjectName = ChangeCase(valueObject.name).toPascalCase();
-      if (valueObject.rules.isEmpty) {
+      if (valueObject.ignoreRules()) {
         final type = FlutterTypes.getType(valueObject.type);
         final nullable = valueObject.isNullable ? '?' : '';
         return 'late $type$nullable _${ChangeCase(valueObject.name).toCamelCase()};';
@@ -98,7 +99,8 @@ class FlutterEntitiesGenerator {
     final valueObjects = entity.valueObjects;
     final fields = valueObjects.map((valueObject) {
       final name = ChangeCase(valueObject.name).toCamelCase();
-      final type = FlutterTypes.getType(valueObject.type);
+      String type = FlutterTypes.getType(valueObject.type);
+      type += valueObject.isNullable ? '?' : '';
       if (name == 'createdAt' || name == 'updatedAt') {
         return 'DateTime? $name,';
       }
@@ -106,9 +108,6 @@ class FlutterEntitiesGenerator {
         return '$type $name,';
       }
       if (valueObject.rules.isEmpty) {
-        if (valueObject.isNullable) {
-          return '$type? $name,';
-        }
         return 'required $type $name,';
       }
       return 'required $type $name,';
@@ -126,10 +125,10 @@ class FlutterEntitiesGenerator {
       if (name == 'createdAt' || name == 'updatedAt') {
         return '_$fieldName = $fieldName ?? DateTime.now();';
       }
-      if (valueObject.rules.isEmpty) {
+      if (valueObject.ignoreRules()) {
         return '_$fieldName = $fieldName;';
       }
-      return '_$fieldName = $entityName$valueObjectName($fieldName);';
+      return '_$fieldName = $entityName$valueObjectName(value: $fieldName, errors: _errors);';
     }).join('\n    ');
     return fields;
   }
@@ -143,7 +142,7 @@ class FlutterEntitiesGenerator {
       if (name == 'createdAt' || name == 'updatedAt') {
         return 'DateTime get $name => _$name;';
       }
-      if (valueObject.rules.isEmpty) {
+      if (valueObject.ignoreRules()) {
         return '$type$nullable get $name => _$name;';
       }
       return '$type$nullable get $name => _$name.value;';
@@ -164,10 +163,10 @@ class FlutterEntitiesGenerator {
       final name = ChangeCase(valueObject.name).toCamelCase();
       final nullable = valueObject.isNullable ? '?' : '';
       String content = 'set $name($type$nullable value) {\n';
-      if (valueObject.rules.isEmpty) {
+      if (valueObject.ignoreRules()) {
         content = '$content    _$name = value;\n';
       } else {
-        content = '$content    _$name = $entityName$valueObjectName(value);\n';
+        content = '$content    _$name = $entityName$valueObjectName(value: value, errors: _errors);\n';
       }
       content = '$content    _validate();\n';
       if (containsUpdatedAt) {
@@ -197,7 +196,7 @@ class %name% {
     String? id,
     %constructorFields%  
   }) {
-    this.id = id ?? const Uuid().v4();
+    this.id = id ?? const Uuid().v7();
     %constructorAssignments%
     _validate();
   } 
