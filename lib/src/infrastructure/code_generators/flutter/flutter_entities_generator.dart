@@ -1,10 +1,11 @@
+import 'dart:convert';
+
 import 'package:archive/archive.dart';
 import 'package:change_case/change_case.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/flutter/flutter_value_objects_generator.dart';
 
 class FlutterEntitiesGenerator {
-
   FlutterEntitiesGenerator._();
 
   static List<ArchiveFile> generate({
@@ -34,13 +35,15 @@ class FlutterEntitiesGenerator {
     );
     files.addAll(result);
     final content = _entityContent.replaceAll(
-      'name',
+      '%name%',
       ChangeCase(entity.name).toPascalCase(),
     );
+
+    final bytes = utf8.encode(content);
     final archiveFile = ArchiveFile(
       '$entityPath/entities/${ChangeCase(entity.name).toSnakeCase()}.dart',
-      content.length,
-      content.codeUnits,
+      bytes.length,
+      bytes,
     );
     files.add(archiveFile);
   }
@@ -49,6 +52,6 @@ class FlutterEntitiesGenerator {
 String _entityContent = '''
 import 'package:uuid/uuid.dart';
 
-class name {
+class %name% {
 }
 ''';

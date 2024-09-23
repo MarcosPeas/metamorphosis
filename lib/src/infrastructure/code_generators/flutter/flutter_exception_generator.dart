@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:archive/archive.dart';
 
 class FlutterExceptionGenerator {
@@ -8,22 +10,33 @@ class FlutterExceptionGenerator {
   static List<ArchiveFile> generate(String domainPath) {
     final domainExceptionFile = _generateDomainException(domainPath);
     final domainErrorFile = _generateDomainError(domainPath);
+    final constraintErrorFile = _generateConstraintError(domainPath);
     return [
       domainExceptionFile,
       domainErrorFile,
+      constraintErrorFile,
     ];
   }
 
   static ArchiveFile _generateDomainException(String domainPath) {
     final content = _domainException;
     final path = '$domainPath/$_exceptionPath/domain_exception.dart';
-    return ArchiveFile(path, content.length, content.codeUnits);
+    final bytes = utf8.encode(content);
+    return ArchiveFile.noCompress(path, bytes.length, bytes);
   }
 
   static ArchiveFile _generateDomainError(String domainPath) {
     final content = _domainError;
     final path = '$domainPath/$_exceptionPath/domain_error.dart';
-    return ArchiveFile(path, content.length, content.codeUnits);
+    final bytes = utf8.encode(content);
+    return ArchiveFile.noCompress(path, bytes.length, bytes);
+  }
+
+  static ArchiveFile _generateConstraintError(String domainPath) {
+    final content = _constraintError;
+    final path = '$domainPath/$_exceptionPath/constraint_error.dart';
+    final bytes = utf8.encode(content);
+    return ArchiveFile.noCompress(path, bytes.length, bytes);
   }
 }
 
@@ -37,6 +50,19 @@ class DomainError implements Exception {
     required this.context,
     required this.message,
     required this.trace,
+  });
+}
+
+''';
+
+String _constraintError = '''
+import 'domain_error.dart';
+
+class ConstraintError extends DomainError {
+  ConstraintError({
+    required super.context,
+    required super.message,
+    super.trace = '',
   });
 }
 

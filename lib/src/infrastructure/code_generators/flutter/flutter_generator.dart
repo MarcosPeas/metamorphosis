@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:archive/archive.dart';
 import 'package:change_case/change_case.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
@@ -24,7 +26,11 @@ class FlutterGenerator {
       project: project,
     );
     archive.addFile(pubspecFile);
-    archive.addFile(ArchiveFile('$libDirectory/main.dart', 0, mainContent));
+    archive.addFile(ArchiveFile(
+      '$libDirectory/main.dart',
+      Uint8List.fromList(mainContent.codeUnits).length,
+      Uint8List.fromList(mainContent.codeUnits),
+    ));
 
     final domainFiles = _generateDomain(
       application: application,
@@ -70,8 +76,8 @@ class FlutterGenerator {
     final pubspecYaml = _pubspecYaml(project);
     return ArchiveFile(
       '$projectName/pubspec.yaml',
-      pubspecYaml.length,
-      pubspecYaml,
+      Uint8List.fromList(pubspecYaml.codeUnits).length,
+      Uint8List.fromList(pubspecYaml.codeUnits),
     );
   }
 
