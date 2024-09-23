@@ -19,6 +19,10 @@ class DomainException implements Exception {
     errors = [DomainError(message: message, trace: trace, context: context)];
   }
 
+  void addError(DomainError error) {
+    errors.add(error);
+  }
+
   @override
   String toString() {
     return errors.map((e) => e.message).join('\n');
