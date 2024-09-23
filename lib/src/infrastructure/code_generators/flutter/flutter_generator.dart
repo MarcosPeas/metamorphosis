@@ -16,10 +16,10 @@ class FlutterGenerator {
   }) {
     final project = application.project!;
     final archive = Archive();
-    final projectName = project.name;
+    final projectName = ChangeCase(project.name).toSnakeCase();
 
     final libDirectory = '$projectName/lib';
-    final mainContent = _mainContent(projectName);
+    final mainContent = _mainContent();
 
     final pubspecFile = _generateYaml(
       projectName: projectName,
@@ -82,7 +82,7 @@ class FlutterGenerator {
   }
 
   static String _pubspecYaml(Project project) {
-    final projectName = project.name;
+    final projectName = ChangeCase(project.name).toSnakeCase();
     return '''
 name: $projectName
 description: A new Flutter project
@@ -90,11 +90,12 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <4.0.0"
+  sdk: ">=3.4.0 <4.0.0"
   
 dependencies:
   flutter:
     sdk: flutter
+  uuid: ^4.4.0
     
 dev_dependencies:
   flutter_test:
@@ -106,7 +107,7 @@ flutter:
 ''';
   }
 
-  static String _mainContent(String projectName) {
+  static String _mainContent() {
     return '''
 import 'package:flutter/material.dart';
 

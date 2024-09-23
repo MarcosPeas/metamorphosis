@@ -26,7 +26,7 @@ class Application {
     DateTime? createdAt,
   }) {
     {
-      this.id = id ?? const Uuid().v4();
+      this.id = id ?? const Uuid().v7();
       this.createdAt = createdAt ?? DateTime.now();
       _name = ApplicationName(value: name, errors: errors);
       _validate();

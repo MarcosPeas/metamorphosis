@@ -29,10 +29,10 @@ class FlutterValueObjectsGenerator {
   }) {
     final valueObjects = [...entity.valueObjects];
     valueObjects.removeWhere((vo) {
-      return vo.rules.isEmpty;
+      return vo.ignoreRules();
     });
     List<ArchiveFile> files = [];
-    for (final valueObject in entity.valueObjects) {
+    for (final valueObject in valueObjects) {
       final result = _generateValueObject(
         valueObject: valueObject,
         entityPath: entityPath,
@@ -134,6 +134,9 @@ class FlutterValueObjectsGenerator {
       conditionContent += 'value != ${condition.targetValue}';
     } else if (condition.comparatorOperator == 'notEquals') {
       conditionContent += 'value == ${condition.targetValue}';
+    }
+    if (conditionContent.isEmpty) {
+      conditionContent = 'false';
     }
     return conditionContent;
   }

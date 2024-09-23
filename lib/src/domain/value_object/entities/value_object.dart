@@ -33,6 +33,18 @@ class ValueObject {
     rules.remove(rule);
   }
 
+  bool ignoreRules() {
+    if (rules.isEmpty) {
+      return true;
+    }
+    final mRules = [...rules];
+    mRules.removeWhere((r) => r.groupConditions.isEmpty);
+    if (mRules.isEmpty) {
+      return true;
+    }
+    return false;
+  }
+
   void updateRule(ValueObjectRule rule) {
     final index = rules.indexWhere((r) => r.id == rule.id);
     if (index != -1) {

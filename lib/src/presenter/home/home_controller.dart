@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:html' as html;
 
 import 'package:archive/archive.dart';
+import 'package:change_case/change_case.dart';
 import 'package:flutter/material.dart';
 import 'package:metamorphis/src/application/bounded_context/get_bounded_contexts_by_application_use_case.dart';
 import 'package:metamorphis/src/application/entity/delete_entity_use_case.dart';
@@ -156,6 +157,7 @@ class HomeController {
   }
 
   void _generateCode(Application application) {
+    final name = ChangeCase(application.name).toSnakeCase();
     final archive = CodeGenerators.generateCode(
       application: application,
     );
@@ -163,7 +165,7 @@ class HomeController {
     final blob = html.Blob([zipData], 'application/zip');
     final url = html.Url.createObjectUrlFromBlob(blob);
     final anchor = html.AnchorElement(href: url);
-    anchor.setAttribute('download', 'archive.zip');
+    anchor.setAttribute('download', '$name.zip');
     anchor.click();
     html.Url.revokeObjectUrl(url);
     homeStore.generating = false;
