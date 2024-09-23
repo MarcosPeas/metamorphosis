@@ -27,6 +27,10 @@ class FlutterValueObjectsGenerator {
     required Entity entity,
     required String entityPath,
   }) {
+    final valueObjects = [...entity.valueObjects];
+    valueObjects.removeWhere((vo) {
+      return vo.rules.isEmpty;
+    });
     List<ArchiveFile> files = [];
     for (final valueObject in entity.valueObjects) {
       final result = _generateValueObject(

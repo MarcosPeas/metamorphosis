@@ -2,20 +2,24 @@ import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.
 import 'package:metamorphis/src/domain/project/entities/project.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../_core/exception/domain_error.dart';
+import '../../_core/exception/domain_exception.dart';
+import '../value_objects/application_name.dart';
+
 class Application {
   late final String id;
-  String name;
+  late ApplicationName _name;
   String description;
   bool isMicroservice;
   String projectId;
   late final DateTime createdAt;
   Project? project;
   List<BoundedContext> contexts = [];
-
+  final List<DomainError> errors = [];
 
   Application({
     String? id,
-    required this.name,
+    required String name,
     required this.description,
     required this.isMicroservice,
     required this.projectId,
@@ -24,6 +28,21 @@ class Application {
     {
       this.id = id ?? const Uuid().v4();
       this.createdAt = createdAt ?? DateTime.now();
+      _name = ApplicationName(value: name, errors: errors);
+      _validate();
+    }
+  }
+
+  set name(String value) {
+    _name = ApplicationName(value: value, errors: errors);
+    _validate();
+  }
+
+  String get name => _name.value;
+
+  void _validate() {
+    if (errors.isNotEmpty) {
+      throw DomainException(errors: errors);
     }
   }
 }
