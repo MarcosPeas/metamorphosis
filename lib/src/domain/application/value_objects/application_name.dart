@@ -4,7 +4,10 @@ import '../../_core/exception/domain_error.dart';
 class ApplicationName {
   final String value;
 
-  ApplicationName({required this.value, required List<DomainError> errors}) {
+  ApplicationName({
+    required this.value,
+    required List<DomainError> errors,
+  }) {
     _validate(errors);
   }
 
