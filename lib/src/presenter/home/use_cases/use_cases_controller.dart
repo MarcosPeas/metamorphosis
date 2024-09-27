@@ -65,19 +65,11 @@ class UseCasesController {
     updateEntity();
   }
 
-  void createPaginateUseCase({
-    required String name,
-    required bool isAscending,
-    required String orderByField,
-    required String searchField,
-  }) {
+  void createPaginateUseCase() {
     final paginateUseCase = UseCase(
-      name: name,
+      name: 'Paginate${entityStore.entity.name}UseCase',
       useCaseType: UseCaseType.paginate,
       entityId: entityStore.entity.id,
-      isAscending: isAscending,
-      orderByField: orderByField,
-      searchField: searchField,
     );
     entityStore.entity.useCases.add(paginateUseCase);
     updateEntity();

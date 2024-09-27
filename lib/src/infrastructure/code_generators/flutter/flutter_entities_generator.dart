@@ -166,7 +166,8 @@ class FlutterEntitiesGenerator {
       if (valueObject.ignoreRules()) {
         content = '$content    _$name = value;\n';
       } else {
-        content = '$content    _$name = $entityName$valueObjectName(value: value, errors: _errors);\n';
+        content =
+            '$content    _$name = $entityName$valueObjectName(value: value, errors: _errors);\n';
       }
       content = '$content    _validate();\n';
       if (containsUpdatedAt) {

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:go_router/go_router.dart';
-import 'package:metamorphis/src/domain/_core/utils/cases_utils.dart';
 import 'package:metamorphis/src/domain/use_case/entities/use_case.dart';
 import 'package:metamorphis/src/presenter/home/use_cases/use_cases_controller.dart';
 
@@ -130,22 +128,23 @@ class _UseCasesPageState extends State<UseCasesPage> {
                         ],
                       ),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Row(
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            _showDialogCreateValueObject();
-                          },
-                          child: Text(
-                            'Create Paginate ${entity.name} Use Case',
+                  if (!entity.containsAnyUseCaseByType(UseCaseType.paginate))
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Row(
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              controller.createPaginateUseCase();
+                            },
+                            child: Text(
+                              'Create Paginate ${entity.name} Use Case',
+                            ),
                           ),
-                        ),
-                        const Spacer(),
-                      ],
+                          const Spacer(),
+                        ],
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -155,15 +154,9 @@ class _UseCasesPageState extends State<UseCasesPage> {
     );
   }
 
-  void _showDialogCreateValueObject() {
+/*void _showDialogCreateValueObject() {
     final entity = controller.entityStore.entity;
     final valueObjects = entity.valueObjects.map((item) => item.name).toList();
-    final nameController = TextEditingController(
-      text: 'Paginate${entity.name}UseCase',
-    );
-    final searchField = ValueNotifier('none');
-    final orderByField = ValueNotifier(valueObjects.first);
-    final descending = ValueNotifier(true);
     showDialog(
       context: context,
       builder: (context) {
@@ -231,19 +224,6 @@ class _UseCasesPageState extends State<UseCasesPage> {
                   );
                 },
               ),
-              const SizedBox(height: 16),
-              ValueListenableBuilder(
-                valueListenable: descending,
-                builder: (_, value, __) {
-                  return SwitchListTile(
-                    title: const Text('Descending'),
-                    value: value,
-                    onChanged: (newValue) {
-                      descending.value = newValue;
-                    },
-                  );
-                },
-              ),
             ],
           ),
           actions: [
@@ -256,12 +236,7 @@ class _UseCasesPageState extends State<UseCasesPage> {
             TextButton(
               onPressed: () {
                 context.pop();
-                controller.createPaginateUseCase(
-                  name: nameController.text,
-                  isAscending: !descending.value,
-                  orderByField: orderByField.value,
-                  searchField: searchField.value,
-                );
+                controller.createPaginateUseCase();
               },
               child: const Text('Create'),
             ),
@@ -269,7 +244,7 @@ class _UseCasesPageState extends State<UseCasesPage> {
         );
       },
     );
-  }
+  }*/
 }
 
 class _UseCaseItemList extends StatelessWidget {
@@ -298,7 +273,6 @@ class _UseCaseItemList extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          subtitle: subtitle(),
           trailing: IconButton(
             icon: Icon(
               Icons.delete,
@@ -312,20 +286,6 @@ class _UseCaseItemList extends StatelessWidget {
         ),
         const Divider(),
       ],
-    );
-  }
-
-  Widget? subtitle() {
-    if (useCase.useCaseType != UseCaseType.paginate) {
-      return null;
-    }
-    if (useCase.searchField == 'none') {
-      return Text(
-        'Order by ${useCase.orderByField} ${useCase.isAscending ? 'ascending' : 'descending'}',
-      );
-    }
-    return Text(
-      'Search by ${useCase.searchField}, order by ${useCase.orderByField} ${useCase.isAscending ? 'ascending' : 'descending'}',
     );
   }
 }
