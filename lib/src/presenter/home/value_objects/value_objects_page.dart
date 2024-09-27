@@ -242,6 +242,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                     type: selectedType.value,
                     nullable: isNullable.value,
                     viewIndex: viewIndex,
+                    isUnique: isUnique.value,
                   );
                   context.pop();
                 },
@@ -311,6 +312,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                   type: selectedType.value,
                   nullable: isNullable.value,
                   viewIndex: viewIndex,
+                  isUnique: isUnique.value,
                 );
                 context.pop();
               },
@@ -470,7 +472,7 @@ class _EntityRuleWidget extends StatelessWidget {
         ListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(
-            '${valueObject.name} (${valueObject.type})',
+            '${valueObject.name} (${valueObject.type})${valueObject.isUnique ? ', unique' : ''}${valueObject.isNullable ? ', nullable' : ''}',
             style: textTheme.bodyLarge?.copyWith(
               color: colorScheme.onSurface,
               fontWeight: FontWeight.bold,

@@ -49,12 +49,14 @@ class ValueObjectsController {
     required String type,
     required bool nullable,
     required int viewIndex,
+    required bool isUnique,
   }) async {
     final entity = entityStore.entity;
     final valueObject = entity.valueObjects[viewIndex];
     valueObject.name = name;
     valueObject.type = type;
     valueObject.isNullable = nullable;
+    valueObject.isUnique = isUnique;
     updateEntity();
   }
 
