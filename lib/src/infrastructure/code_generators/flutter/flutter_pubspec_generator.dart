@@ -58,6 +58,7 @@ dependencies:
   flutter:
     sdk: flutter
   uuid: ^4.4.0
+  dartz: ^0.10.1
 %libs%
     
 dev_dependencies:
