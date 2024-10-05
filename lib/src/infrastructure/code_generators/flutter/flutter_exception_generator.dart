@@ -84,7 +84,7 @@ class DomainException implements Exception {
 
   DomainException.of({
     required String message,
-    required String trace,
+    String trace = '',
     required String context,
   }) {
     errors = [DomainError(message: message, trace: trace, context: context)];

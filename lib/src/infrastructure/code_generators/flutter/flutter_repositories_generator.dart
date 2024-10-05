@@ -43,12 +43,26 @@ class FlutterRepositoriesGenerator {
   }) {
     String content = _repositoryContent;
     final imports = _generateImports(entity);
-    final name = '${ChangeCase(entity.name).toPascalCase()}Repository';
+    final entityNamePascal = ChangeCase(entity.name).toPascalCase();
+    final name = '${entityNamePascal}Repository';
     content = content.replaceAll('%imports%', imports);
     content = content.replaceAll('%name%', name);
-    final methods = entity.useCases
+    String methods = entity.useCases
         .map((useCase) => _generateMethods(entity, useCase))
         .join('\n\n');
+    if (methods.contains('delete') && !methods.contains('findById')) {
+      final pascalName = ChangeCase(entity.name).toPascalCase();
+      methods += '\n\n  Future<$pascalName?> findById(String id);';
+    }
+    final findUniques =
+        entity.valueObjects.where((vo) => vo.isUnique).map((vo) {
+      final pascalName = ChangeCase(vo.name).toPascalCase();
+      final camelName = ChangeCase(vo.name).toCamelCase();
+      return '  Future<$entityNamePascal?> findBy$pascalName(${vo.type} $camelName);';
+    }).join('\n\n');
+    if (findUniques.isNotEmpty) {
+      methods += '\n\n$findUniques';
+    }
     content = content.replaceAll('%methods%', methods);
     final entityName = ChangeCase(entity.name).toSnakeCase();
     final path = '$repositoryPath/${entityName}_repository.dart';
@@ -69,7 +83,7 @@ class FlutterRepositoriesGenerator {
     } else if (useCase.useCaseType == UseCaseType.update) {
       return '  Future<$pascalName> update($pascalName $camelName);';
     } else if (useCase.useCaseType == UseCaseType.read) {
-      return '  Future<$pascalName?> getById(String id);';
+      return '  Future<$pascalName?> findById(String id);';
     } else if (useCase.useCaseType == UseCaseType.delete) {
       return '  Future<void> delete(String id);';
     } else if (useCase.useCaseType == UseCaseType.paginate) {

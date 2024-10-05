@@ -4,6 +4,7 @@ import 'package:archive/archive.dart';
 import 'package:change_case/change_case.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/flutter/flutter_exception_generator.dart';
+import 'package:metamorphis/src/infrastructure/code_generators/flutter/flutter_path_utils.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/flutter/flutter_pubspec_generator.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/flutter/flutter_use_cases_generator.dart';
 
@@ -59,8 +60,10 @@ class FlutterGenerator {
       );
       domainFiles.addAll(repositories);
       applicationFiles = FlutterUseCasesGenerator.generate(
-        applicationPath,
-        application.contexts.first.entities,
+        entities: application.contexts.first.entities,
+        applicationPath: applicationPath,
+        domainPath: FlutterPathUtils.getFlutterPath(domainPath),
+        applicationNameSnakeCase: ChangeCase(application.name).toSnakeCase(),
       );
       final exceptionFiles = FlutterExceptionGenerator.generate(domainPath);
       domainFiles.addAll(exceptionFiles);
@@ -80,8 +83,10 @@ class FlutterGenerator {
       );
       domainFiles.addAll(repositories);
       applicationFiles.addAll(FlutterUseCasesGenerator.generate(
-        applicationPath,
-        context.entities,
+        applicationPath: applicationPath,
+        domainPath: FlutterPathUtils.getFlutterPath(domainPath),
+        applicationNameSnakeCase: ChangeCase(application.name).toSnakeCase(),
+        entities: context.entities,
       ));
       final exceptionFiles = FlutterExceptionGenerator.generate(domainPath);
       domainFiles.addAll(exceptionFiles);
