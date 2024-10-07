@@ -132,13 +132,7 @@ class _ChangeOption extends StatelessWidget {
           children: [
             IconButton(
               icon: const Icon(Icons.chevron_left),
-              onPressed: () {
-                pageController.animateToPage(
-                  0,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                );
-              },
+              onPressed: onTapBack,
             ),
             const SizedBox(width: 8),
             Text(
@@ -204,7 +198,7 @@ class _SupabaseOption extends StatelessWidget {
         TextField(
           decoration: const InputDecoration(
             hintText: 'https://your-project.supabase.co',
-            label: Text('Supabase URL (Production)'),
+            label: Text('Supabase URL (Development)'),
           ),
           onChanged: (value) {
             urlDev.value = value;
@@ -214,7 +208,7 @@ class _SupabaseOption extends StatelessWidget {
         TextField(
           decoration: const InputDecoration(
             hintText: 'your-anon-key',
-            label: Text('Supabase Anon Key (Production)'),
+            label: Text('Supabase Anon Key (Development)'),
           ),
           onChanged: (value) {
             anoKeyDev.value = value;
