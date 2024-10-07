@@ -6,6 +6,7 @@ import 'package:metamorphis/src/application/application/delete_application_use_c
 import 'package:metamorphis/src/application/application/get_applications_by_project_use_case.dart';
 import 'package:metamorphis/src/application/application/save_application_use_case.dart';
 import 'package:metamorphis/src/application/application/update_application_use_case.dart';
+import 'package:metamorphis/src/domain/application/entities/api_type.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/presenter/_core/app_store.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/application_view_model.dart';
@@ -69,6 +70,7 @@ class ApplicationController {
       description: description,
       isMicroservice: false,
       projectId: appStore.project!.id,
+      apiOptions: ApiOptions.empty(),
     );
     final result = await saveApplicationUseCase.execute(application);
     result.fold(
