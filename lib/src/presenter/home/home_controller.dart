@@ -9,6 +9,7 @@ import 'package:metamorphis/src/application/entity/delete_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/get_entities_by_bounded_context_use_case.dart';
 import 'package:metamorphis/src/application/entity/save_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
+import 'package:metamorphis/src/domain/application/entities/api_type.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
@@ -132,7 +133,7 @@ class HomeController {
     );
   }
 
-  void generateCode() {
+  void _buildCode() {
     _loadBoundedContexts();
   }
 
@@ -184,5 +185,26 @@ class HomeController {
         boundedContext.entities = entities;
       },
     );
+  }
+
+  void buildFlutterWidthSupabase({
+    required String supabaseUrlProd,
+    required String anonKeyProd,
+    required String supabaseUrlDev,
+    required String anonKeyDev,
+  }) {
+    final application = appStore.application;
+    if (application == null) {
+      return;
+    }
+    final apiOptions = ApiOptions(
+      apiType: ApiType.supabase,
+      prodUrl: supabaseUrlProd,
+      prodKey: anonKeyProd,
+      devUrl: supabaseUrlDev,
+      devKey: anonKeyDev,
+    );
+    application.apiOptions = apiOptions;
+    _buildCode();
   }
 }

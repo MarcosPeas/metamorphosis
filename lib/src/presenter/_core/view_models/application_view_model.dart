@@ -8,6 +8,7 @@ class ApplicationViewModel extends Application {
     required super.isMicroservice,
     required super.projectId,
     required super.createdAt,
+    required super.apiOptions,
   });
 
   factory ApplicationViewModel.fromEntity(Application application) {
@@ -18,6 +19,7 @@ class ApplicationViewModel extends Application {
       isMicroservice: application.isMicroservice,
       projectId: application.projectId,
       createdAt: application.createdAt,
+      apiOptions: application.apiOptions,
     );
   }
 }

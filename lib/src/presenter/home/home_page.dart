@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
 import 'package:metamorphis/src/presenter/home/entity_lists/compositions_page.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
+import 'package:metamorphis/src/presenter/home/widgets/dialog_change_target_widget.dart';
 import 'package:metamorphis/src/presenter/home/widgets/selected_entity_widget.dart';
 
 import 'entity_rules/entity_rules_page.dart';
@@ -105,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton(
                                 onPressed: () {
-                                  controller.generateCode();
+                                  showDialogChangeTarget();
                                 },
                                 child: const Text('Generate Code')),
                           ),
@@ -139,6 +140,26 @@ class _HomePageState extends State<HomePage> {
           },
         ),
       ),
+    );
+  }
+
+  void showDialogChangeTarget() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Change target'),
+          content: DialogChangeTargetWidget(controller: controller),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
     );
   }
 

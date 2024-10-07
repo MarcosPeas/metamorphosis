@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import '../../_core/exception/domain_error.dart';
 import '../../_core/exception/domain_exception.dart';
 import '../value_objects/application_name.dart';
+import 'api_type.dart';
 
 class Application {
   late final String id;
@@ -16,6 +17,7 @@ class Application {
   Project? project;
   List<BoundedContext> contexts = [];
   final List<DomainError> errors = [];
+  ApiOptions apiOptions;
 
   Application({
     String? id,
@@ -24,6 +26,7 @@ class Application {
     required this.isMicroservice,
     required this.projectId,
     DateTime? createdAt,
+    required this.apiOptions,
   }) {
     {
       this.id = id ?? const Uuid().v7();
