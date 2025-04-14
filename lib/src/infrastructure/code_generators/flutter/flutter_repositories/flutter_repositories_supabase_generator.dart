@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:change_case/change_case.dart';
@@ -12,6 +13,10 @@ class FlutterRepositoriesSupabaseGenerator {
     required String domainPath,
   }) {
     final files = <ArchiveFile>[];
+    final apiError = _generateApiError(
+      domainPath: domainPath,
+      dataPath: dataPath,
+    );
     for (final entity in entities) {
       _generateRepositories(
         entity: entity,
@@ -20,6 +25,7 @@ class FlutterRepositoriesSupabaseGenerator {
         files: files,
       );
     }
+    files.add(apiError);
     return files;
   }
 
@@ -29,11 +35,9 @@ class FlutterRepositoriesSupabaseGenerator {
     required String domainPath,
     required List<ArchiveFile> files,
   }) {
-    final modelPath = '$dataPath/${entity.name.toSnakeCase()}';
-    final repositoriesPath = '$modelPath/repositories';
     final result = _generateRepository(
       entity: entity,
-      repositoryPath: repositoriesPath,
+      dataPath: dataPath,
       domainPath: domainPath,
     );
     files.add(result);
@@ -41,14 +45,14 @@ class FlutterRepositoriesSupabaseGenerator {
 
   static ArchiveFile _generateRepository({
     required Entity entity,
-    required String repositoryPath,
+    required String dataPath,
     required String domainPath,
   }) {
     String content = _repositoryContent;
     final imports = _generateImports(
       entity: entity,
       domainPath: domainPath,
-      repositoryPath: repositoryPath,
+      dataPath: dataPath,
     );
     final entityNamePascal = ChangeCase(entity.name).toPascalCase();
     final name = '${entityNamePascal}Repository';
@@ -72,7 +76,8 @@ class FlutterRepositoriesSupabaseGenerator {
     }
     content = content.replaceAll('%methods%', methods);
     final entityName = ChangeCase(entity.name).toSnakeCase();
-    final path = '$repositoryPath/${entityName}_repository_impl.dart';
+    final path =
+        '$dataPath/$entityName/repositories/${entityName}_repository_impl.dart';
     final bytes = utf8.encode(content);
     return ArchiveFile.noCompress(path, bytes.length, bytes);
   }
@@ -80,16 +85,16 @@ class FlutterRepositoriesSupabaseGenerator {
   static String _generateImports({
     required Entity entity,
     required String domainPath,
-    required String repositoryPath,
+    required String dataPath,
   }) {
     String imports = '';
-    //import 'tinha/lib/src/domain/entities/city.dart';
-    //import 'package:tinha//src/domain/city/entities/city.dart';
     final entityName = entity.name.toSnakeCase();
     imports +=
         'import \'package:$domainPath/$entityName/entities/$entityName.dart\';\n';
     imports +=
-        'import \'package:$repositoryPath/$entityName/model/${entityName.toPascalCase()}Model.dart\';\n';
+        'import \'package:$domainPath/$entityName/repositories/${entityName}_repository.dart\';\n';
+    imports +=
+        'import \'package:${dataPath.replaceAll('/lib', '')}/$entityName/models/${entityName}_model.dart\';\n';
     return imports;
   }
 
@@ -114,20 +119,56 @@ class FlutterRepositoriesSupabaseGenerator {
     final pascalName = ChangeCase(entity.name).toPascalCase();
     final camelName = ChangeCase(entity.name).toCamelCase();
     String content = '    try {';
+    content +=
+        '\n      final model = ${pascalName}Model.fromEntity($camelName);';
     content += '\n      await supabase.from(\'${entity.name.toSnakeCase()}\')';
-    content += '.insert(${pascalName}Model.fromEntity($camelName).toJson());';
-    content += '\n    } catch (error) {\n';
+    content += '.insert(model.toJson());';
+    content += '\n      return $camelName;';
+    content += '\n    } catch (e, s) {\n';
     content += '      rethrow;\n';
     content += '    }';
-    return '  Future<$pascalName> save($pascalName $camelName) {\n$content\n  };';
+    return '  Future<$pascalName> save($pascalName $camelName) async {\n$content\n  }';
+  }
+
+  static ArchiveFile _generateApiError({
+    required String domainPath,
+    required String dataPath,
+  }) {
+    final path = '$dataPath/_core/supabase_exception.dart';
+    String content = _supabaseException;
+    content = content.replaceAll(
+      '%imports%',
+      '',
+    );
+    final bytes = utf8.encode(content);
+    final file = ArchiveFile.noCompress(
+      path,
+      bytes.length,
+      bytes,
+    );
+    return file;
   }
 }
 
 String _repositoryContent = '''
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase/supabase.dart';
 %imports%
 
 class %name%Impl extends %name% {
+  final SupabaseClient supabase;
+  
+  %name%Impl(this.supabase);
+  
 %methods%
+}
+''';
+
+String _supabaseException = '''
+%imports%
+
+class SupabaseException extends DomainException {
+  SupabaseException({
+    super.errors,
+  });
 }
 ''';

@@ -9,6 +9,7 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
   final _firestore = FirebaseFirestore.instance;
   final collection = 'applications';
 
+
   @override
   Future<Application> getById(String id) async {
     try {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/widgets/dialog_change_target_store.dart';
 
@@ -223,13 +224,14 @@ class _SupabaseOption extends StatelessWidget {
               builder: (_, keyProdValue, __) {
                 final enabled = urlProValue.isNotEmpty && keyProdValue.isNotEmpty;
                 return ElevatedButton(
-                  onPressed: enabled ?() {
+                  onPressed: enabled ? () {
                     controller.buildFlutterWidthSupabase(
                       supabaseUrlProd: urlProd.value,
                       anonKeyProd: anoKeyProd.value,
                       supabaseUrlDev: urlDev.value,
                       anonKeyDev: anoKeyDev.value,
                     );
+                    context.pop();
                   } : null,
                   child: const Text('Generate Code'),
                 );

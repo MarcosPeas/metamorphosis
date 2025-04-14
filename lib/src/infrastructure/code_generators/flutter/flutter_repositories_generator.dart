@@ -13,6 +13,7 @@ class FlutterRepositoriesGenerator {
     required String domainPath,
   }) {
     final files = <ArchiveFile>[];
+
     for (final entity in entities) {
       _generateRepositories(
         entity: entity,

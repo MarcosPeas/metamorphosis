@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:change_case/change_case.dart';
+import 'package:metamorphis/src/domain/application/entities/api_type.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 
 class FlutterPubspecGenerator {
@@ -41,6 +42,9 @@ class FlutterPubspecGenerator {
     });
     if (hasCpfCnpj) {
       libs.add('  brasil_fields: ^1.15.0');
+    }
+    if (application.apiOptions.apiType == ApiType.supabase) {
+      libs.add('  supabase: ^2.5.0');
     }
     return libs.join('\n');
   }
