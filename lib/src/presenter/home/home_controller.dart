@@ -133,11 +133,11 @@ class HomeController {
     );
   }
 
-  void _buildCode() {
-    _loadBoundedContexts();
+  void _buildCode(GeneratorTarget target) {
+    _loadBoundedContexts(target);
   }
 
-  Future<void> _loadBoundedContexts() async {
+  Future<void> _loadBoundedContexts(GeneratorTarget target) async {
     homeStore.generating = true;
     final result = await getBoundedContextsByApplicationUseCase.execute(
       appStore.application!,
@@ -152,15 +152,16 @@ class HomeController {
         await Future.forEach(boundedContexts, _loadEntities);
         application.contexts = boundedContexts;
         application.project = appStore.project;
-        _generateCode(application);
+        _generateCode(application, target);
       },
     );
   }
 
-  void _generateCode(Application application) {
+  void _generateCode(Application application, GeneratorTarget target) {
     final name = ChangeCase(application.name).toSnakeCase();
     final archive = CodeGenerators.generateCode(
       application: application,
+      target: target,
     );
     final zipData = ZipEncoder().encode(archive)!;
     final blob = html.Blob([zipData], 'application/zip');
@@ -192,6 +193,7 @@ class HomeController {
     required String anonKeyProd,
     required String supabaseUrlDev,
     required String anonKeyDev,
+    required GeneratorTarget target,
   }) {
     final application = appStore.application;
     if (application == null) {
@@ -205,6 +207,10 @@ class HomeController {
       devKey: anonKeyDev,
     );
     application.apiOptions = apiOptions;
-    _buildCode();
+    _buildCode(target);
+  }
+
+  void buildRustGraphQL() {
+    _buildCode(GeneratorTarget.rust);
   }
 }

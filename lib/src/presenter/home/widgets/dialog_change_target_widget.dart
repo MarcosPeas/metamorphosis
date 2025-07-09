@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:metamorphis/src/infrastructure/code_generators/code_generators.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/widgets/dialog_change_target_store.dart';
 
@@ -40,10 +41,13 @@ class DialogChangeTargetWidget extends StatelessWidget {
                     },
                     trailing: const Icon(Icons.chevron_right),
                   ),
-                  const ListTile(
-                    title: Text('Rust GraphQL'),
-                    enabled: false,
-                    trailing: Icon(Icons.chevron_right),
+                  ListTile(
+                    title: const Text('Rust GraphQL'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      controller.buildRustGraphQL();
+                      context.pop();
+                    },
                   ),
                 ],
               ),
@@ -230,6 +234,7 @@ class _SupabaseOption extends StatelessWidget {
                       anonKeyProd: anoKeyProd.value,
                       supabaseUrlDev: urlDev.value,
                       anonKeyDev: anoKeyDev.value,
+                      target: GeneratorTarget.flutter,
                     );
                     context.pop();
                   } : null,
