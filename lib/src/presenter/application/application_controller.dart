@@ -9,10 +9,8 @@ import 'package:metamorphis/src/application/application/update_application_use_c
 import 'package:metamorphis/src/domain/application/entities/api_type.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/presenter/_core/app_store.dart';
-import 'package:metamorphis/src/presenter/_core/routers.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/application_view_model.dart';
 import 'package:metamorphis/src/presenter/application/application_store.dart';
-import 'package:metamorphis/src/presenter/bounded_context/bounded_context_routers.dart';
 import 'package:metamorphis/src/presenter/home/_core/home_routers.dart';
 
 class ApplicationController {
