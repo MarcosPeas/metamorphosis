@@ -12,7 +12,7 @@ class EntityModel extends Entity {
   EntityModel({
     required super.id,
     required super.name,
-    required super.boundedContextId,
+    required super.applicationId,
     required super.valueObjects,
     required super.useCases,
     required super.entityRules,
@@ -23,7 +23,7 @@ class EntityModel extends Entity {
     return EntityModel(
       id: entity.id,
       name: entity.name,
-      boundedContextId: entity.boundedContextId,
+      applicationId: entity.applicationId,
       valueObjects: entity.valueObjects,
       useCases: entity.useCases,
       entityRules: entity.entityRules,
@@ -59,7 +59,7 @@ class EntityModel extends Entity {
     return EntityModel(
       id: json['id'],
       name: json['name'],
-      boundedContextId: json['boundedContextId'],
+      applicationId: json['applicationId'],
       valueObjects: valueObjects,
       useCases: useCases,
       entityRules: entityRules,
@@ -83,7 +83,7 @@ class EntityModel extends Entity {
     return {
       'id': id,
       'name': name,
-      'boundedContextId': boundedContextId,
+      'applicationId': applicationId,
       'valueObjects': valueObjectsModel,
       'useCases': useCasesModel,
       'entityRules': entityRulesModel,

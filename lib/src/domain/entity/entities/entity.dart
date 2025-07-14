@@ -7,7 +7,7 @@ import 'package:uuid/uuid.dart';
 class Entity {
   late final String id;
   final String name;
-  final String boundedContextId;
+  final String applicationId;
   late final List<ValueObject> valueObjects;
   late final List<UseCase> useCases;
   late final List<EntityRule> entityRules;
@@ -16,7 +16,7 @@ class Entity {
   Entity({
     String? id,
     required this.name,
-    required this.boundedContextId,
+    required this.applicationId,
     List<ValueObject>? valueObjects,
     List<UseCase>? useCases,
     List<EntityRule>? entityRules,

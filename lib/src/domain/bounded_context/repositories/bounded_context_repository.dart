@@ -1,4 +1,4 @@
-import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
+/*import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
 
 abstract class BoundedContextRepository {
   Future<BoundedContext> save(BoundedContext boundedContext);
@@ -11,3 +11,4 @@ abstract class BoundedContextRepository {
 
   Future<void> delete(String id);
 }
+*/

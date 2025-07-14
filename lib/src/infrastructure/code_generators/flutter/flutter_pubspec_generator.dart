@@ -25,16 +25,14 @@ class FlutterPubspecGenerator {
 
   static String _libs(Application application) {
     final libs = <String>{};
-    final context = application.contexts;
-    final hasCpfCnpj = context.any((context) {
-      return context.entities.any((entity) {
-        return entity.valueObjects.any((valueObject) {
-          return valueObject.rules.any((rule) {
-            return rule.groupConditions.any((groupCondition) {
-              return groupCondition.conditions.any((condition) {
-                final operator = condition.comparatorOperator;
-                return operator == 'isCpf' || operator == 'isCnpj';
-              });
+    final entities = application.entities;
+    final hasCpfCnpj = entities.any((entity) {
+      return entity.valueObjects.any((valueObject) {
+        return valueObject.rules.any((rule) {
+          return rule.groupConditions.any((groupCondition) {
+            return groupCondition.conditions.any((condition) {
+              final operator = condition.comparatorOperator;
+              return operator == 'isCpf' || operator == 'isCnpj';
             });
           });
         });

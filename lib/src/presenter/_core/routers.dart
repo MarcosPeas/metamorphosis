@@ -22,7 +22,6 @@ class Routers {
       LoginRouters.route,
       ProjectRouters.route,
       ApplicationRouters.route,
-      BoundedContextRouters.route,
       HomeRouters.route,
     ],
   );

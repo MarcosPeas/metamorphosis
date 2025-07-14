@@ -1,4 +1,4 @@
-import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
+/*import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
 
 class BoundedContextModel extends BoundedContext {
   BoundedContextModel({
@@ -38,4 +38,4 @@ class BoundedContextModel extends BoundedContext {
       'createdAt': super.createdAt.toIso8601String(),
     };
   }
-}
+}*/

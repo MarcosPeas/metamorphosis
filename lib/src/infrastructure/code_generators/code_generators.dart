@@ -13,13 +13,8 @@ class CodeGenerators {
     if (target == GeneratorTarget.rust) {
       return RustGenerator.generate(application: application);
     }
-    return FlutterGenerator.generate(
-      application: application,
-    );
+    return FlutterGenerator.generate(application: application);
   }
 }
 
-enum GeneratorTarget {
-  flutter,
-  rust,
-}
+enum GeneratorTarget { flutter, rust, golang }

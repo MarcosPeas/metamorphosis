@@ -15,7 +15,6 @@ class Injector {
     SplashInjector.setup();
     ProjectInjector.setup();
     ApplicationInjector.setup();
-    BoundedContextInjector.setup();
     HomeInjector.setup();
   }
 

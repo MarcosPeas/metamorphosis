@@ -1,4 +1,4 @@
-import 'package:go_router/go_router.dart';
+/*import 'package:go_router/go_router.dart';
 
 import 'bounded_context_page.dart';
 
@@ -12,4 +12,4 @@ class BoundedContextRouters {
       return const BoundedContextPage();
     },
   );
-}
+}*/

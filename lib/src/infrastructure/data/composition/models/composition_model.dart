@@ -25,7 +25,7 @@ class CompositionModel extends Composition {
       entity: Entity(
         id: json['entityId'],
         name: json['entityName'],
-        boundedContextId: '',
+        applicationId: '',
       ),
       compositionType: CompositionType.fromString(
         json['compositionType'] ?? '',

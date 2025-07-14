@@ -4,12 +4,12 @@ import 'package:metamorphis/src/infrastructure/code_generators/code_generators.d
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/widgets/dialog_change_target_store.dart';
 
-class DialogChangeTargetWidget extends StatelessWidget {
+class DialogSelectTargetWidget extends StatelessWidget {
   late final DialogChangeTargetStore store;
   late final PageController pageController;
   final HomeController controller;
 
-  DialogChangeTargetWidget({super.key, required this.controller}) {
+  DialogSelectTargetWidget({super.key, required this.controller}) {
     store = DialogChangeTargetStore();
     pageController = PageController();
   }
@@ -42,10 +42,10 @@ class DialogChangeTargetWidget extends StatelessWidget {
                     trailing: const Icon(Icons.chevron_right),
                   ),
                   ListTile(
-                    title: const Text('Rust GraphQL'),
+                    title: const Text('Golang'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      controller.buildRustGraphQL();
+                      controller.buildGolang();
                       context.pop();
                     },
                   ),

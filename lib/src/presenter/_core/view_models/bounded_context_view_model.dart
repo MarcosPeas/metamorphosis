@@ -1,4 +1,4 @@
-import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
+/*import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
 
 class BoundedContextViewModel extends BoundedContext {
   BoundedContextViewModel({
@@ -18,4 +18,4 @@ class BoundedContextViewModel extends BoundedContext {
       createdAt: boundedContext.createdAt,
     );
   }
-}
+}*/

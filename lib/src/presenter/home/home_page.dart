@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton(
                                 onPressed: () {
-                                  showDialogChangeTarget();
+                                  showDialogSelectTarget();
                                 },
                                 child: const Text('Generate Code')),
                           ),
@@ -143,13 +143,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void showDialogChangeTarget() {
+  void showDialogSelectTarget() {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text('Change target'),
-          content: DialogChangeTargetWidget(controller: controller),
+          content: DialogSelectTargetWidget(controller: controller),
           actions: [
             TextButton(
               onPressed: () {

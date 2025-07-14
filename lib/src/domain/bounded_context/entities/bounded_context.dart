@@ -1,4 +1,4 @@
-import 'package:metamorphis/src/domain/entity/entities/entity.dart';
+/*import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:uuid/uuid.dart';
 
 class BoundedContext {
@@ -22,3 +22,4 @@ class BoundedContext {
     }
   }
 }
+*/

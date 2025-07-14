@@ -4,7 +4,7 @@ class EntityViewModel extends Entity {
   EntityViewModel._({
     required super.id,
     required super.name,
-    required super.boundedContextId,
+    required super.applicationId,
     required super.valueObjects,
     required super.useCases,
     required super.entityRules,
@@ -15,7 +15,7 @@ class EntityViewModel extends Entity {
     return EntityViewModel._(
       id: entity.id,
       name: entity.name,
-      boundedContextId: entity.boundedContextId,
+      applicationId: entity.applicationId,
       valueObjects: entity.valueObjects,
       useCases: entity.useCases,
       entityRules: entity.entityRules,
@@ -26,12 +26,12 @@ class EntityViewModel extends Entity {
   EntityViewModel copyWith({
     String? id,
     String? name,
-    String? boundedContextId,
+    String? applicationId,
   }) {
     return EntityViewModel._(
       id: id ?? this.id,
       name: name ?? this.name,
-      boundedContextId: boundedContextId ?? this.boundedContextId,
+      applicationId: applicationId ?? this.applicationId,
       valueObjects: valueObjects,
       useCases: useCases,
       entityRules: entityRules,

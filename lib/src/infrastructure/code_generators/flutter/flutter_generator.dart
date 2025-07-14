@@ -15,9 +15,7 @@ import 'flutter_repositories_generator.dart';
 class FlutterGenerator {
   FlutterGenerator._();
 
-  static Archive generate({
-    required Application application,
-  }) {
+  static Archive generate({required Application application}) {
     final archive = Archive();
     final applicationName = ChangeCase(application.name).toSnakeCase();
 
@@ -27,11 +25,9 @@ class FlutterGenerator {
     final pubspecFile = FlutterPubspecGenerator.generate(application);
     final mainFile = Uint8List.fromList(mainContent.codeUnits);
     archive.addFile(pubspecFile);
-    archive.addFile(ArchiveFile(
-      '$libDirectory/main.dart',
-      mainFile.length,
-      mainFile,
-    ));
+    archive.addFile(
+      ArchiveFile('$libDirectory/main.dart', mainFile.length, mainFile),
+    );
 
     final domainFiles = _generateDomainAndApplication(
       application: application,
@@ -45,68 +41,37 @@ class FlutterGenerator {
     required Application application,
     required String libDirectory,
   }) {
-    final contexts = application.contexts;
     List<ArchiveFile> domainFiles = [];
     List<ArchiveFile> applicationFiles = [];
     List<ArchiveFile> infraFiles = [];
-    if (contexts.length == 1) {
-      final domainPath = '$libDirectory/src/domain';
-      final applicationPath = '$libDirectory/src/application';
-      final infraPath = '$libDirectory/src/infrastructure';
-      domainFiles = FlutterEntitiesGenerator.generate(
-        entities: application.contexts.first.entities,
-        domainPath: domainPath,
-      );
-      final repositories = FlutterRepositoriesGenerator.generate(
-        entities: application.contexts.first.entities,
-        domainPath: domainPath,
-      );
-      domainFiles.addAll(repositories);
-      applicationFiles = FlutterUseCasesGenerator.generate(
-        entities: application.contexts.first.entities,
-        applicationPath: applicationPath,
-        domainPath: FlutterPathUtils.getFlutterPath(domainPath),
-        applicationNameSnakeCase: ChangeCase(application.name).toSnakeCase(),
-      );
-      final exceptionFiles = FlutterExceptionGenerator.generate(domainPath);
-      domainFiles.addAll(exceptionFiles);
-      infraFiles = FlutterRepositoriesImplGenerator.generate(
-        application: application,
-        entities: application.contexts.first.entities,
-        dataPath: infraPath,
-        domainPath: domainPath,
-      );
-      return [...domainFiles, ...applicationFiles, ...infraFiles];
-    }
-    for (final context in contexts) {
-      final contextName = ChangeCase(context.name).toSnakeCase();
-      final domainPath = '$libDirectory/src/$contextName/domain';
-      final applicationPath = '$libDirectory/src/$contextName/application';
-      final infraPath = '$libDirectory/src/$contextName/infrastructure';
-      domainFiles.addAll(FlutterEntitiesGenerator.generate(
-        entities: context.entities,
-        domainPath: domainPath,
-      ));
-      final repositories = FlutterRepositoriesGenerator.generate(
-        entities: application.contexts.first.entities,
-        domainPath: domainPath,
-      );
-      domainFiles.addAll(repositories);
-      applicationFiles.addAll(FlutterUseCasesGenerator.generate(
-        applicationPath: applicationPath,
-        domainPath: FlutterPathUtils.getFlutterPath(domainPath),
-        applicationNameSnakeCase: ChangeCase(application.name).toSnakeCase(),
-        entities: context.entities,
-      ));
-      final exceptionFiles = FlutterExceptionGenerator.generate(domainPath);
-      domainFiles.addAll(exceptionFiles);
-      infraFiles.addAll(FlutterRepositoriesImplGenerator.generate(
-        application: application,
-        entities: context.entities,
-        dataPath: infraPath,
-        domainPath: domainPath,
-      ));
-    }
+
+    final domainPath = '$libDirectory/src/domain';
+    final applicationPath = '$libDirectory/src/application';
+    final infraPath = '$libDirectory/src/infrastructure';
+
+    domainFiles = FlutterEntitiesGenerator.generate(
+      entities: application.entities,
+      domainPath: domainPath,
+    );
+    final repositories = FlutterRepositoriesGenerator.generate(
+      entities: application.entities,
+      domainPath: domainPath,
+    );
+    domainFiles.addAll(repositories);
+    applicationFiles = FlutterUseCasesGenerator.generate(
+      entities: application.entities,
+      applicationPath: applicationPath,
+      domainPath: FlutterPathUtils.getFlutterPath(domainPath),
+      applicationNameSnakeCase: ChangeCase(application.name).toSnakeCase(),
+    );
+    final exceptionFiles = FlutterExceptionGenerator.generate(domainPath);
+    domainFiles.addAll(exceptionFiles);
+    infraFiles = FlutterRepositoriesImplGenerator.generate(
+      application: application,
+      entities: application.entities,
+      dataPath: infraPath,
+      domainPath: domainPath,
+    );
     return [...domainFiles, ...applicationFiles, ...infraFiles];
   }
 

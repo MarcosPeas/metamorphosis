@@ -1,4 +1,4 @@
-import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
+import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/project/entities/project.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,7 +15,8 @@ class Application {
   String projectId;
   late final DateTime createdAt;
   Project? project;
-  List<BoundedContext> contexts = [];
+  //List<BoundedContext> contexts = [];
+  List<Entity> entities = [];
   final List<DomainError> errors = [];
   ApiOptions apiOptions;
 

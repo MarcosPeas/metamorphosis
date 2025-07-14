@@ -1,4 +1,4 @@
-import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
+/*import 'package:metamorphis/src/domain/bounded_context/entities/bounded_context.dart';
 import 'package:metamorphis/src/presenter/_core/store.dart';
 
 class BoundedContextStore extends Store {
@@ -34,4 +34,4 @@ class BoundedContextStore extends Store {
   void clear() {
     _boundedContexts.clear();
   }
-}
+}*/

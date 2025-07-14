@@ -1,4 +1,4 @@
-import 'package:get_it/get_it.dart';
+/*import 'package:get_it/get_it.dart';
 import 'package:metamorphis/src/application/bounded_context/delete_bounded_context_use_case.dart';
 import 'package:metamorphis/src/application/bounded_context/get_bounded_contexts_by_application_use_case.dart';
 import 'package:metamorphis/src/application/bounded_context/save_bounded_context_use_case.dart';
@@ -47,4 +47,4 @@ class BoundedContextInjector {
       ),
     );
   }
-}
+}*/

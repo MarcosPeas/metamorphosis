@@ -31,24 +31,24 @@ class EntityRepositoryImpl implements EntityRepository {
   }
 
   @override
-  Future<List<Entity>> getByBoundedContext(String boundedContextId) async {
+  Future<List<Entity>> getByApplication(String applicationId) async {
     try {
       final result = await _firestore
           .collection(collection)
-          .where('boundedContextId', isEqualTo: boundedContextId)
+          .where('applicationId', isEqualTo: applicationId)
           .get();
       return result.docs.map((e) => EntityModel.fromMap(e.data())).toList();
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
         message: e.code,
         trace: s.toString(),
-        context: 'EntityRepositoryImpl.getByBoundedContext',
+        context: 'EntityRepositoryImpl.getByApplication',
       );
     } catch (e, s) {
       throw DomainException.of(
         message: 'Não foi possível encontrar as entidades',
         trace: s.toString(),
-        context: 'EntityRepositoryImpl.getByBoundedContext',
+        context: 'EntityRepositoryImpl.getByApplication',
       );
     }
   }
