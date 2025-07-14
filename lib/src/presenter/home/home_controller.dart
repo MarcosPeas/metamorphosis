@@ -118,16 +118,8 @@ class HomeController {
   }
 
   void _buildCode(GeneratorTarget target) {
-    _loadBoundedContexts(target);
-  }
-
-  Future<void> _loadBoundedContexts(GeneratorTarget target) async {
     homeStore.generating = true;
     final application = appStore.application!;
-    _generateCode(application, target);
-  }
-
-  void _generateCode(Application application, GeneratorTarget target) {
     final name = ChangeCase(application.name).toSnakeCase();
     final archive = CodeGenerators.generateCode(
       application: application,
@@ -166,6 +158,6 @@ class HomeController {
   }
 
   void buildGolang() {
-    _buildCode(GeneratorTarget.golang);
+    _buildCode(GeneratorTarget.rust);
   }
 }
