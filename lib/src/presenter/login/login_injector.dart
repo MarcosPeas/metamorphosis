@@ -61,6 +61,7 @@ class LoginInjector {
         appStore: getIt(),
         signInWithEmailAndPasswordUseCase: getIt(),
         getUserByIdUseCase: getIt(),
+        signOutUseCase: getIt(),
       ),
     );
   }

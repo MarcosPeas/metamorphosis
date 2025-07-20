@@ -1,25 +1,26 @@
+
 import 'package:metamorphis/src/domain/composition/entities/composition.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 
-class CompositionModel extends Composition {
-  CompositionModel({
+class ReferenceModel extends Reference {
+  ReferenceModel({
     required super.id,
     required super.name,
     required super.entity,
-    required super.compositionType,
+    required super.referenceType,
   });
 
-  factory CompositionModel.fromEntity(Composition composition) {
-    return CompositionModel(
-      id: composition.id,
-      name: composition.name,
-      entity: composition.entity,
-      compositionType: composition.compositionType,
+  factory ReferenceModel.fromEntity(Reference reference) {
+    return ReferenceModel(
+      id: reference.id,
+      name: reference.name,
+      entity: reference.entity,
+      referenceType: reference.referenceType,
     );
   }
 
-  factory CompositionModel.fromMap(Map<String, dynamic> json) {
-    return CompositionModel(
+  factory ReferenceModel.fromMap(Map<String, dynamic> json) {
+    return ReferenceModel(
       id: json['id'],
       name: json['name'],
       entity: Entity(
@@ -27,8 +28,8 @@ class CompositionModel extends Composition {
         name: json['entityName'],
         applicationId: '',
       ),
-      compositionType: CompositionType.fromString(
-        json['compositionType'] ?? '',
+      referenceType: ReferenceType.fromString(
+        json['referenceType'] ?? '',
       ),
     );
   }
@@ -39,7 +40,7 @@ class CompositionModel extends Composition {
       'name': super.name,
       'entityId': super.entity.id,
       'entityName': super.entity.name,
-      'compositionType': super.compositionType.name,
+      'referenceType': super.referenceType.name,
     };
   }
 }

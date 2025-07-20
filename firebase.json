@@ -9,7 +9,7 @@
         }
       },
       "dart": {
-        "lib/firebase_options.dart": {
+        "lib/src/presenter/_core/firebase_options.dart": {
           "projectId": "metamorphis-cfb55",
           "configurations": {
             "android": "1:335502868627:android:64f103f02b95575321cd66",

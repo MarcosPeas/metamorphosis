@@ -9,7 +9,7 @@ class EntityRuleCondition {
   String comparatorOperator;
   ValueObject? leftValueObject;
   ValueObject? rightValueObject;
-  Composition? composition;
+  Reference? composition;
 
   EntityRuleCondition({
     String? id,

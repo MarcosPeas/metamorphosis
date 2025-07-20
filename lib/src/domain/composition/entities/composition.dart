@@ -1,38 +1,38 @@
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:uuid/uuid.dart';
 
-class Composition {
+class Reference {
   late final String id;
   String name;
   Entity entity;
-  CompositionType compositionType;
+  ReferenceType referenceType;
 
-  Composition({
+  Reference({
     String? id,
     required this.name,
     required this.entity,
-    required this.compositionType,
+    required this.referenceType,
   }) {
     this.id = id ?? const Uuid().v4();
   }
 }
 
-enum CompositionType {
-  singleEntity('singleEntity'),
-  listOfEntities('listOfEntities');
+enum ReferenceType {
+  single('single'),
+  multi('multi');
 
   final String name;
 
-  const CompositionType(this.name);
+  const ReferenceType(this.name);
 
-  static CompositionType fromString(String value) {
+  static ReferenceType fromString(String value) {
     switch (value) {
-      case 'listOfEntities':
-        return listOfEntities;
-      case 'singleEntity':
-        return singleEntity;
+      case 'multi':
+        return multi;
+      case 'single':
+        return single;
       default:
-        return singleEntity;
+        return single;
     }
   }
 }

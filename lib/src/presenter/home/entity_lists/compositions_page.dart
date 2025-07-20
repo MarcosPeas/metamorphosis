@@ -125,23 +125,19 @@ class _CompositionsPageState extends State<CompositionsPage> {
     );
   }
 
-  String _compositionLabel(Composition composition) {
-    if (composition.compositionType == CompositionType.listOfEntities) {
-      return 'Type: List<${composition.entity.name}>';
-    } else {
-      return 'Type: ${composition.entity.name}';
-    }
+  String _compositionLabel(Reference composition) {
+      return 'Reference: ${composition.entity.name}';
   }
 
   void _showDialogCreateList() {
     final nameController = TextEditingController();
     final selectedEntity = ValueNotifier<Entity?>(null);
-    final compositionType = ValueNotifier(CompositionType.singleEntity);
+    final compositionType = ValueNotifier(ReferenceType.single);
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Create a composition of entities'),
+          title: const Text('Create a reference of entities'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -196,12 +192,12 @@ class _CompositionsPageState extends State<CompositionsPage> {
                     },
                     items: const [
                       DropdownMenuItem(
-                        value: CompositionType.singleEntity,
-                        child: Text('Single entity'),
+                        value: ReferenceType.single,
+                        child: Text('Single'),
                       ),
                       DropdownMenuItem(
-                        value: CompositionType.listOfEntities,
-                        child: Text('List of entities'),
+                        value: ReferenceType.multi,
+                        child: Text('Multi'),
                       ),
                     ],
                   );
@@ -234,15 +230,20 @@ class _CompositionsPageState extends State<CompositionsPage> {
     );
   }
 
-  void _showDialogUpdateList(Composition composition) {
-    final nameController = TextEditingController(text: composition.name);
-    final selectedEntity = ValueNotifier<Entity>(composition.entity);
-    final compositionType = ValueNotifier(composition.compositionType);
+  void _showDialogUpdateList(Reference reference) {
+    final nameController = TextEditingController(text: reference.name);
+    final selectedEntity = ValueNotifier<Entity>(reference.entity);
+    final compositionType = ValueNotifier(reference.referenceType);
+    final entities = [...widget.entities];
+    final index = entities.indexWhere((item) {
+      return item.id == reference.entity.id;
+    });
+    entities[index] = reference.entity;
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Update the composition of entities'),
+          title: const Text('Update the reference of entities'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -256,7 +257,7 @@ class _CompositionsPageState extends State<CompositionsPage> {
                   controller.updateComposition(
                     entity: selectedEntity.value,
                     name: nameController.text.trim(),
-                    list: composition,
+                    list: reference,
                     compositionType: compositionType.value,
                   );
                   context.pop();
@@ -270,10 +271,6 @@ class _CompositionsPageState extends State<CompositionsPage> {
               ValueListenableBuilder(
                 valueListenable: selectedEntity,
                 builder: (_, entity, __) {
-                  final entities = [...widget.entities];
-                  entities.removeWhere((item) {
-                    return item.id == controller.entityStore.entity.id;
-                  });
                   return DropdownButton(
                     value: selectedEntity.value,
                     isExpanded: true,
@@ -301,12 +298,12 @@ class _CompositionsPageState extends State<CompositionsPage> {
                     },
                     items: const [
                       DropdownMenuItem(
-                        value: CompositionType.singleEntity,
-                        child: Text('Single entity'),
+                        value: ReferenceType.single,
+                        child: Text('Single'),
                       ),
                       DropdownMenuItem(
-                        value: CompositionType.listOfEntities,
-                        child: Text('List of entities'),
+                        value: ReferenceType.multi,
+                        child: Text('Multi'),
                       ),
                     ],
                   );
@@ -327,7 +324,7 @@ class _CompositionsPageState extends State<CompositionsPage> {
                 controller.updateComposition(
                   entity: selectedEntity.value,
                   name: nameController.text.trim(),
-                  list: composition,
+                  list: reference,
                   compositionType: compositionType.value,
                 );
                 context.pop();

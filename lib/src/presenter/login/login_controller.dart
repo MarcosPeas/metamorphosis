@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/application/user/get_user_by_id_use_case.dart';
 import 'package:metamorphis/src/application/user/sign_in_with_email_and_password_use_case.dart';
+import 'package:metamorphis/src/application/user/sign_out_use_case.dart';
 import 'package:metamorphis/src/presenter/_core/app_store.dart';
 import 'package:metamorphis/src/presenter/login/login_store.dart';
 import 'package:metamorphis/src/presenter/project/project_routers.dart';
@@ -13,12 +14,14 @@ class LoginController {
   final AppStore appStore;
   final SignInWithEmailAndPasswordUseCase signInWithEmailAndPasswordUseCase;
   final GetUserByIdUseCase getUserByIdUseCase;
+  final SignOutUseCase signOutUseCase;
 
   LoginController({
     required this.store,
     required this.appStore,
     required this.signInWithEmailAndPasswordUseCase,
     required this.getUserByIdUseCase,
+    required this.signOutUseCase,
   });
 
   void init(BuildContext context) {
@@ -54,8 +57,10 @@ class LoginController {
         log(error.message);
         store.error = error;
         store.loading = false;
+        signOutUseCase.execute();
       },
       (user) async {
+        print(user.name);
         await _loadCurrentUser(context: context, userId: user.id);
         store.loading = false;
       },
@@ -70,6 +75,7 @@ class LoginController {
     result.fold(
       (error) {
         log(error.message);
+        signOutUseCase.execute();
       },
       (user) {
         appStore.user = user;

@@ -1,10 +1,12 @@
 import 'package:metamorphis/src/domain/composition/entities/composition.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
+import 'package:metamorphis/src/domain/enumerator/entities/enumerator.dart';
 import 'package:metamorphis/src/domain/use_case/entities/use_case.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/infrastructure/data/composition/models/composition_model.dart';
 import 'package:metamorphis/src/infrastructure/data/entity_rule/models/entity_rule_model.dart';
+import 'package:metamorphis/src/infrastructure/data/enumerator/models/enumerator_model.dart';
 import 'package:metamorphis/src/infrastructure/data/use_case/models/use_case_model.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object/models/value_object_model.dart';
 
@@ -17,6 +19,7 @@ class EntityModel extends Entity {
     required super.useCases,
     required super.entityRules,
     required super.compositions,
+    required super.enumerators,
   });
 
   factory EntityModel.fromEntity(Entity entity) {
@@ -28,6 +31,7 @@ class EntityModel extends Entity {
       useCases: entity.useCases,
       entityRules: entity.entityRules,
       compositions: entity.compositions,
+      enumerators: entity.enumerators,
     );
   }
 
@@ -35,7 +39,8 @@ class EntityModel extends Entity {
     final valueObjects = <ValueObject>[];
     final useCases = <UseCase>[];
     final entityRules = <EntityRule>[];
-    final compositions = <Composition>[];
+    final references = <Reference>[];
+    final enumerators = <Enumerator>[];
     if (json['valueObjects'] != null) {
       json['valueObjects'].forEach((valueObject) {
         valueObjects.add(ValueObjectModel.fromMap(valueObject));
@@ -51,9 +56,14 @@ class EntityModel extends Entity {
         entityRules.add(EntityRuleModel.fromMap(entityRule));
       });
     }
-    if (json['compositions'] != null) {
-      json['compositions'].forEach((entityList) {
-        compositions.add(CompositionModel.fromMap(entityList));
+    if (json['references'] != null) {
+      json['references'].forEach((reference) {
+        references.add(ReferenceModel.fromMap(reference));
+      });
+    }
+    if (json['enumerators'] != null) {
+      json['enumerators'].forEach((enumerator) {
+        enumerators.add(EnumeratorModel.fromMap(enumerator));
       });
     }
     return EntityModel(
@@ -63,7 +73,8 @@ class EntityModel extends Entity {
       valueObjects: valueObjects,
       useCases: useCases,
       entityRules: entityRules,
-      compositions: compositions,
+      compositions: references,
+      enumerators: enumerators,
     );
   }
 
@@ -78,7 +89,10 @@ class EntityModel extends Entity {
       return EntityRuleModel.fromEntity(entityRule).toJson();
     }).toList();
     final compositionsModel = compositions.map((entityList) {
-      return CompositionModel.fromEntity(entityList).toMap();
+      return ReferenceModel.fromEntity(entityList).toMap();
+    }).toList();
+    final enumeratorsModel = enumerators.map((enumerator) {
+      return EnumeratorModel.fromEntity(enumerator).toMap();
     }).toList();
     return {
       'id': id,
@@ -88,6 +102,7 @@ class EntityModel extends Entity {
       'useCases': useCasesModel,
       'entityRules': entityRulesModel,
       'compositions': compositionsModel,
+      'enumerators': enumeratorsModel,
     };
   }
 }

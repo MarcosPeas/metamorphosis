@@ -30,15 +30,15 @@ class CompositionsController {
   void createComposition({
     required String name,
     Entity? entity,
-    required CompositionType compositionType,
+    required ReferenceType compositionType,
   }) {
     if (entity == null) {
       return;
     }
-    final entityList = Composition(
+    final entityList = Reference(
       name: name,
       entity: entity,
-      compositionType: compositionType,
+      referenceType: compositionType,
     );
     entityStore.entity.compositions.add(entityList);
     updateEntity();
@@ -47,16 +47,16 @@ class CompositionsController {
   void updateComposition({
     required String name,
     required Entity entity,
-    required Composition list,
-    required CompositionType compositionType,
+    required Reference list,
+    required ReferenceType compositionType,
   }) {
     list.name = name;
-    list.compositionType = compositionType;
+    list.referenceType = compositionType;
     list.entity = entity;
     updateEntity();
   }
 
-  void removeComposition(Composition list) {
+  void removeComposition(Reference list) {
     entityStore.entity.compositions.remove(list);
     updateEntity();
   }

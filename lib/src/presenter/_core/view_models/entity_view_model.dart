@@ -9,6 +9,7 @@ class EntityViewModel extends Entity {
     required super.useCases,
     required super.entityRules,
     required super.compositions,
+    required super.enumerators,
   });
 
   factory EntityViewModel.fromEntity(Entity entity) {
@@ -20,6 +21,7 @@ class EntityViewModel extends Entity {
       useCases: entity.useCases,
       entityRules: entity.entityRules,
       compositions: entity.compositions,
+      enumerators: entity.enumerators,
     );
   }
 
@@ -36,6 +38,7 @@ class EntityViewModel extends Entity {
       useCases: useCases,
       entityRules: entityRules,
       compositions: compositions,
+      enumerators: enumerators,
     );
   }
 }

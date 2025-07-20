@@ -11,6 +11,8 @@ import 'package:metamorphis/src/domain/entity/repositories/entity_repository.dar
 import 'package:metamorphis/src/domain/value_object/repositories/value_object_repository.dart';
 import 'package:metamorphis/src/infrastructure/data/entity/repositories/entity_repository_impl.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object/repositories/value_object_repository_impl.dart';
+import 'package:metamorphis/src/presenter/home/enumerators/enumerators_controller.dart';
+import 'package:metamorphis/src/presenter/home/enumerators/enumerators_controller.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/home_store.dart';
 
@@ -102,6 +104,12 @@ class HomeInjector {
     );
     getIt.registerFactory<CompositionsController>(
       () => CompositionsController(
+        entityStore: getIt(),
+        updateEntityUseCase: getIt(),
+      ),
+    );
+    getIt.registerFactory<EnumeratorsController>(
+      () => EnumeratorsController(
         entityStore: getIt(),
         updateEntityUseCase: getIt(),
       ),

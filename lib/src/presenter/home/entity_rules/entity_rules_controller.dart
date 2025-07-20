@@ -60,7 +60,7 @@ class EntityRulesController {
       targetValue: targetValue,
       comparatorOperator: comparatorOperator,
       leftValueObject: leftObject is ValueObject ? leftObject : null,
-      composition: leftObject is Composition ? leftObject : null,
+      composition: leftObject is Reference ? leftObject : null,
       rightValueObject: rightValueObject,
     );
     group.conditions.add(entityRuleCondition);

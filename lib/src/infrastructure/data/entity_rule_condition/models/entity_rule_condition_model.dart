@@ -36,7 +36,7 @@ class EntityRuleConditionModel extends EntityRuleCondition {
     String? regex,
     ValueObject? leftValueObject,
     ValueObject? rightValueObject,
-    Composition? composition,
+    Reference? composition,
   }) {
     return EntityRuleConditionModel._(
       id: id ?? this.id,
@@ -64,7 +64,7 @@ class EntityRuleConditionModel extends EntityRuleCondition {
   Map<String, dynamic> toJson() {
     ValueObjectModel? leftValueObject;
     ValueObjectModel? rightValueObject;
-    CompositionModel? composition;
+    ReferenceModel? composition;
     if (this.leftValueObject != null) {
       leftValueObject = ValueObjectModel.fromValueObject(this.leftValueObject!);
     }
@@ -73,7 +73,7 @@ class EntityRuleConditionModel extends EntityRuleCondition {
           ValueObjectModel.fromValueObject(this.rightValueObject!);
     }
     if (this.composition != null) {
-      composition = CompositionModel.fromEntity(this.composition!);
+      composition = ReferenceModel.fromEntity(this.composition!);
     }
     return {
       'id': id,
@@ -89,7 +89,7 @@ class EntityRuleConditionModel extends EntityRuleCondition {
   factory EntityRuleConditionModel.fromMap(Map<String, dynamic> json) {
     ValueObject? leftValueObject;
     ValueObject? rightValueObject;
-    Composition? composition;
+    Reference? composition;
     if (json['leftValueObject'] != null) {
       leftValueObject = ValueObjectModel.fromMap(json['leftValueObject']);
     }
@@ -97,7 +97,7 @@ class EntityRuleConditionModel extends EntityRuleCondition {
       rightValueObject = ValueObjectModel.fromMap(json['rightValueObject']);
     }
     if (json['composition'] != null) {
-      composition = CompositionModel.fromMap(json['composition']);
+      composition = ReferenceModel.fromMap(json['composition']);
     }
     return EntityRuleConditionModel._(
       id: json['id'],

@@ -9,7 +9,6 @@ import 'package:metamorphis/src/application/entity/get_entities_by_application_u
 import 'package:metamorphis/src/application/entity/save_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
 import 'package:metamorphis/src/domain/application/entities/api_type.dart';
-import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/code_generators.dart';
 import 'package:metamorphis/src/presenter/_core/app_store.dart';

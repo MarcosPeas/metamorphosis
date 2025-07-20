@@ -9,10 +9,7 @@ class SignOutUseCase {
     _userRepository = userRepository;
   }
 
-  Future<Either<DomainException, Unit>> execute({
-    required String email,
-    required String password,
-  }) async {
+  Future<Either<DomainException, Unit>> execute() async {
     try {
       await _userRepository.signOut();
       return const Right(unit);

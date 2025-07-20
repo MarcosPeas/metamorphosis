@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/user/entities/user.dart';
@@ -22,8 +24,12 @@ class SignInWithEmailAndPasswordUseCase {
       final user = await _loadUser(result.id);
       return Right(user);
     } on DomainException catch (e) {
+      log(e.message);
+      log(e.trace);
       return Left(e);
     } catch (e, s) {
+      log('$e');
+      log('$s');
       return Left(
         DomainException.of(
           message: e.toString(),

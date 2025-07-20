@@ -25,7 +25,7 @@ class EntityRuleDialog extends StatelessWidget {
     final targetValue = store.targetValue;
     if (leftField == null) return false;
     if (operator == null) return false;
-    if (leftField is Composition) {
+    if (leftField is Reference) {
       if (operator == 'isNotEmpty') return true;
       if (operator == 'isEmpty') return true;
       if (operator != 'isNotEmpty' && operator != 'isEmpty') {
@@ -122,9 +122,9 @@ class EntityRuleDialog extends StatelessWidget {
                     store.operators = TypesUtils.conditionsForEntity(
                       valueObject.type,
                     );
-                  } else if (value is Composition) {
+                  } else if (value is Reference) {
                     store.operators = TypesUtils.conditionsForEntity(
-                      value.compositionType.name,
+                      value.referenceType.name,
                     );
                   }
                 },
@@ -158,7 +158,7 @@ class EntityRuleDialog extends StatelessWidget {
                     ),
                 ],
               ),
-              if (store.leftField is! Composition) ...[
+              if (store.leftField is! Reference) ...[
                 const SizedBox(height: 16),
                 SwitchListTile(
                   title: const Text('Compare with another element'),
@@ -230,7 +230,7 @@ class EntityRuleDialog extends StatelessWidget {
     dynamic leftFieldValue,
     String? currentOperator,
   ) {
-    if (leftFieldValue is Composition) {
+    if (leftFieldValue is Reference) {
       if (currentOperator != null) {
         if (currentOperator != 'isNotEmpty') {
           if (currentOperator != 'isEmpty') {

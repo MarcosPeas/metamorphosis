@@ -8,6 +8,7 @@ import 'package:metamorphis/src/presenter/home/widgets/dialog_change_target_widg
 import 'package:metamorphis/src/presenter/home/widgets/selected_entity_widget.dart';
 
 import 'entity_rules/entity_rules_page.dart';
+import 'enumerators/enumerators_page.dart';
 import 'use_cases/use_cases_page.dart';
 import 'value_objects/value_objects_page.dart';
 
@@ -42,9 +43,7 @@ class _HomePageState extends State<HomePage> {
           listenable: appStore,
           builder: (_, __) {
             if (homeStore.loading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
             final entity = appStore.entity;
             if (entity == null) {
@@ -105,10 +104,11 @@ class _HomePageState extends State<HomePage> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedButton(
-                                onPressed: () {
-                                  showDialogSelectTarget();
-                                },
-                                child: const Text('Generate Code')),
+                              onPressed: () {
+                                showDialogSelectTarget();
+                              },
+                              child: const Text('Generate Code'),
+                            ),
                           ),
                         ],
                       ),
@@ -131,6 +131,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         EntityRulesPage(key: ValueKey(entity.id)),
                         UseCasesPage(key: ValueKey(entity.id)),
+                        EnumeratorsPage(key: ValueKey(entity.id)),
                       ],
                     ),
                   ),
@@ -200,18 +201,13 @@ class _HomePageState extends State<HomePage> {
               ListTile(
                 title: Text(
                   'Remover entity',
-                  style: TextStyle(
-                    color: colorScheme.error,
-                  ),
+                  style: TextStyle(color: colorScheme.error),
                 ),
                 onTap: () {
                   context.pop();
                   showDeleteEntityDialog(entity);
                 },
-                leading: Icon(
-                  Icons.delete,
-                  color: colorScheme.error,
-                ),
+                leading: Icon(Icons.delete, color: colorScheme.error),
               ),
             ],
           ),
@@ -276,15 +272,11 @@ class _HomePageState extends State<HomePage> {
               TextField(
                 onSubmitted: (value) {
                   if (applicationName.value.length > 2) {
-                    controller.saveEntity(
-                      name: applicationName.value,
-                    );
+                    controller.saveEntity(name: applicationName.value);
                     context.pop();
                   }
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                ),
+                decoration: const InputDecoration(labelText: 'Name'),
                 onChanged: (text) {
                   applicationName.value = text.trim();
                 },
@@ -304,9 +296,7 @@ class _HomePageState extends State<HomePage> {
                 return TextButton(
                   onPressed: name.length > 2
                       ? () {
-                          controller.saveEntity(
-                            name: applicationName.value,
-                          );
+                          controller.saveEntity(name: applicationName.value);
                           context.pop();
                         }
                       : null,
@@ -335,17 +325,13 @@ class _HomePageState extends State<HomePage> {
                 onSubmitted: (value) {
                   if (applicationName.value.length > 2) {
                     controller.updateEntity(
-                      entity: entity.copyWith(
-                        name: applicationName.value,
-                      ),
+                      entity: entity.copyWith(name: applicationName.value),
                     );
                     context.pop();
                   }
                 },
                 controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                ),
+                decoration: const InputDecoration(labelText: 'Name'),
                 onChanged: (text) {
                   applicationName.value = text.trim();
                 },
@@ -397,7 +383,8 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                  'Are you sure you want to remove the following entity?'),
+                'Are you sure you want to remove the following entity?',
+              ),
               const SizedBox(height: 8),
               Text(
                 entity.name,
@@ -419,12 +406,7 @@ class _HomePageState extends State<HomePage> {
                 controller.deleteEntity(entity: entity);
                 context.pop();
               },
-              child: Text(
-                'Remove',
-                style: TextStyle(
-                  color: colorScheme.error,
-                ),
-              ),
+              child: Text('Remove', style: TextStyle(color: colorScheme.error)),
             ),
           ],
         );
@@ -437,10 +419,7 @@ class _MenuWidget extends StatelessWidget {
   final EntityViewModel entity;
   final VoidCallback onTap;
 
-  const _MenuWidget({
-    required this.entity,
-    required this.onTap,
-  });
+  const _MenuWidget({required this.entity, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -470,66 +449,43 @@ class _MenuItems extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        ListTile(
-          title: const Text('Value Objects'),
-          selected: index == 0,
-          onTap: () {
-            onTap(0);
-          },
-        ),
-        ListTile(
-          title: const Text('Compositions'),
-          selected: index == 1,
-          onTap: () {
-            onTap(1);
-          },
-        ),
-        ListTile(
-          title: const Text('Entity Rules'),
-          selected: index == 2,
-          onTap: () {
-            onTap(2);
-          },
-        ),
-        ListTile(
-          title: const Text('Use Cases'),
-          selected: index == 3,
-          onTap: () {
-            onTap(3);
-          },
-        ),
-        /*_MenuItem(
-          selected: index == 0,
-          index: 0,
-          onTap: onTap,
+        _MenuItem(
           title: 'Value Objects',
+          selected: index == 0,
+          onTap: () => onTap(0),
         ),
         _MenuItem(
+          title: 'Compositions',
           selected: index == 1,
-          index: 1,
-          onTap: onTap,
-          title: 'Entity Rules',
+          onTap: () => onTap(1),
         ),
         _MenuItem(
+          title: 'Entity Rules',
           selected: index == 2,
-          index: 2,
-          onTap: onTap,
+          onTap: () => onTap(2),
+        ),
+        _MenuItem(
           title: 'Use Cases',
-        ),*/
+          selected: index == 3,
+          onTap: () => onTap(3),
+        ),
+        _MenuItem(
+          title: 'Enumerators',
+          selected: index == 4,
+          onTap: () => onTap(4),
+        ),
       ],
     );
   }
 }
-/*
+
 class _MenuItem extends StatelessWidget {
-  final int index;
   final bool selected;
-  final void Function(int index) onTap;
+  final void Function()? onTap;
   final String title;
 
   const _MenuItem({
     required this.selected,
-    required this.index,
     required this.onTap,
     required this.title,
   });
@@ -538,22 +494,26 @@ class _MenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    return InkWell(
-      child: Container(
-        color: selected ? colorScheme.primary : colorScheme.inversePrimary,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Text(
-          title,
-          style: textTheme.bodyMedium?.copyWith(
-            color: selected ? colorScheme.onPrimary : colorScheme.onSurface,
-            fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-          ),
+    if (1 > 0) {
+      return ElevatedButton(
+        onPressed: onTap,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: selected
+              ? colorScheme.primary
+              : colorScheme.primaryContainer,
+          foregroundColor: selected
+              ? colorScheme.onPrimary
+              : colorScheme.onPrimaryContainer,
+          enableFeedback: false,
+          textStyle: textTheme.titleMedium,
+          alignment: Alignment.centerLeft,
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         ),
-      ),
-      onTap: () {
-        onTap(index);
-      },
-    );
+        child: Text(title),
+      );
+    }
+    return ListTile(title: Text(title), selected: selected, onTap: onTap);
   }
 }
-*/
