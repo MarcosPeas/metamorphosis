@@ -13,7 +13,6 @@ class ApplicationPage extends StatefulWidget {
 }
 
 class _ApplicationPageState extends State<ApplicationPage> {
-
   late final ApplicationController controller;
 
   @override
@@ -29,9 +28,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Widget build(BuildContext context) {
     final store = controller.applicationStore;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Aplicações'),
-      ),
+      appBar: AppBar(title: const Text('Aplicações')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListenableBuilder(
@@ -39,9 +36,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
           builder: (context, _) {
             final applications = store.applications;
             if (store.loading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
             return Wrap(
               direction: Axis.horizontal,
@@ -51,16 +46,17 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: _ApplicationCard(
-                        application: application,
-                        onTap: () {
-                          controller.selectApplication(
-                            application: application,
-                            context: context,
-                          );
-                        },
-                        onTapEdit: () {
-                          showEditApplicationDialog(application);
-                        }),
+                      application: application,
+                      onTap: () {
+                        controller.selectApplication(
+                          application: application,
+                          context: context,
+                        );
+                      },
+                      onTapEdit: () {
+                        showEditApplicationDialog(application);
+                      },
+                    ),
                   ),
                 AddElementWidget(
                   onTap: () {
@@ -88,9 +84,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Nome',
-                ),
+                decoration: const InputDecoration(labelText: 'Nome'),
                 onChanged: (text) {
                   applicationName.value = text.trim();
                 },
@@ -100,9 +94,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 onChanged: (text) {
                   applicationDescription = text.trim();
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Descrição',
-                ),
+                decoration: const InputDecoration(labelText: 'Descrição'),
               ),
             ],
           ),
@@ -119,12 +111,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 return TextButton(
                   onPressed: name.length > 2
                       ? () {
-                    controller.saveApplication(
-                      name: applicationName.value,
-                      description: applicationDescription,
-                    );
-                    context.pop();
-                  }
+                          controller.saveApplication(
+                            name: applicationName.value,
+                            description: applicationDescription,
+                          );
+                          context.pop();
+                        }
                       : null,
                   child: const Text('Salvar'),
                 );
@@ -148,9 +140,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Nome',
-                ),
+                decoration: const InputDecoration(labelText: 'Nome'),
                 controller: TextEditingController(text: application.name),
                 onChanged: (text) {
                   applicationName.value = text.trim();
@@ -158,13 +148,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
               ),
               const SizedBox(height: 16),
               TextField(
-                controller: TextEditingController(text: application.description),
+                controller: TextEditingController(
+                  text: application.description,
+                ),
                 onChanged: (text) {
                   applicationDescription = text.trim();
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Descrição',
-                ),
+                decoration: const InputDecoration(labelText: 'Descrição'),
               ),
               const SizedBox(height: 16),
               TextButton(
@@ -174,9 +164,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 },
                 child: Text(
                   'Remover este aplicação',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ),
             ],
@@ -194,13 +182,13 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 return TextButton(
                   onPressed: name.length > 2
                       ? () {
-                    application.name = applicationName.value;
-                    application.description = applicationDescription;
-                    controller.updateApplication(
-                      application: application,
-                    );
-                    context.pop();
-                  }
+                          application.name = applicationName.value;
+                          application.description = applicationDescription;
+                          controller.updateApplication(
+                            application: application,
+                          );
+                          context.pop();
+                        }
                       : null,
                   child: const Text('Salvar'),
                 );
@@ -225,7 +213,9 @@ class _ApplicationPageState extends State<ApplicationPage> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Tem certeza que deseja remover o seguinte aplicação?'),
+              const Text(
+                'Tem certeza que deseja remover o seguinte aplicação?',
+              ),
               const SizedBox(height: 8),
               Text(
                 application.name,
@@ -249,9 +239,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               },
               child: Text(
                 'Remover',
-                style: TextStyle(
-                  color: colorScheme.error,
-                ),
+                style: TextStyle(color: colorScheme.error),
               ),
             ),
           ],
@@ -260,7 +248,6 @@ class _ApplicationPageState extends State<ApplicationPage> {
     );
   }
 }
-
 
 class _ApplicationCard extends StatelessWidget {
   final Application application;
@@ -290,10 +277,7 @@ class _ApplicationCard extends StatelessWidget {
                 top: 8,
                 right: 8,
                 child: IconButton(
-                  icon: const Icon(
-                    size: 16,
-                    Icons.edit,
-                  ),
+                  icon: const Icon(size: 16, Icons.edit),
                   onPressed: onTapEdit,
                   padding: EdgeInsets.zero,
                   iconSize: 16,

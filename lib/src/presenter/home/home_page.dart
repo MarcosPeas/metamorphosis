@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:metamorphis/src/presenter/_core/extensions/navigator_extension.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
 import 'package:metamorphis/src/presenter/home/entity_lists/compositions_page.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/widgets/dialog_change_target_widget.dart';
 import 'package:metamorphis/src/presenter/home/widgets/selected_entity_widget.dart';
+import 'package:metamorphis/src/presenter/project/project_routers.dart';
 
 import 'entity_rules/entity_rules_page.dart';
 import 'enumerators/enumerators_page.dart';
@@ -99,6 +101,25 @@ class _HomePageState extends State<HomePage> {
                               controller.pageController.jumpToPage(index);
                               homeStore.page = index;
                             },
+                          ),
+                          const SizedBox(height: 12),
+                          const Divider(),
+                          const SizedBox(height: 12),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Options',
+                              style: textTheme.titleMedium?.copyWith(
+                                color: colorScheme.onSecondaryContainer,
+                              ),
+                            ),
+                          ),
+                          _MenuItem(
+                            title: 'Projects',
+                            selected: false,
+                            onTap: () => context.pushNamedAndRemoveUntil(
+                              ProjectRouters.projects,
+                            ),
                           ),
                           const Spacer(),
                           Padding(
@@ -494,26 +515,23 @@ class _MenuItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    if (1 > 0) {
-      return ElevatedButton(
-        onPressed: onTap,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: selected
-              ? colorScheme.primary
-              : colorScheme.primaryContainer,
-          foregroundColor: selected
-              ? colorScheme.onPrimary
-              : colorScheme.onPrimaryContainer,
-          enableFeedback: false,
-          textStyle: textTheme.titleMedium,
-          alignment: Alignment.centerLeft,
-          elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        ),
-        child: Text(title),
-      );
-    }
-    return ListTile(title: Text(title), selected: selected, onTap: onTap);
+    final primary = colorScheme.primary;
+    final onPrimary = colorScheme.onPrimary;
+    final primaryContainer = colorScheme.primaryContainer;
+    final onPrimaryContainer = colorScheme.onPrimaryContainer;
+    return ElevatedButton(
+      onPressed: onTap,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: selected ? primary : primaryContainer,
+        foregroundColor: selected ? onPrimary : onPrimaryContainer,
+        enableFeedback: false,
+        textStyle: textTheme.titleMedium,
+        alignment: Alignment.centerLeft,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      ),
+      child: Text(title),
+    );
   }
 }

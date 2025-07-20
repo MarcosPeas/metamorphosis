@@ -55,10 +55,8 @@ class ApplicationController {
     required Application application,
     required BuildContext context,
   }) {
-    appStore.application = ApplicationViewModel.fromEntity(
-      application,
-    );
-    context.pushNamed(HomeRouters.home);
+    appStore.application = ApplicationViewModel.fromEntity(application);
+    context.pushReplacementNamed(HomeRouters.home);
   }
 
   Future<void> saveApplication({
@@ -84,9 +82,7 @@ class ApplicationController {
     );
   }
 
-  Future<void> updateApplication({
-    required Application application,
-  }) async {
+  Future<void> updateApplication({required Application application}) async {
     final result = await updateApplicationUseCase.execute(application);
     result.fold(
       (error) {
@@ -99,9 +95,7 @@ class ApplicationController {
     );
   }
 
-  Future<void> deleteApplication({
-    required Application application,
-  }) async {
+  Future<void> deleteApplication({required Application application}) async {
     final result = await deleteApplicationUseCase.execute(application);
     result.fold(
       (error) {
