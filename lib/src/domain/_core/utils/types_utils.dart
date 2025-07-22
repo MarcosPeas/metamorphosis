@@ -9,10 +9,12 @@ class TypesUtils {
     'long/int64',
     'float/float32',
     'double/float64',
+    'BigDecimal',
     'String',
     'Date',
     'Time',
     'DateTime',
+    'Enum',
   ];
 
   static const Map<String, String> _conditionsFieldBool = {
@@ -215,6 +217,14 @@ class TypesUtils {
         'isGreaterThan',
         'isGreaterThanOrEqualTo',
       ],
+      'BigDecimal': [
+        'isEqualTo',
+        'isNotEqualTo',
+        'isLessThan',
+        'isLessThanOrEqualTo',
+        'isGreaterThan',
+        'isGreaterThanOrEqualTo',
+      ],
       'float/float32': [
         'isEqualTo',
         'isNotEqualTo',
@@ -378,10 +388,7 @@ class TypesUtils {
         'isGreaterThan',
         'isGreaterThanOrEqualTo',
       ],
-      'String': [
-        'equals',
-        'notEquals',
-      ],
+      'String': ['equals', 'notEquals'],
       'Date': [
         'isEqualTo',
         'isNotEqualTo',

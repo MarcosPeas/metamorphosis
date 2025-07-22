@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/domain/_core/utils/types_utils.dart';
@@ -51,11 +52,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
             const SizedBox(width: 4),
             IconButton(
               onPressed: _showDialogCreateValueObject,
-              icon: Icon(
-                color: colorScheme.primary,
-                Icons.add,
-                size: 22,
-              ),
+              icon: Icon(color: colorScheme.primary, Icons.add, size: 22),
             ),
           ],
         ),
@@ -64,15 +61,11 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
             listenable: entityStore,
             builder: (context, _) {
               if (entityStore.loading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               }
               final entity = entityStore.entity;
               if (entity.valueObjects.isEmpty) {
-                return const Center(
-                  child: Text('No value objects'),
-                );
+                return const Center(child: Text('No value objects'));
               }
               final valueObjects = entity.valueObjects;
               return ListView.builder(
@@ -86,7 +79,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                       _showDialogCreateValueObjectRule(index, valueObject);
                     },
                     onEditTap: () {
-                      _showDialogUpdateValueObject(index, valueObject);
+                      _showDialogUpdateValueObject(valueObject);
                     },
                     onDeleteTap: () {
                       _showDialogDeleteValueObject(index, valueObject);
@@ -112,213 +105,272 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
   }
 
   void _showDialogCreateValueObject() {
-    final nameController = TextEditingController();
-    final selectedType = ValueNotifier('String');
-    final isNullable = ValueNotifier(false);
-    final isUnique = ValueNotifier(false);
+    final valueObject = ValueNotifier(
+      ValueObject.ofEntity(controller.entityStore.entity),
+    );
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Create a value object'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: nameController,
-                onSubmitted: (text) {
-                  if (text.isEmpty) {
-                    return;
-                  }
-                  controller.createValueObject(
-                    name: nameController.text.trim(),
-                    type: selectedType.value,
-                    nullable: isNullable.value,
-                    isUnique: isUnique.value,
-                  );
-                  context.pop();
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text('Data type'),
-              ValueListenableBuilder(
-                valueListenable: selectedType,
-                builder: (_, type, __) {
-                  return DropdownButton(
-                    value: type,
+        return ValueListenableBuilder(
+          valueListenable: valueObject,
+          builder: (_, vo, ___) {
+            return AlertDialog(
+              title: const Text('Create a value object'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextField(
+                    onChanged: (text) {
+                      if (text.isEmpty) {
+                        return;
+                      }
+                      valueObject.value = vo.copyWith(name: text.trim());
+                    },
+                    onSubmitted: (text) {
+                      if (vo.requirementsAreCompleted) {
+                        controller.createValueObject(valueObject.value);
+                        context.pop();
+                      }
+                    },
+                    decoration: const InputDecoration(labelText: 'Name'),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('Data type'),
+                  DropdownButton(
+                    value: valueObject.value.type,
                     isExpanded: true,
                     onChanged: (value) {
-                      selectedType.value = value.toString();
+                      valueObject.value = vo.copyWith(type: value.toString());
                     },
                     items: TypesUtils.types.map((type) {
-                      return DropdownMenuItem(
-                        value: type,
-                        child: Text(type),
-                      );
+                      return DropdownMenuItem(value: type, child: Text(type));
                     }).toList(),
-                  );
-                },
+                  ),
+                  if (vo.type == 'Enum') ...[
+                    const SizedBox(height: 4),
+                    TextField(
+                      decoration: const InputDecoration(labelText: 'Enum name'),
+                      onChanged: (text) {
+                        if (text.isEmpty) {
+                          return;
+                        }
+                        valueObject.value = vo.copyWith(enumName: text.trim());
+                      },
+                      onSubmitted: (text) {
+                        if (vo.requirementsAreCompleted) {
+                          controller.createValueObject(valueObject.value);
+                          context.pop();
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 4),
+                    TextField(
+                      decoration: const InputDecoration(
+                        labelText: 'Enum values',
+                        hint: Text('Ex.: RED, GREEN, DARK_BLUE'),
+                      ),
+                      inputFormatters: [
+                        TextInputFormatter.withFunction((oldValue, newValue) {
+                          final validCharacters = RegExp(r'^[a-zA-Z0-9_, ]*$');
+                          if (validCharacters.hasMatch(newValue.text)) {
+                            return newValue.copyWith(
+                              text: newValue.text.toUpperCase(),
+                            );
+                          }
+                          return oldValue;
+                        }),
+                      ],
+                      onChanged: (text) {
+                        valueObject.value = vo.copyWith(
+                          enumValues: text.trim(),
+                        );
+                      },
+                      onSubmitted: (text) {
+                        if (vo.requirementsAreCompleted) {
+                          controller.createValueObject(valueObject.value);
+                          context.pop();
+                        }
+                      },
+                    ),
+                  ],
+                  if (vo.type != 'Enum') ...[
+                    const SizedBox(height: 16),
+                    SwitchListTile(
+                      title: const Text('Nullable'),
+                      value: valueObject.value.isNullable,
+                      onChanged: (value) {
+                        valueObject.value = vo.copyWith(isNullable: value);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    SwitchListTile(
+                      title: const Text('Unique'),
+                      value: valueObject.value.isUnique,
+                      onChanged: (value) {
+                        valueObject.value = vo.copyWith(isUnique: value);
+                      },
+                    ),
+                  ],
+                ],
               ),
-              const SizedBox(height: 16),
-              ValueListenableBuilder(
-                valueListenable: isNullable,
-                builder: (_, value, __) {
-                  return SwitchListTile(
-                    title: const Text('Nullable'),
-                    value: value,
-                    onChanged: (changedValue) {
-                      isNullable.value = changedValue;
-                    },
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-              ValueListenableBuilder(
-                valueListenable: isUnique,
-                builder: (_, value, __) {
-                  return SwitchListTile(
-                    title: const Text('Unique'),
-                    value: value,
-                    onChanged: (newVale) {
-                      isUnique.value = newVale;
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                controller.createValueObject(
-                  name: nameController.text.trim(),
-                  type: selectedType.value,
-                  nullable: isNullable.value,
-                  isUnique: isUnique.value,
-                );
-                context.pop();
-              },
-              child: const Text('Create'),
-            ),
-          ],
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: vo.requirementsAreCompleted
+                      ? () {
+                          controller.createValueObject(valueObject.value);
+                          context.pop();
+                        }
+                      : null,
+                  child: const Text('Create'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
   }
 
-  void _showDialogUpdateValueObject(int viewIndex, ValueObject valueObject) {
-    final nameController = TextEditingController();
-    final selectedType = ValueNotifier(valueObject.type);
-    final isNullable = ValueNotifier(valueObject.isNullable);
-    final isUnique = ValueNotifier(valueObject.isUnique);
-    nameController.text = valueObject.name;
+  void _showDialogUpdateValueObject(ValueObject oldVO) {
+    final valueObject = ValueNotifier(oldVO);
+    final nameController = TextEditingController(text: oldVO.name);
+    final enumNameController = TextEditingController(text: oldVO.enumName);
+    final enumValueController = TextEditingController(text: oldVO.enumValues);
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Update a value object'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: nameController,
-                onSubmitted: (text) {
-                  if (text.isEmpty) {
-                    return;
-                  }
-                  controller.updateValueObject(
-                    name: nameController.text.trim(),
-                    type: selectedType.value,
-                    nullable: isNullable.value,
-                    viewIndex: viewIndex,
-                    isUnique: isUnique.value,
-                  );
-                  context.pop();
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text('Data type'),
-              ValueListenableBuilder(
-                valueListenable: selectedType,
-                builder: (_, type, __) {
-                  return DropdownButton(
-                    value: type,
+        return ValueListenableBuilder(
+          valueListenable: valueObject,
+          builder: (_, vo, ___) {
+            return AlertDialog(
+              title: const Text('Update a value object'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    onChanged: (text) {
+                      if (text.isEmpty) {
+                        return;
+                      }
+                      valueObject.value = vo.copyWith(name: text.trim());
+                    },
+                    onSubmitted: (text) {
+                      if (vo.requirementsAreCompleted) {
+                        controller.updateValueObject(valueObject.value);
+                        context.pop();
+                      }
+                    },
+                    decoration: const InputDecoration(labelText: 'Name'),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text('Data type'),
+                  DropdownButton(
+                    value: valueObject.value.type,
                     isExpanded: true,
                     onChanged: (value) {
-                      selectedType.value = value.toString();
+                      valueObject.value = vo.copyWith(type: value.toString());
                     },
                     items: TypesUtils.types.map((type) {
-                      return DropdownMenuItem(
-                        value: type,
-                        child: Text(type),
-                      );
+                      return DropdownMenuItem(value: type, child: Text(type));
                     }).toList(),
-                  );
-                },
+                  ),
+                  if (vo.type == 'Enum') ...[
+                    const SizedBox(height: 4),
+                    TextField(
+                      controller: enumNameController,
+                      decoration: const InputDecoration(labelText: 'Enum name'),
+                      onChanged: (text) {
+                        if (text.isEmpty) {
+                          return;
+                        }
+                        valueObject.value = vo.copyWith(enumName: text.trim());
+                      },
+                      onSubmitted: (text) {
+                        if (vo.requirementsAreCompleted) {
+                          controller.updateValueObject(valueObject.value);
+                          context.pop();
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 4),
+                    TextField(
+                      controller: enumValueController,
+                      decoration: const InputDecoration(
+                        labelText: 'Enum values',
+                        hint: Text('Ex.: RED, GREEN, DARK_BLUE'),
+                      ),
+                      inputFormatters: [
+                        TextInputFormatter.withFunction((oldValue, newValue) {
+                          final validCharacters = RegExp(r'^[a-zA-Z0-9_, ]*$');
+                          if (validCharacters.hasMatch(newValue.text)) {
+                            return newValue.copyWith(
+                              text: newValue.text.toUpperCase(),
+                            );
+                          }
+                          return oldValue;
+                        }),
+                      ],
+                      onChanged: (text) {
+                        valueObject.value = vo.copyWith(
+                          enumValues: text.trim(),
+                        );
+                      },
+                      onSubmitted: (text) {
+                        if (vo.requirementsAreCompleted) {
+                          controller.updateValueObject(valueObject.value);
+                          context.pop();
+                        }
+                      },
+                    ),
+                  ],
+                  if (vo.type != 'Enum') ...[
+                    const SizedBox(height: 16),
+                    SwitchListTile(
+                      title: const Text('Nullable'),
+                      value: valueObject.value.isNullable,
+                      onChanged: (value) {
+                        valueObject.value = vo.copyWith(isNullable: value);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    SwitchListTile(
+                      title: const Text('Unique'),
+                      value: valueObject.value.isUnique,
+                      onChanged: (value) {
+                        valueObject.value = vo.copyWith(isUnique: value);
+                      },
+                    ),
+                  ],
+                ],
               ),
-              const SizedBox(height: 16),
-              ValueListenableBuilder(
-                valueListenable: isNullable,
-                builder: (_, value, __) {
-                  return SwitchListTile(
-                    title: const Text('Nullable'),
-                    value: value,
-                    onChanged: (changedValue) {
-                      isNullable.value = changedValue;
-                    },
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-              ValueListenableBuilder(
-                valueListenable: isUnique,
-                builder: (_, value, __) {
-                  return SwitchListTile(
-                    title: const Text('Unique'),
-                    value: value,
-                    onChanged: (newVale) {
-                      isUnique.value = newVale;
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                controller.updateValueObject(
-                  name: nameController.text.trim(),
-                  type: selectedType.value,
-                  nullable: isNullable.value,
-                  viewIndex: viewIndex,
-                  isUnique: isUnique.value,
-                );
-                context.pop();
-              },
-              child: const Text('Update'),
-            ),
-          ],
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: vo.requirementsAreCompleted
+                      ? () {
+                          controller.updateValueObject(valueObject.value);
+                          context.pop();
+                        }
+                      : null,
+                  child: const Text('Update'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -409,9 +461,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                     viewIndex: viewIndex,
                   );
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Error message',
-                ),
+                decoration: const InputDecoration(labelText: 'Error message'),
               ),
             ],
           ),
@@ -465,6 +515,10 @@ class _EntityRuleWidget extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final rules = valueObject.rules;
+    String title = '${valueObject.name} (${valueObject.type})';
+    if (!valueObject.isEnum) {
+      title += '${valueObject.isUnique ? ', unique' : ''}${valueObject.isNullable ? ', nullable' : ''}';
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -472,7 +526,7 @@ class _EntityRuleWidget extends StatelessWidget {
         ListTile(
           contentPadding: EdgeInsets.zero,
           title: Text(
-            '${valueObject.name} (${valueObject.type})${valueObject.isUnique ? ', unique' : ''}${valueObject.isNullable ? ', nullable' : ''}',
+            title,
             style: textTheme.bodyLarge?.copyWith(
               color: colorScheme.onSurface,
               fontWeight: FontWeight.bold,
@@ -487,16 +541,18 @@ class _EntityRuleWidget extends StatelessWidget {
               ),
               const SizedBox(width: 1),
               IconButton(
-                icon: Icon(
-                  Icons.delete,
-                  size: 18,
-                  color: colorScheme.error,
-                ),
+                icon: Icon(Icons.delete, size: 18, color: colorScheme.error),
                 onPressed: onDeleteTap,
               ),
             ],
           ),
         ),
+        if (valueObject.isEnum)
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Text(valueObject.enumValues),
+          ),
+        if (!valueObject.isEnum)
         Padding(
           padding: const EdgeInsets.only(left: 16),
           child: Column(
@@ -665,14 +721,8 @@ class _EntityRuleWidget extends StatelessWidget {
                       selectedType.value = value.toString();
                     },
                     items: const [
-                      DropdownMenuItem(
-                        value: 'AND',
-                        child: Text('AND'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'OR',
-                        child: Text('OR'),
-                      ),
+                      DropdownMenuItem(value: 'AND', child: Text('AND')),
+                      DropdownMenuItem(value: 'OR', child: Text('OR')),
                     ],
                   );
                 },
@@ -870,12 +920,8 @@ class _GroupConditionWidget extends StatelessWidget {
     required bool isFirst,
   }) {
     final selectedLogicOperator = ValueNotifier('AND');
-    final comparatorOperators = TypesUtils.conditions(
-      valueObject.type,
-    );
-    final selectedComparatorOperator = ValueNotifier(
-      comparatorOperators.first,
-    );
+    final comparatorOperators = TypesUtils.conditions(valueObject.type);
+    final selectedComparatorOperator = ValueNotifier(comparatorOperators.first);
     final targetValueController = TextEditingController();
     final regexController = TextEditingController();
     final shortOperators = ['is empty', 'is not empty', 'matches'];
@@ -907,14 +953,8 @@ class _GroupConditionWidget extends StatelessWidget {
                             selectedLogicOperator.value = value.toString();
                           },
                           items: const [
-                            DropdownMenuItem(
-                              value: 'AND',
-                              child: Text('AND'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'OR',
-                              child: Text('OR'),
-                            ),
+                            DropdownMenuItem(value: 'AND', child: Text('AND')),
+                            DropdownMenuItem(value: 'OR', child: Text('OR')),
                           ],
                         ),
                       if (!isFirst) const SizedBox(height: 8),
@@ -926,8 +966,8 @@ class _GroupConditionWidget extends StatelessWidget {
                             value: operator,
                             isExpanded: true,
                             onChanged: (value) {
-                              selectedComparatorOperator.value =
-                                  value.toString();
+                              selectedComparatorOperator.value = value
+                                  .toString();
                             },
                             items: comparatorOperators.map((item) {
                               return DropdownMenuItem(
@@ -938,11 +978,13 @@ class _GroupConditionWidget extends StatelessWidget {
                           );
                         },
                       ),
-                      if (!shortOperators
-                          .contains(selectedComparatorOperator.value))
+                      if (!shortOperators.contains(
+                        selectedComparatorOperator.value,
+                      ))
                         const SizedBox(height: 8),
-                      if (!shortOperators
-                          .contains(selectedComparatorOperator.value))
+                      if (!shortOperators.contains(
+                        selectedComparatorOperator.value,
+                      ))
                         TextField(
                           controller: targetValueController,
                           decoration: const InputDecoration(
@@ -954,9 +996,7 @@ class _GroupConditionWidget extends StatelessWidget {
                       if (selectedComparatorOperator.value == 'matches')
                         TextField(
                           controller: regexController,
-                          decoration: const InputDecoration(
-                            labelText: 'Regex',
-                          ),
+                          decoration: const InputDecoration(labelText: 'Regex'),
                         ),
                       const SizedBox(height: 8),
                     ],
@@ -999,12 +1039,8 @@ class _GroupConditionWidget extends StatelessWidget {
     required bool isFirst,
   }) {
     final selectedLogicOperator = ValueNotifier('AND');
-    final comparatorOperators = TypesUtils.conditions(
-      valueObject.type,
-    );
-    final selectedComparatorOperator = ValueNotifier(
-      comparatorOperators.first,
-    );
+    final comparatorOperators = TypesUtils.conditions(valueObject.type);
+    final selectedComparatorOperator = ValueNotifier(comparatorOperators.first);
     final targetValueController = TextEditingController();
     showDialog(
       context: context,
@@ -1034,14 +1070,8 @@ class _GroupConditionWidget extends StatelessWidget {
                             selectedLogicOperator.value = value.toString();
                           },
                           items: const [
-                            DropdownMenuItem(
-                              value: 'AND',
-                              child: Text('AND'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'OR',
-                              child: Text('OR'),
-                            ),
+                            DropdownMenuItem(value: 'AND', child: Text('AND')),
+                            DropdownMenuItem(value: 'OR', child: Text('OR')),
                           ],
                         ),
                       if (!isFirst) const SizedBox(height: 8),
@@ -1053,8 +1083,8 @@ class _GroupConditionWidget extends StatelessWidget {
                             value: operator,
                             isExpanded: true,
                             onChanged: (value) {
-                              selectedComparatorOperator.value =
-                                  value.toString();
+                              selectedComparatorOperator.value = value
+                                  .toString();
                             },
                             items: comparatorOperators.map((item) {
                               return DropdownMenuItem(
@@ -1113,12 +1143,8 @@ class _GroupConditionWidget extends StatelessWidget {
     required bool isFirst,
   }) {
     final selectedLogicOperator = ValueNotifier('AND');
-    final comparatorOperators = TypesUtils.conditions(
-      valueObject.type,
-    );
-    final selectedComparatorOperator = ValueNotifier(
-      comparatorOperators.first,
-    );
+    final comparatorOperators = TypesUtils.conditions(valueObject.type);
+    final selectedComparatorOperator = ValueNotifier(comparatorOperators.first);
     final targetValueController = TextEditingController();
     final regexController = TextEditingController();
     final shortOperators = ['is empty', 'is not empty', 'matches'];
@@ -1150,14 +1176,8 @@ class _GroupConditionWidget extends StatelessWidget {
                             selectedLogicOperator.value = value.toString();
                           },
                           items: const [
-                            DropdownMenuItem(
-                              value: 'AND',
-                              child: Text('AND'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'OR',
-                              child: Text('OR'),
-                            ),
+                            DropdownMenuItem(value: 'AND', child: Text('AND')),
+                            DropdownMenuItem(value: 'OR', child: Text('OR')),
                           ],
                         ),
                       if (!isFirst) const SizedBox(height: 8),
@@ -1169,8 +1189,8 @@ class _GroupConditionWidget extends StatelessWidget {
                             value: operator,
                             isExpanded: true,
                             onChanged: (value) {
-                              selectedComparatorOperator.value =
-                                  value.toString();
+                              selectedComparatorOperator.value = value
+                                  .toString();
                             },
                             items: comparatorOperators.map((item) {
                               return DropdownMenuItem(
@@ -1181,11 +1201,13 @@ class _GroupConditionWidget extends StatelessWidget {
                           );
                         },
                       ),
-                      if (!shortOperators
-                          .contains(selectedComparatorOperator.value))
+                      if (!shortOperators.contains(
+                        selectedComparatorOperator.value,
+                      ))
                         const SizedBox(height: 8),
-                      if (!shortOperators
-                          .contains(selectedComparatorOperator.value))
+                      if (!shortOperators.contains(
+                        selectedComparatorOperator.value,
+                      ))
                         TextField(
                           controller: targetValueController,
                           decoration: const InputDecoration(

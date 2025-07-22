@@ -8,9 +8,11 @@ class ValueObjectModel extends ValueObject {
     required super.name,
     required super.type,
     required super.isNullable,
-    required super.entityId,
     required super.isUnique,
+    required super.enumName,
+    required super.enumValues,
     super.rules,
+    required super.entityId,
   });
 
   factory ValueObjectModel.fromValueObject(ValueObject valueObject) {
@@ -19,9 +21,11 @@ class ValueObjectModel extends ValueObject {
       name: valueObject.name,
       type: valueObject.type,
       isNullable: valueObject.isNullable,
-      entityId: valueObject.entityId,
       isUnique: valueObject.isUnique,
+      enumName: valueObject.enumName,
+      enumValues: valueObject.enumValues,
       rules: valueObject.rules,
+      entityId: valueObject.entityId,
     );
   }
 
@@ -41,6 +45,8 @@ class ValueObjectModel extends ValueObject {
       entityId: json['entityId'],
       isUnique: json['isUnique'] ?? false,
       rules: rulesModel,
+      enumName: json['enumName'] ?? '',
+      enumValues: json['enumValues'] ?? '',
     );
   }
 
@@ -59,6 +65,8 @@ class ValueObjectModel extends ValueObject {
       'entityId': entityId,
       'isUnique': isUnique,
       'rules': rulesJson,
+      'enumName': enumName,
+      'enumValues': enumValues,
     };
   }
 }

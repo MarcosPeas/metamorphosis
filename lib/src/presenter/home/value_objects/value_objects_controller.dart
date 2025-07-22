@@ -26,37 +26,22 @@ class ValueObjectsController {
     entityStore.loading = false;
   }
 
-  Future<void> createValueObject({
-    required String name,
-    required String type,
-    required bool isUnique,
-    required bool nullable,
-  }) async {
+  Future<void> createValueObject(ValueObject valueObject) async {
     final entity = entityStore.entity;
-    final valueObject = ValueObject(
-      name: name,
-      entityId: entity.id,
-      type: type,
-      isUnique: isUnique,
-      isNullable: nullable,
-    );
     entity.valueObjects.add(valueObject);
     updateEntity();
   }
 
-  Future<void> updateValueObject({
-    required String name,
-    required String type,
-    required bool nullable,
-    required int viewIndex,
-    required bool isUnique,
-  }) async {
+  Future<void> updateValueObject(ValueObject valueObject) async {
     final entity = entityStore.entity;
-    final valueObject = entity.valueObjects[viewIndex];
-    valueObject.name = name;
-    valueObject.type = type;
-    valueObject.isNullable = nullable;
-    valueObject.isUnique = isUnique;
+    final index = entity.valueObjects.indexWhere(
+      (vo) => vo.id == valueObject.id,
+    );
+    if (index < 0) {
+      log('ValueObject with id ${valueObject.id} not found in entity.');
+      return;
+    }
+    entity.valueObjects[index] = valueObject;
     updateEntity();
   }
 
@@ -95,14 +80,11 @@ class ValueObjectsController {
 
   Future<void> updateEntity() async {
     final result = await updateEntityUseCase.execute(entityStore.entity);
-    result.fold(
-      (exception) {
-        log(exception.message);
-        log(exception.trace);
-        entityStore.error = exception;
-      },
-      (_) => entityStore.notifyUpdate(),
-    );
+    result.fold((exception) {
+      log(exception.message);
+      log(exception.trace);
+      entityStore.error = exception;
+    }, (_) => entityStore.notifyUpdate());
   }
 
   void createValueObjectGroupCondition({

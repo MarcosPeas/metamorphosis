@@ -152,7 +152,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                         EntityRulesPage(key: ValueKey(entity.id)),
                         UseCasesPage(key: ValueKey(entity.id)),
-                        EnumeratorsPage(key: ValueKey(entity.id)),
                       ],
                     ),
                   ),
@@ -489,11 +488,6 @@ class _MenuItems extends StatelessWidget {
           title: 'Use Cases',
           selected: index == 3,
           onTap: () => onTap(3),
-        ),
-        _MenuItem(
-          title: 'Enumerators',
-          selected: index == 4,
-          onTap: () => onTap(4),
         ),
       ],
     );
