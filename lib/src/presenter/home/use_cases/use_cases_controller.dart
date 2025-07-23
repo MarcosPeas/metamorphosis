@@ -29,7 +29,7 @@ class UseCasesController {
     final saveUseCase = UseCase(
       name: 'Save${entityStore.entity.name}UseCase',
       useCaseType: UseCaseType.create,
-      entityId: entityStore.entity.id,
+      entityId: entityStore.entity.id,      
     );
     entityStore.entity.useCases.add(saveUseCase);
     updateEntity();

@@ -1,3 +1,4 @@
+import 'package:metamorphis/src/domain/data_class/entities/data_class.dart';
 import 'package:uuid/uuid.dart';
 
 class UseCase {
@@ -8,6 +9,8 @@ class UseCase {
   String orderByField;
   bool isAscending;
   final String entityId;
+  DataClass? input;
+  DataClass? output;
 
   UseCase({
     String? id,
@@ -16,11 +19,11 @@ class UseCase {
     this.searchField = '',
     this.orderByField = '',
     this.isAscending = true,
+    this.input,
+    this.output,
     required this.entityId,
   }) {
-    {
-      this.id = id ?? const Uuid().v4();
-    }
+    this.id = id ?? const Uuid().v4();
   }
 }
 
