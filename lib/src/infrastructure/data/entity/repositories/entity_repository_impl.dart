@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/entity/repositories/entity_repository.dart';
@@ -31,24 +32,24 @@ class EntityRepositoryImpl implements EntityRepository {
   }
 
   @override
-  Future<List<Entity>> getByApplication(String applicationId) async {
+  Future<List<Entity>> paginate(PaginateParams params) async {
     try {
       final result = await _firestore
           .collection(collection)
-          .where('applicationId', isEqualTo: applicationId)
+          .where(params.filterBy ?? '', isEqualTo: params.filterValue)
           .get();
       return result.docs.map((e) => EntityModel.fromMap(e.data())).toList();
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
         message: e.code,
         trace: s.toString(),
-        context: 'EntityRepositoryImpl.getByApplication',
+        context: 'EntityRepositoryImpl.paginate',
       );
     } catch (e, s) {
       throw DomainException.of(
         message: 'Não foi possível encontrar as entidades',
         trace: s.toString(),
-        context: 'EntityRepositoryImpl.getByApplication',
+        context: 'EntityRepositoryImpl.paginate',
       );
     }
   }

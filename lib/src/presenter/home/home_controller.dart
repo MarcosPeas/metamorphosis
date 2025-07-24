@@ -8,6 +8,7 @@ import 'package:metamorphis/src/application/entity/delete_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/get_entities_by_application_use_case.dart';
 import 'package:metamorphis/src/application/entity/save_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/application/entities/api_type.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/code_generators.dart';
@@ -42,7 +43,10 @@ class HomeController {
     }
     homeStore.loading = true;
     final result = await getEntitiesByApplicationUseCase.execute(
-      appStore.application!,
+      PaginateParams(
+        filterBy: 'applicationId',
+        filterValue: appStore.application!.id,
+      ),
     );
     result.fold(
       (error) {

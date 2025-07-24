@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/entity_rule_group_condition/entities/entity_rule_group_condition.dart';
 import 'package:metamorphis/src/domain/entity_rule_group_condition/repositories/entity_rule_group_condition_repository.dart';
@@ -33,12 +34,11 @@ class EntityRuleGroupConditionRepositoryImpl
   }
 
   @override
-  Future<List<EntityRuleGroupCondition>> getByEntityRule(
-      String entityRuleId) async {
+  Future<List<EntityRuleGroupCondition>> paginate(PaginateParams params) async {
     try {
       final result = await _firestore
           .collection(collection)
-          .where('entityRuleId', isEqualTo: entityRuleId)
+          .where(params.filterBy ?? '', isEqualTo: params.filterValue)
           .get();
       return result.docs
           .map((e) => EntityRuleGroupConditionModel.fromMap(e.data()))
@@ -61,10 +61,12 @@ class EntityRuleGroupConditionRepositoryImpl
 
   @override
   Future<EntityRuleGroupCondition> save(
-      EntityRuleGroupCondition entityRuleGroupCondition) async {
+    EntityRuleGroupCondition entityRuleGroupCondition,
+  ) async {
     try {
-      final doc =
-          _firestore.collection(collection).doc(entityRuleGroupCondition.id);
+      final doc = _firestore
+          .collection(collection)
+          .doc(entityRuleGroupCondition.id);
       final entityRuleGroupConditionModel =
           EntityRuleGroupConditionModel.fromEntity(entityRuleGroupCondition);
       await doc.set(entityRuleGroupConditionModel.toJson());
@@ -87,10 +89,12 @@ class EntityRuleGroupConditionRepositoryImpl
 
   @override
   Future<EntityRuleGroupCondition> update(
-      EntityRuleGroupCondition entityRuleGroupCondition) async {
+    EntityRuleGroupCondition entityRuleGroupCondition,
+  ) async {
     try {
-      final doc =
-          _firestore.collection(collection).doc(entityRuleGroupCondition.id);
+      final doc = _firestore
+          .collection(collection)
+          .doc(entityRuleGroupCondition.id);
       final entityRuleGroupConditionModel =
           EntityRuleGroupConditionModel.fromEntity(entityRuleGroupCondition);
       await doc.update(entityRuleGroupConditionModel.toJson());

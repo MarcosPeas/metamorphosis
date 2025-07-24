@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
-import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/domain/value_object/repositories/value_object_repository.dart';
 
@@ -14,12 +14,10 @@ class GetValueObjectsByEntityUseCase {
   }
 
   Future<Either<DomainException, List<ValueObject>>> execute(
-    Entity entity,
+    PaginateParams params,
   ) async {
     try {
-      final result = await _valueObjectRepository.getByEntity(
-        entity.id,
-      );
+      final result = await _valueObjectRepository.paginate(params);
       return Right(result);
     } on DomainException catch (e) {
       return Left(e);

@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/project/entities/project.dart';
 import 'package:metamorphis/src/domain/project/repositories/project_repository.dart';
@@ -11,9 +12,11 @@ class GetProjectsByUserUseCase {
     _projectRepository = projectRepository;
   }
 
-  Future<Either<DomainException, List<Project>>> execute(User user) async {
+  Future<Either<DomainException, List<Project>>> execute(
+    PaginateParams params,
+  ) async {
     try {
-      final result = await _projectRepository.getByUser(user.id);
+      final result = await _projectRepository.paginate(params);
       return Right(result);
     } on DomainException catch (e) {
       return Left(e);

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/use_case/entities/use_case.dart';
 import 'package:metamorphis/src/domain/use_case/repositories/use_case_repository.dart';
@@ -31,11 +32,11 @@ class UseCaseRepositoryImpl implements UseCaseRepository {
   }
 
   @override
-  Future<List<UseCase>> getByEntity(String entityId) async {
+  Future<List<UseCase>> paginate(PaginateParams params) async {
     try {
       final result = await _firestore
           .collection(collection)
-          .where('entityId', isEqualTo: entityId)
+          .where(params.filterBy ?? '', isEqualTo: params.filterValue)
           .get();
       return result.docs.map((e) => UseCaseModel.fromMap(e.data())).toList();
     } on auth.FirebaseAuthException catch (e, s) {

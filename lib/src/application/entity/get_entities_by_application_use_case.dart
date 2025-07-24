@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
-import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/entity/repositories/entity_repository.dart';
 
@@ -14,12 +14,10 @@ class GetEntitiesByApplicationUseCase {
   }
 
   Future<Either<DomainException, List<Entity>>> execute(
-    Application application,
+    PaginateParams params,
   ) async {
     try {
-      final result = await _entityRepository.getByApplication(
-        application.id,
-      );
+      final result = await _entityRepository.paginate(params);
       return Right(result);
     } on DomainException catch (e) {
       return Left(e);
