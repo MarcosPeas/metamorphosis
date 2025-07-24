@@ -60,14 +60,14 @@ class _ReferencesPageState extends State<ReferencesPage> {
               }
               final entity = entityStore.entity;
               if (entity.valueObjects.isEmpty) {
-                return const Center(child: Text('No compositions'));
+                return const Center(child: Text('No references'));
               }
-              final compositions = entity.references;
+              final references = entity.references;
               return ListView.builder(
                 shrinkWrap: true,
-                itemCount: compositions.length,
+                itemCount: references.length,
                 itemBuilder: (_, index) {
-                  final composition = compositions[index];
+                  final reference = references[index];
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -75,20 +75,25 @@ class _ReferencesPageState extends State<ReferencesPage> {
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          composition.name,
+                          reference.name,
                           style: textTheme.bodyLarge?.copyWith(
                             color: colorScheme.onSurface,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        subtitle: Text(_referenceLabel(composition)),
+                        subtitle: Text(
+                          _referenceLabel(
+                            origin: entity,
+                            reference: reference,
+                          ),
+                        ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
                               icon: const Icon(Icons.edit, size: 18),
                               onPressed: () {
-                                _showDialogUpdateList(composition);
+                                _showDialogUpdateList(reference);
                               },
                             ),
                             const SizedBox(width: 1),
@@ -99,7 +104,7 @@ class _ReferencesPageState extends State<ReferencesPage> {
                                 color: colorScheme.error,
                               ),
                               onPressed: () {
-                                controller.removeComposition(composition);
+                                controller.removeComposition(reference);
                               },
                             ),
                           ],
@@ -117,13 +122,17 @@ class _ReferencesPageState extends State<ReferencesPage> {
     );
   }
 
-  String _referenceLabel(Reference reference) {
-    final labels = {
-      ReferenceType.oneToOne: 'One to One',
-      ReferenceType.oneToMany: 'One to Many',
-      ReferenceType.manyToMany: 'Many to Many',
-    };
-    return '${labels[reference.referenceType]}: ${reference.entity.name}';
+  String _referenceLabel({
+    required Entity origin,
+    required Reference reference,
+  }) {
+    if (reference.referenceType == ReferenceType.oneToOne) {
+      return 'One ${origin.name} to one ${reference.entity.name}';
+    } else if (reference.referenceType == ReferenceType.manyToOne) {
+      return 'Many ${origin.name} to one ${reference.entity.name}';
+    } else {
+      return 'Many ${origin.name} to many ${reference.entity.name}';
+    }
   }
 
   void _showDialogCreateList() {
@@ -191,8 +200,8 @@ class _ReferencesPageState extends State<ReferencesPage> {
                         child: Text('One to One'),
                       ),
                       DropdownMenuItem(
-                        value: ReferenceType.oneToMany,
-                        child: Text('One to Many'),
+                        value: ReferenceType.manyToOne,
+                        child: Text('Many to One'),
                       ),
                       DropdownMenuItem(
                         value: ReferenceType.manyToMany,
@@ -299,8 +308,8 @@ class _ReferencesPageState extends State<ReferencesPage> {
                         child: Text('One to One'),
                       ),
                       DropdownMenuItem(
-                        value: ReferenceType.oneToMany,
-                        child: Text('One to Many'),
+                        value: ReferenceType.manyToOne,
+                        child: Text('Many to One'),
                       ),
                       DropdownMenuItem(
                         value: ReferenceType.manyToMany,
