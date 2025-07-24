@@ -28,18 +28,22 @@ class UseCase {
 }
 
 enum UseCaseType {
-  create,
-  read,
-  update,
-  delete,
-  paginate;
+  create('create'),
+  findOne('findOne'),
+  update('update'),
+  delete('delete'),
+  paginate('paginate');
+
+  final String name;
+
+  const UseCaseType(this.name);
 
   static UseCaseType fromString(String value) {
     switch (value) {
       case 'create':
         return UseCaseType.create;
-      case 'read':
-        return UseCaseType.read;
+      case 'findOne':
+        return UseCaseType.findOne;
       case 'update':
         return UseCaseType.update;
       case 'delete':

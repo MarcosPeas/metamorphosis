@@ -58,7 +58,7 @@ class UseCaseRepositoryImpl implements UseCaseRepository {
     try {
       final doc = _firestore.collection(collection).doc(useCase.id);
       final useCaseModel = UseCaseModel.fromEntity(useCase);
-      await doc.set(useCaseModel.toJson());
+      await doc.set(useCaseModel.toMap());
       return useCaseModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
@@ -80,7 +80,7 @@ class UseCaseRepositoryImpl implements UseCaseRepository {
     try {
       final doc = _firestore.collection(collection).doc(useCase.id);
       final useCaseModel = UseCaseModel.fromEntity(useCase);
-      await doc.update(useCaseModel.toJson());
+      await doc.update(useCaseModel.toMap());
       return useCaseModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(

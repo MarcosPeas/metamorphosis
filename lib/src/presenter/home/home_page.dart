@@ -10,7 +10,6 @@ import 'package:metamorphis/src/presenter/home/widgets/selected_entity_widget.da
 import 'package:metamorphis/src/presenter/project/project_routers.dart';
 
 import 'entity_rules/entity_rules_page.dart';
-import 'enumerators/enumerators_page.dart';
 import 'use_cases/use_cases_page.dart';
 import 'value_objects/value_objects_page.dart';
 
