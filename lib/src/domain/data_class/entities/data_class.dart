@@ -7,6 +7,7 @@ class DataClass {
   final DataClassType dataClassType;
   final List<Field> _fields = [];
   final String useCaseId;
+  final bool isList;
 
   DataClass({
     String? id,
@@ -14,6 +15,7 @@ class DataClass {
     required this.dataClassType,
     List<Field>? fields,
     required this.useCaseId,
+    this.isList = false,
   }) {
     this.id = id ?? IdGenerator.generateId();
     if (fields != null) {

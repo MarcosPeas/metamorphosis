@@ -104,7 +104,7 @@ class FlutterRepositoriesSupabaseGenerator {
       return _generateSave(entity, useCase);
     } else if (useCase.useCaseType == UseCaseType.update) {
       return '  Future<$pascalName> update($pascalName $camelName);';
-    } else if (useCase.useCaseType == UseCaseType.read) {
+    } else if (useCase.useCaseType == UseCaseType.findOne) {
       return '  Future<$pascalName?> findById(String id);';
     } else if (useCase.useCaseType == UseCaseType.delete) {
       return '  Future<void> delete(String id);';

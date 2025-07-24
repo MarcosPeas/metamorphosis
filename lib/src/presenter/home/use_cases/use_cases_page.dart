@@ -67,7 +67,7 @@ class _UseCasesPageState extends State<UseCasesPage> {
                         children: [
                           TextButton(
                             onPressed: () {
-                              controller.createSaveUseCase();
+                              controller.createCreateUseCase();
                             },
                             child: Text(
                               'Create Save ${entity.name} Use Case',
@@ -77,7 +77,7 @@ class _UseCasesPageState extends State<UseCasesPage> {
                         ],
                       ),
                     ),
-                  if (!entity.containsAnyUseCaseByType(UseCaseType.read))
+                  if (!entity.containsAnyUseCaseByType(UseCaseType.findOne))
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: Row(

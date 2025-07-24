@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:metamorphis/src/domain/data_class/entities/data_class.dart';
+import 'package:metamorphis/src/domain/field/entities/field.dart';
 import 'package:metamorphis/src/infrastructure/data/field/models/field_model.dart';
 
 class DataClassModel extends DataClass {
@@ -10,33 +11,49 @@ class DataClassModel extends DataClass {
     required super.dataClassType,
     required super.fields,
     required super.useCaseId,
+    required super.isList,
   });
 
-  factory DataClassModel.fromEntity(DataClass dataClass) {
+  static DataClassModel? fromEntity(DataClass? dataClass) {
+    if (dataClass == null) {
+      return null;
+    }
     return DataClassModel(
       id: dataClass.id,
       name: dataClass.name,
       dataClassType: dataClass.dataClassType,
       fields: dataClass.fields.map(FieldModel.fromEntity).toList(),
       useCaseId: dataClass.useCaseId,
+      isList: dataClass.isList,
     );
   }
 
-  factory DataClassModel.fromMap(Map<String, dynamic> json) {
-    List<Map<String, dynamic>> fields = [];
-    if (json['fields'] != null) {
-      fields = json['fields'];
+  static DataClassModel? fromMap(Map<String, dynamic>? map) {
+    if (map == null) {
+      return null;
+    }
+    List<Field> fields = [];
+    if (map['fields'] != null && map['fields'] is List) {
+      final List<dynamic> fieldsMap = map['fields'];
+      for (final fieldMap in fieldsMap) {
+        final field = FieldModel.fromMap(fieldMap);
+        fields.add(field);
+      }
     }
     return DataClassModel(
-      id: json['id'],
-      name: json['name'],
-      dataClassType: DataClassType.fromString(json['dataClassType']),
-      fields: fields.map(FieldModel.fromMap).toList(),
-      useCaseId: json['useCaseId'],
+      id: map['id'],
+      name: map['name'],
+      dataClassType: DataClassType.fromString(map['dataClassType']),
+      fields: fields,
+      useCaseId: map['useCaseId'],
+      isList: map['isList'] ?? false,
     );
   }
 
-  factory DataClassModel.fromJson(String json) {
+  static DataClassModel? fromJson(String? json) {
+    if (json == null || json.isEmpty) {
+      return null;
+    }
     return DataClassModel.fromMap(jsonDecode(json));
   }
 
@@ -50,6 +67,7 @@ class DataClassModel extends DataClass {
       'dataClassType': dataClassType.value,
       'fields': fieldsModel,
       'useCaseId': useCaseId,
+      'isList': isList,
     };
   }
 
