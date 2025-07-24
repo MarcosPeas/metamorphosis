@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/user/entities/user.dart';
 import 'package:metamorphis/src/domain/user/repositories/user_repository.dart';
@@ -133,5 +134,23 @@ class UserRepositoryFirebaseImpl implements UserRepository {
         context: 'UserRepositoryFirebaseImpl.getUserById',
       );
     }
+  }
+
+  @override
+  Future<void> delete(String id) {
+    // TODO: implement delete
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<User> getById(String id) {
+    // TODO: implement getById
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<User>> paginate(PaginateParams params) {
+    // TODO: implement paginate
+    throw UnimplementedError();
   }
 }

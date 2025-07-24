@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/project/entities/project.dart';
 import 'package:metamorphis/src/domain/project/repositories/project_repository.dart';
@@ -31,11 +32,11 @@ class ProjectRepositoryImpl implements ProjectRepository {
   }
 
   @override
-  Future<List<Project>> getByUser(String userId) async {
+  Future<List<Project>> paginate(PaginateParams params) async {
     try {
       final result = await _firestore
           .collection(collection)
-          .where('userId', isEqualTo: userId)
+          .where(params.filterBy ?? '', isEqualTo: params.filterValue)
           .get();
       return result.docs.map((e) => ProjectModel.fromMap(e.data())).toList();
     } on auth.FirebaseAuthException catch (e, s) {

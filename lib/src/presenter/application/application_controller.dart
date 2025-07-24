@@ -6,6 +6,7 @@ import 'package:metamorphis/src/application/application/delete_application_use_c
 import 'package:metamorphis/src/application/application/get_applications_by_project_use_case.dart';
 import 'package:metamorphis/src/application/application/save_application_use_case.dart';
 import 'package:metamorphis/src/application/application/update_application_use_case.dart';
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/application/entities/api_type.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/presenter/_core/app_store.dart';
@@ -38,7 +39,7 @@ class ApplicationController {
     }
     applicationStore.loading = true;
     final result = await getApplicationsByProjectUseCase.execute(
-      appStore.project!,
+      PaginateParams(filterBy: 'projectId', filterValue: appStore.project!.id),
     );
     result.fold(
       (error) {

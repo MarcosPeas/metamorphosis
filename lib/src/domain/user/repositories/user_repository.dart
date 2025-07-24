@@ -1,14 +1,11 @@
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/user/entities/user.dart';
 
-abstract class UserRepository {
+abstract class UserRepository extends Repository<User> {
   Future<User> signInWithEmailAndPassword({
     required String email,
     required String password,
   });
-
-  Future<User> save(User user);
-
-  Future<User> update(User user);
 
   Future<User> getUserById(String id);
 

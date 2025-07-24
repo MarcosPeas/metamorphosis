@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_rule.dart';
 import 'package:metamorphis/src/domain/value_object_rule/repositories/value_object_rule_repository.dart';
@@ -31,11 +32,11 @@ class ValueObjectRuleRepositoryImpl implements ValueObjectRuleRepository {
   }
 
   @override
-  Future<List<ValueObjectRule>> getByValueObject(String valueObjectId) async {
+  Future<List<ValueObjectRule>> paginate(PaginateParams params) async {
     try {
       final result = await _firestore
           .collection(collection)
-          .where('valueObjectId', isEqualTo: valueObjectId)
+          .where(params.filterBy ?? '', isEqualTo: params.filterValue)
           .get();
       return result.docs
           .map((e) => ValueObjectRuleModel.fromMap(e.data()))

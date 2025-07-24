@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/domain/value_object/repositories/value_object_repository.dart';
@@ -31,11 +32,11 @@ class ValueObjectRepositoryImpl implements ValueObjectRepository {
   }
 
   @override
-  Future<List<ValueObject>> getByEntity(String entityId) async {
+  Future<List<ValueObject>> paginate(PaginateParams params) async {
     try {
       final result = await _firestore
           .collection(collection)
-          .where('entityId', isEqualTo: entityId)
+          .where(params.filterBy ?? '', isEqualTo: params.filterValue)
           .get();
       return result.docs
           .map((e) => ValueObjectModel.fromMap(e.data()))

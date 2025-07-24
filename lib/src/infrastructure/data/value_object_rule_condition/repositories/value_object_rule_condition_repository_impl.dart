@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/value_object_rule_condition/entities/value_object_rule_condition.dart';
 import 'package:metamorphis/src/domain/value_object_rule_condition/repositories/value_object_rule_condition_repository.dart';
@@ -33,16 +34,11 @@ class ValueObjectRuleConditionRepositoryImpl
   }
 
   @override
-  Future<List<ValueObjectRuleCondition>> getByValueObjectGroupCondition(
-    String valueObjectGroupConditionId,
-  ) async {
+  Future<List<ValueObjectRuleCondition>> paginate(PaginateParams params) async {
     try {
       final result = await _firestore
           .collection(collection)
-          .where(
-            'valueObjectGroupConditionId',
-            isEqualTo: valueObjectGroupConditionId,
-          )
+          .where(params.filterBy ?? '', isEqualTo: params.filterValue)
           .get();
       return result.docs
           .map((e) => ValueObjectRuleConditionModel.fromMap(e.data()))
@@ -67,10 +63,12 @@ class ValueObjectRuleConditionRepositoryImpl
 
   @override
   Future<ValueObjectRuleCondition> save(
-      ValueObjectRuleCondition valueObjectRuleCondition) async {
+    ValueObjectRuleCondition valueObjectRuleCondition,
+  ) async {
     try {
-      final doc =
-          _firestore.collection(collection).doc(valueObjectRuleCondition.id);
+      final doc = _firestore
+          .collection(collection)
+          .doc(valueObjectRuleCondition.id);
       final valueObjectRuleConditionModel =
           ValueObjectRuleConditionModel.fromEntity(valueObjectRuleCondition);
       await doc.set(valueObjectRuleConditionModel.toMap());
@@ -93,10 +91,12 @@ class ValueObjectRuleConditionRepositoryImpl
 
   @override
   Future<ValueObjectRuleCondition> update(
-      ValueObjectRuleCondition valueObjectRuleCondition) async {
+    ValueObjectRuleCondition valueObjectRuleCondition,
+  ) async {
     try {
-      final doc =
-          _firestore.collection(collection).doc(valueObjectRuleCondition.id);
+      final doc = _firestore
+          .collection(collection)
+          .doc(valueObjectRuleCondition.id);
       final valueObjectRuleConditionModel =
           ValueObjectRuleConditionModel.fromEntity(valueObjectRuleCondition);
       await doc.update(valueObjectRuleConditionModel.toMap());

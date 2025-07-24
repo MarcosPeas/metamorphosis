@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/value_object_group_condition/entities/value_object_group_condition.dart';
 import 'package:metamorphis/src/domain/value_object_group_condition/repositories/value_object_group_condition_repository.dart';
@@ -34,10 +35,12 @@ class ValueObjectGroupConditionRepositoryImpl
 
   @override
   Future<ValueObjectGroupCondition> save(
-      ValueObjectGroupCondition valueObjectGroupCondition) async {
+    ValueObjectGroupCondition valueObjectGroupCondition,
+  ) async {
     try {
-      final doc =
-          _firestore.collection(collection).doc(valueObjectGroupCondition.id);
+      final doc = _firestore
+          .collection(collection)
+          .doc(valueObjectGroupCondition.id);
       final valueObjectGroupConditionModel =
           ValueObjectGroupConditionModel.fromEntity(valueObjectGroupCondition);
       await doc.set(valueObjectGroupConditionModel.toMap());
@@ -60,10 +63,12 @@ class ValueObjectGroupConditionRepositoryImpl
 
   @override
   Future<ValueObjectGroupCondition> update(
-      ValueObjectGroupCondition valueObjectGroupCondition) async {
+    ValueObjectGroupCondition valueObjectGroupCondition,
+  ) async {
     try {
-      final doc =
-          _firestore.collection(collection).doc(valueObjectGroupCondition.id);
+      final doc = _firestore
+          .collection(collection)
+          .doc(valueObjectGroupCondition.id);
       final valueObjectGroupConditionModel =
           ValueObjectGroupConditionModel.fromEntity(valueObjectGroupCondition);
       await doc.update(valueObjectGroupConditionModel.toMap());
@@ -105,13 +110,13 @@ class ValueObjectGroupConditionRepositoryImpl
   }
 
   @override
-  Future<List<ValueObjectGroupCondition>> getByValueObjectRule(
-    String valueObjectRuleId,
+  Future<List<ValueObjectGroupCondition>> paginate(
+    PaginateParams params,
   ) async {
     try {
       final result = await _firestore
           .collection(collection)
-          .where('valueObjectRuleId', isEqualTo: valueObjectRuleId)
+          .where(params.filterBy ?? '', isEqualTo: params.filterValue)
           .get();
       return result.docs
           .map((e) => ValueObjectGroupConditionModel.fromMap(e.data()))

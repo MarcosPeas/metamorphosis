@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/application/repositories/application_repository.dart';
-import 'package:metamorphis/src/domain/project/entities/project.dart';
 
 class GetApplicationsByProjectUseCase {
   late final ApplicationRepository _applicationRepository;
@@ -14,9 +14,10 @@ class GetApplicationsByProjectUseCase {
   }
 
   Future<Either<DomainException, List<Application>>> execute(
-      Project project) async {
+    PaginateParams params,
+  ) async {
     try {
-      final result = await _applicationRepository.getByProject(project.id);
+      final result = await _applicationRepository.paginate(params);
       return Right(result);
     } on DomainException catch (e) {
       return Left(e);

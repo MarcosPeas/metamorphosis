@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
-import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
 import 'package:metamorphis/src/domain/entity_rule/repositories/entity_rule_repository.dart';
 
@@ -14,10 +14,10 @@ class GetEntityRulesByProjectUseCase {
   }
 
   Future<Either<DomainException, List<EntityRule>>> execute(
-    Entity entity,
+    PaginateParams params,
   ) async {
     try {
-      final result = await _entityRuleRepository.getByEntity(entity.id);
+      final result = await _entityRuleRepository.paginate(params);
       return Right(result);
     } on DomainException catch (e) {
       return Left(e);

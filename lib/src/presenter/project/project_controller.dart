@@ -6,6 +6,7 @@ import 'package:metamorphis/src/application/project/delete_project_use_case.dart
 import 'package:metamorphis/src/application/project/get_projects_by_user_use_case.dart';
 import 'package:metamorphis/src/application/project/save_project_use_case.dart';
 import 'package:metamorphis/src/application/project/update_project_use_case.dart';
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/project/entities/project.dart';
 import 'package:metamorphis/src/presenter/_core/app_store.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/project_view_model.dart';
@@ -36,7 +37,9 @@ class ProjectController {
       return;
     }
     projectStore.loading = true;
-    final result = await getProjectsByUserUseCase.execute(appStore.user!);
+    final result = await getProjectsByUserUseCase.execute(
+      PaginateParams(filterBy: 'userId', filterValue: appStore.user!.id),
+    );
     result.fold(
       (error) {
         projectStore.error = error;
@@ -78,9 +81,7 @@ class ProjectController {
     );
   }
 
-  Future<void> updateProject({
-    required Project project,
-  }) async {
+  Future<void> updateProject({required Project project}) async {
     final result = await updateProjectUseCase.execute(project);
     result.fold(
       (error) {
@@ -94,9 +95,7 @@ class ProjectController {
     );
   }
 
-  Future<void> deleteProject({
-    required Project project,
-  }) async {
+  Future<void> deleteProject({required Project project}) async {
     final result = await deleteProjectUseCase.execute(project);
     result.fold(
       (error) {

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/application/repositories/application_repository.dart';
@@ -32,11 +33,11 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
   }
 
   @override
-  Future<List<Application>> getByProject(String projectId) async {
+  Future<List<Application>> paginate(PaginateParams params) async {
     try {
       final result = await _firestore
           .collection(collection)
-          .where('projectId', isEqualTo: projectId)
+          .where(params.filterBy ?? '', isEqualTo: params.filterValue)
           .get();
       return result.docs
           .map((e) => ApplicationModel.fromMap(e.data()))
@@ -45,13 +46,13 @@ class ApplicationRepositoryImpl implements ApplicationRepository {
       throw DomainException.of(
         message: e.code,
         trace: s.toString(),
-        context: 'ApplicationRepositoryImpl.getByProject',
+        context: 'ApplicationRepositoryImpl.paginate',
       );
     } catch (e, s) {
       throw DomainException.of(
         message: 'Não foi possível encontrar as aplicações',
         trace: s.toString(),
-        context: 'ApplicationRepositoryImpl.getByProject',
+        context: 'ApplicationRepositoryImpl.paginate',
       );
     }
   }
