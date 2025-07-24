@@ -3,7 +3,6 @@ import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/project/entities/project.dart';
 import 'package:metamorphis/src/domain/project/repositories/project_repository.dart';
-import 'package:metamorphis/src/domain/user/entities/user.dart';
 
 class GetProjectsByUserUseCase {
   late final ProjectRepository _projectRepository;
