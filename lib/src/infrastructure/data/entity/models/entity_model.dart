@@ -1,10 +1,10 @@
-import 'package:metamorphis/src/domain/composition/entities/composition.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
+import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 import 'package:metamorphis/src/domain/use_case/entities/use_case.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
-import 'package:metamorphis/src/infrastructure/data/composition/models/composition_model.dart';
 import 'package:metamorphis/src/infrastructure/data/entity_rule/models/entity_rule_model.dart';
+import 'package:metamorphis/src/infrastructure/data/reference/models/composition_model.dart';
 import 'package:metamorphis/src/infrastructure/data/use_case/models/use_case_model.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object/models/value_object_model.dart';
 
@@ -16,7 +16,7 @@ class EntityModel extends Entity {
     required super.valueObjects,
     required super.useCases,
     required super.entityRules,
-    required super.compositions,
+    required super.references,
   });
 
   factory EntityModel.fromEntity(Entity entity) {
@@ -27,7 +27,7 @@ class EntityModel extends Entity {
       valueObjects: entity.valueObjects,
       useCases: entity.useCases,
       entityRules: entity.entityRules,
-      compositions: entity.compositions,
+      references: entity.references,
     );
   }
 
@@ -63,7 +63,7 @@ class EntityModel extends Entity {
       valueObjects: valueObjects,
       useCases: useCases,
       entityRules: entityRules,
-      compositions: references,
+      references: references,
     );
   }
 
@@ -77,7 +77,7 @@ class EntityModel extends Entity {
     final entityRulesModel = entityRules.map((entityRule) {
       return EntityRuleModel.fromEntity(entityRule).toJson();
     }).toList();
-    final compositionsModel = compositions.map((entityList) {
+    final referencesModel = references.map((entityList) {
       return ReferenceModel.fromEntity(entityList).toMap();
     }).toList();
     return {
@@ -87,7 +87,7 @@ class EntityModel extends Entity {
       'valueObjects': valueObjectsModel,
       'useCases': useCasesModel,
       'entityRules': entityRulesModel,
-      'compositions': compositionsModel,
+      'references': referencesModel,
     };
   }
 }

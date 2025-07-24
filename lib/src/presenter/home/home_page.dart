@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/presenter/_core/extensions/navigator_extension.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
-import 'package:metamorphis/src/presenter/home/entity_lists/compositions_page.dart';
+import 'package:metamorphis/src/presenter/home/references/references_page.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/widgets/dialog_change_target_widget.dart';
 import 'package:metamorphis/src/presenter/home/widgets/selected_entity_widget.dart';
@@ -145,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                           entity: entity,
                           key: ValueKey(entity.id),
                         ),
-                        CompositionsPage(
+                        ReferencesPage(
                           entities: homeStore.entities,
                           key: ValueKey(entity.id),
                         ),
@@ -474,7 +474,7 @@ class _MenuItems extends StatelessWidget {
           onTap: () => onTap(0),
         ),
         _MenuItem(
-          title: 'Compositions',
+          title: 'References',
           selected: index == 1,
           onTap: () => onTap(1),
         ),

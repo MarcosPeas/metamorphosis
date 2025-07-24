@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
-import 'package:metamorphis/src/domain/composition/entities/composition.dart';
+import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
 import 'package:metamorphis/src/domain/entity_rule_condition/entity_rule_condition.dart';
 import 'package:metamorphis/src/domain/entity_rule_group_condition/entities/entity_rule_group_condition.dart';
