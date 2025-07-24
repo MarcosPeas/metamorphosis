@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/domain/_core/utils/types_utils.dart';
-import 'package:metamorphis/src/domain/composition/entities/composition.dart';
+import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 import 'package:metamorphis/src/domain/entity_rule_group_condition/entities/entity_rule_group_condition.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/presenter/home/entity_rules/entity_rules_controller.dart';
@@ -134,7 +134,7 @@ class EntityRuleDialog extends StatelessWidget {
                       value: valueObject,
                       child: Text(valueObject.name),
                     ),
-                  for (final composition in entity.compositions)
+                  for (final composition in entity.references)
                     DropdownMenuItem(
                       value: composition,
                       child: Text(composition.name),

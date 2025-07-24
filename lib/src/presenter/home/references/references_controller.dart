@@ -1,15 +1,15 @@
 import 'dart:developer';
 
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
-import 'package:metamorphis/src/domain/composition/entities/composition.dart';
+import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/presenter/home/_core/entity_store.dart';
 
-class CompositionsController {
+class ReferencesController {
   final EntityStore entityStore;
   final UpdateEntityUseCase updateEntityUseCase;
 
-  CompositionsController({
+  ReferencesController({
     required this.entityStore,
     required this.updateEntityUseCase,
   });
@@ -40,7 +40,7 @@ class CompositionsController {
       entity: entity,
       referenceType: compositionType,
     );
-    entityStore.entity.compositions.add(entityList);
+    entityStore.entity.references.add(entityList);
     updateEntity();
   }
 
@@ -57,7 +57,7 @@ class CompositionsController {
   }
 
   void removeComposition(Reference list) {
-    entityStore.entity.compositions.remove(list);
+    entityStore.entity.references.remove(list);
     updateEntity();
   }
 }

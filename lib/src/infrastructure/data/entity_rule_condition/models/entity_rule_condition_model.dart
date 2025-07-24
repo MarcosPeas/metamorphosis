@@ -1,7 +1,7 @@
-import 'package:metamorphis/src/domain/composition/entities/composition.dart';
 import 'package:metamorphis/src/domain/entity_rule_condition/entity_rule_condition.dart';
+import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
-import 'package:metamorphis/src/infrastructure/data/composition/models/composition_model.dart';
+import 'package:metamorphis/src/infrastructure/data/reference/models/composition_model.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object/models/value_object_model.dart';
 
 class EntityRuleConditionModel extends EntityRuleCondition {
@@ -16,7 +16,8 @@ class EntityRuleConditionModel extends EntityRuleCondition {
   });
 
   factory EntityRuleConditionModel.fromEntity(
-      EntityRuleCondition entityRuleCondition) {
+    EntityRuleCondition entityRuleCondition,
+  ) {
     return EntityRuleConditionModel._(
       id: entityRuleCondition.id,
       logicOperator: entityRuleCondition.logicOperator,
@@ -69,8 +70,9 @@ class EntityRuleConditionModel extends EntityRuleCondition {
       leftValueObject = ValueObjectModel.fromValueObject(this.leftValueObject!);
     }
     if (this.rightValueObject != null) {
-      rightValueObject =
-          ValueObjectModel.fromValueObject(this.rightValueObject!);
+      rightValueObject = ValueObjectModel.fromValueObject(
+        this.rightValueObject!,
+      );
     }
     if (this.composition != null) {
       composition = ReferenceModel.fromEntity(this.composition!);
@@ -82,7 +84,7 @@ class EntityRuleConditionModel extends EntityRuleCondition {
       'comparatorOperator': comparatorOperator,
       'leftValueObject': leftValueObject?.toMap(),
       'rightValueObject': rightValueObject?.toMap(),
-      'composition': composition?.toMap(),
+      'reference': composition?.toMap(),
     };
   }
 
@@ -96,8 +98,8 @@ class EntityRuleConditionModel extends EntityRuleCondition {
     if (json['rightValueObject'] != null) {
       rightValueObject = ValueObjectModel.fromMap(json['rightValueObject']);
     }
-    if (json['composition'] != null) {
-      composition = ReferenceModel.fromMap(json['composition']);
+    if (json['reference'] != null) {
+      composition = ReferenceModel.fromMap(json['reference']);
     }
     return EntityRuleConditionModel._(
       id: json['id'],

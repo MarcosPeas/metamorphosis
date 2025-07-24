@@ -18,8 +18,9 @@ class Reference {
 }
 
 enum ReferenceType {
-  single('single'),
-  multi('multi');
+  oneToOne('oneToOne'),
+  oneToMany('oneToMany'),
+  manyToMany('manyToMany');
 
   final String name;
 
@@ -27,12 +28,14 @@ enum ReferenceType {
 
   static ReferenceType fromString(String value) {
     switch (value) {
-      case 'multi':
-        return multi;
-      case 'single':
-        return single;
+      case 'oneToOne':
+        return ReferenceType.oneToOne;
+      case 'oneToMany':
+        return ReferenceType.oneToMany;
+      case 'manyToMany':
+        return ReferenceType.manyToMany;
       default:
-        return single;
+        return ReferenceType.oneToMany;
     }
   }
 }

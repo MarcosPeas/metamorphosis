@@ -1,6 +1,5 @@
-
-import 'package:metamorphis/src/domain/composition/entities/composition.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
+import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 
 class ReferenceModel extends Reference {
   ReferenceModel({
@@ -28,9 +27,7 @@ class ReferenceModel extends Reference {
         name: json['entityName'],
         applicationId: '',
       ),
-      referenceType: ReferenceType.fromString(
-        json['referenceType'] ?? '',
-      ),
+      referenceType: ReferenceType.fromString(json['referenceType'] ?? ''),
     );
   }
 

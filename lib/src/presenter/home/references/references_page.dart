@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:metamorphis/src/domain/composition/entities/composition.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
+import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 
-import 'compositions_controller.dart';
+import 'references_controller.dart';
 
-class CompositionsPage extends StatefulWidget {
+class ReferencesPage extends StatefulWidget {
   final List<Entity> entities;
 
-  const CompositionsPage({required this.entities, super.key});
+  const ReferencesPage({required this.entities, super.key});
 
   @override
-  State<CompositionsPage> createState() => _CompositionsPageState();
+  State<ReferencesPage> createState() => _ReferencesPageState();
 }
 
-class _CompositionsPageState extends State<CompositionsPage> {
-  late final CompositionsController controller;
+class _ReferencesPageState extends State<ReferencesPage> {
+  late final ReferencesController controller;
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _CompositionsPageState extends State<CompositionsPage> {
         Row(
           children: [
             Text(
-              'Compositions',
+              'References',
               style: textTheme.titleMedium?.copyWith(
                 color: colorScheme.primary,
                 fontWeight: FontWeight.bold,
@@ -47,11 +47,7 @@ class _CompositionsPageState extends State<CompositionsPage> {
             const SizedBox(width: 4),
             IconButton(
               onPressed: _showDialogCreateList,
-              icon: Icon(
-                color: colorScheme.primary,
-                Icons.add,
-                size: 22,
-              ),
+              icon: Icon(color: colorScheme.primary, Icons.add, size: 22),
             ),
           ],
         ),
@@ -60,17 +56,13 @@ class _CompositionsPageState extends State<CompositionsPage> {
             listenable: entityStore,
             builder: (context, _) {
               if (entityStore.loading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const Center(child: CircularProgressIndicator());
               }
               final entity = entityStore.entity;
               if (entity.valueObjects.isEmpty) {
-                return const Center(
-                  child: Text('No compositions'),
-                );
+                return const Center(child: Text('No compositions'));
               }
-              final compositions = entity.compositions;
+              final compositions = entity.references;
               return ListView.builder(
                 shrinkWrap: true,
                 itemCount: compositions.length,
@@ -89,7 +81,7 @@ class _CompositionsPageState extends State<CompositionsPage> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        subtitle: Text(_compositionLabel(composition)),
+                        subtitle: Text(_referenceLabel(composition)),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -125,14 +117,19 @@ class _CompositionsPageState extends State<CompositionsPage> {
     );
   }
 
-  String _compositionLabel(Reference composition) {
-      return 'Reference: ${composition.entity.name}';
+  String _referenceLabel(Reference reference) {
+    final labels = {
+      ReferenceType.oneToOne: 'One to One',
+      ReferenceType.oneToMany: 'One to Many',
+      ReferenceType.manyToMany: 'Many to Many',
+    };
+    return '${labels[reference.referenceType]}: ${reference.entity.name}';
   }
 
   void _showDialogCreateList() {
     final nameController = TextEditingController();
     final selectedEntity = ValueNotifier<Entity?>(null);
-    final compositionType = ValueNotifier(ReferenceType.single);
+    final referenceType = ValueNotifier(ReferenceType.oneToOne);
     showDialog(
       context: context,
       builder: (context) {
@@ -151,13 +148,11 @@ class _CompositionsPageState extends State<CompositionsPage> {
                   controller.createComposition(
                     name: nameController.text.trim(),
                     entity: selectedEntity.value,
-                    compositionType: compositionType.value,
+                    compositionType: referenceType.value,
                   );
                   context.pop();
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                ),
+                decoration: const InputDecoration(labelText: 'Name'),
               ),
               const SizedBox(height: 16),
               const Text('Entity'),
@@ -182,22 +177,26 @@ class _CompositionsPageState extends State<CompositionsPage> {
               ),
               const SizedBox(height: 16),
               ValueListenableBuilder(
-                valueListenable: compositionType,
+                valueListenable: referenceType,
                 builder: (_, currentType, __) {
                   return DropdownButton(
                     value: currentType,
                     isExpanded: true,
                     onChanged: (value) {
-                      compositionType.value = value!;
+                      referenceType.value = value!;
                     },
                     items: const [
                       DropdownMenuItem(
-                        value: ReferenceType.single,
-                        child: Text('Single'),
+                        value: ReferenceType.oneToOne,
+                        child: Text('One to One'),
                       ),
                       DropdownMenuItem(
-                        value: ReferenceType.multi,
-                        child: Text('Multi'),
+                        value: ReferenceType.oneToMany,
+                        child: Text('One to Many'),
+                      ),
+                      DropdownMenuItem(
+                        value: ReferenceType.manyToMany,
+                        child: Text('Many to Many'),
                       ),
                     ],
                   );
@@ -218,7 +217,7 @@ class _CompositionsPageState extends State<CompositionsPage> {
                 controller.createComposition(
                   name: nameController.text.trim(),
                   entity: selectedEntity.value,
-                  compositionType: compositionType.value,
+                  compositionType: referenceType.value,
                 );
                 context.pop();
               },
@@ -262,9 +261,7 @@ class _CompositionsPageState extends State<CompositionsPage> {
                   );
                   context.pop();
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                ),
+                decoration: const InputDecoration(labelText: 'Name'),
               ),
               const SizedBox(height: 16),
               const Text('Entity'),
@@ -298,12 +295,16 @@ class _CompositionsPageState extends State<CompositionsPage> {
                     },
                     items: const [
                       DropdownMenuItem(
-                        value: ReferenceType.single,
-                        child: Text('Single'),
+                        value: ReferenceType.oneToOne,
+                        child: Text('One to One'),
                       ),
                       DropdownMenuItem(
-                        value: ReferenceType.multi,
-                        child: Text('Multi'),
+                        value: ReferenceType.oneToMany,
+                        child: Text('One to Many'),
+                      ),
+                      DropdownMenuItem(
+                        value: ReferenceType.manyToMany,
+                        child: Text('Many to Many'),
                       ),
                     ],
                   );

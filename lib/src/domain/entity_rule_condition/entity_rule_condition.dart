@@ -1,4 +1,4 @@
-import 'package:metamorphis/src/domain/composition/entities/composition.dart';
+import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:uuid/uuid.dart';
 
