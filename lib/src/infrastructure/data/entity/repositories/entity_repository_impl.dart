@@ -38,7 +38,10 @@ class EntityRepositoryImpl implements EntityRepository {
           .collection(collection)
           .where(params.filterBy ?? '', isEqualTo: params.filterValue)
           .get();
-      return result.docs.map((e) => EntityModel.fromMap(e.data())).toList();
+      final models = result.docs.map((e) {
+        return EntityModel.fromMap(e.data());
+      }).toList();
+      return models;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
         message: e.code,

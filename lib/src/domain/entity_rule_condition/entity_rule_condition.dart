@@ -1,6 +1,6 @@
+import 'package:metamorphis/src/domain/_core/domain/id_generator.dart';
 import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
-import 'package:uuid/uuid.dart';
 
 class EntityRuleCondition {
   late final String id;
@@ -20,6 +20,6 @@ class EntityRuleCondition {
     this.rightValueObject,
     this.composition,
   }) {
-    this.id = id ?? const Uuid().v4();
+    this.id = id ?? IdGenerator.generateId();
   }
 }

@@ -60,7 +60,6 @@ class LoginController {
         signOutUseCase.execute();
       },
       (user) async {
-        print(user.name);
         await _loadCurrentUser(context: context, userId: user.id);
         store.loading = false;
       },

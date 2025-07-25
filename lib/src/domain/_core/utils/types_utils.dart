@@ -388,6 +388,14 @@ class TypesUtils {
         'isGreaterThan',
         'isGreaterThanOrEqualTo',
       ],
+      'BigDecimal': [
+        'isEqualTo',
+        'isNotEqualTo',
+        'isLessThan',
+        'isLessThanOrEqualTo',
+        'isGreaterThan',
+        'isGreaterThanOrEqualTo',
+      ],
       'String': ['equals', 'notEquals'],
       'Date': [
         'isEqualTo',
