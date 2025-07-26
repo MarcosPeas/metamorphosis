@@ -17,7 +17,7 @@ class GetValueObjectRuleByApplicationUseCase {
     PaginateParams params,
   ) async {
     try {
-      final result = await _valueObjectRuleRepository.paginate(params);
+      final result = await _valueObjectRuleRepository.filter(params);
       return Right(result);
     } on DomainException catch (e) {
       return Left(e);

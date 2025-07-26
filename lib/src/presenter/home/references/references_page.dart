@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/reference/entities/reference.dart';
+import 'package:metamorphis/src/presenter/_core/extensions/words_extensions.dart';
 
 import 'references_controller.dart';
 
@@ -129,9 +130,9 @@ class _ReferencesPageState extends State<ReferencesPage> {
     if (reference.referenceType == ReferenceType.oneToOne) {
       return 'One ${origin.name} to one ${reference.entity.name}';
     } else if (reference.referenceType == ReferenceType.manyToOne) {
-      return 'Many ${origin.name} to one ${reference.entity.name}';
+      return 'Many ${origin.name.plural()} to one ${reference.entity.name}';
     } else {
-      return 'Many ${origin.name} to many ${reference.entity.name}';
+      return 'Many ${origin.name.plural()} to many ${reference.entity.name.plural()}';
     }
   }
 

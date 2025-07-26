@@ -65,7 +65,7 @@ class FlutterUseCasesGenerator {
         entity: entity,
         applicationNameSnakeCase: applicationNameSnakeCase,
       );
-    } else if (useCase.useCaseType == UseCaseType.findOne) {
+    } else if (useCase.useCaseType == UseCaseType.filterOne) {
       return _generateFindByIdUseCase(
         applicationPath: applicationPath,
         domainPath: domainPath,

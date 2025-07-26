@@ -15,7 +15,7 @@ class GetUseCasesByProject {
     PaginateParams params,
   ) async {
     try {
-      final result = await _useCaseRepository.paginate(params);
+      final result = await _useCaseRepository.filter(params);
       return Right(result);
     } on DomainException catch (e) {
       return Left(e);

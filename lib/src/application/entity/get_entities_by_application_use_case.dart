@@ -17,7 +17,7 @@ class GetEntitiesByApplicationUseCase {
     PaginateParams params,
   ) async {
     try {
-      final result = await _entityRepository.paginate(params);
+      final result = await _entityRepository.filter(params);
       return Right(result);
     } on DomainException catch (e) {
       return Left(e);

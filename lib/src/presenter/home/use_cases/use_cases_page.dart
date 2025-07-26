@@ -1,6 +1,8 @@
+import 'package:change_case/change_case.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:metamorphis/src/domain/use_case/entities/use_case.dart';
+import 'package:metamorphis/src/presenter/_core/extensions/words_extensions.dart';
 import 'package:metamorphis/src/presenter/home/use_cases/use_cases_controller.dart';
 
 class UseCasesPage extends StatefulWidget {
@@ -16,6 +18,7 @@ class _UseCasesPageState extends State<UseCasesPage> {
   @override
   void initState() {
     controller = GetIt.instance.get();
+    controller.init();
     super.initState();
   }
 
@@ -59,7 +62,11 @@ class _UseCasesPageState extends State<UseCasesPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
+                  if (useCases.length < 6) ...[
+                    Text('Suggestions'),
+                    const SizedBox(height: 8),
+                  ],
                   if (!entity.containsAnyUseCaseByType(UseCaseType.create))
                     Padding(
                       padding: const EdgeInsets.all(4.0),
@@ -70,14 +77,14 @@ class _UseCasesPageState extends State<UseCasesPage> {
                               controller.createCreateUseCase();
                             },
                             child: Text(
-                              'Create Save ${entity.name} Use Case',
+                              'Add Create${entity.name.toPascalCase()}UseCase',
                             ),
                           ),
                           const Spacer(),
                         ],
                       ),
                     ),
-                  if (!entity.containsAnyUseCaseByType(UseCaseType.findOne))
+                  if (!entity.containsAnyUseCaseByType(UseCaseType.findById))
                     Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: Row(
@@ -87,7 +94,7 @@ class _UseCasesPageState extends State<UseCasesPage> {
                               controller.createFindByIdUseCase();
                             },
                             child: Text(
-                              'Create Find ${entity.name} By Id Use Case',
+                              'Add Find${entity.name.toPascalCase()}ByIdUseCase',
                             ),
                           ),
                           const Spacer(),
@@ -104,7 +111,7 @@ class _UseCasesPageState extends State<UseCasesPage> {
                               controller.createUpdateUseCase();
                             },
                             child: Text(
-                              'Create Update ${entity.name} Use Case',
+                              'Add Update${entity.name.toPascalCase()}UseCase',
                             ),
                           ),
                           const Spacer(),
@@ -121,7 +128,24 @@ class _UseCasesPageState extends State<UseCasesPage> {
                               controller.createDeleteUseCase();
                             },
                             child: Text(
-                              'Create Delete ${entity.name} Use Case',
+                              'Add Delete${entity.name.toPascalCase()}UseCase',
+                            ),
+                          ),
+                          const Spacer(),
+                        ],
+                      ),
+                    ),
+                  if (!entity.containsAnyUseCaseByType(UseCaseType.filterOne))
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Row(
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              controller.createFilterOneUseCase();
+                            },
+                            child: Text(
+                              'Add FilterOne${entity.name.toPascalCase()}UseCase',
                             ),
                           ),
                           const Spacer(),
@@ -138,7 +162,7 @@ class _UseCasesPageState extends State<UseCasesPage> {
                               controller.createPaginateUseCase();
                             },
                             child: Text(
-                              'Create Paginate ${entity.name} Use Case',
+                              'Add Paginate${entity.name.plural().toPascalCase()}UseCase',
                             ),
                           ),
                           const Spacer(),
@@ -154,7 +178,7 @@ class _UseCasesPageState extends State<UseCasesPage> {
     );
   }
 
-/*void _showDialogCreateValueObject() {
+  /*void _showDialogCreateValueObject() {
     final entity = controller.entityStore.entity;
     final valueObjects = entity.valueObjects.map((item) => item.name).toList();
     showDialog(
@@ -251,10 +275,7 @@ class _UseCaseItemList extends StatelessWidget {
   final UseCase useCase;
   final UseCasesController controller;
 
-  const _UseCaseItemList({
-    required this.useCase,
-    required this.controller,
-  });
+  const _UseCaseItemList({required this.useCase, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -274,11 +295,7 @@ class _UseCaseItemList extends StatelessWidget {
             ),
           ),
           trailing: IconButton(
-            icon: Icon(
-              Icons.delete,
-              size: 18,
-              color: colorScheme.error,
-            ),
+            icon: Icon(Icons.delete, size: 18, color: colorScheme.error),
             onPressed: () {
               controller.deleteUseCase(useCase);
             },

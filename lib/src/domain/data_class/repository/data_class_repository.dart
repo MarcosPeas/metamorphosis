@@ -2,7 +2,6 @@ import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/data_class/entities/data_class.dart';
 
 class DataClassRepository implements Repository<DataClass> {
-
   @override
   Future<void> delete(String id) {
     // TODO: implement delete
@@ -12,12 +11,6 @@ class DataClassRepository implements Repository<DataClass> {
   @override
   Future<DataClass> getById(String id) {
     // TODO: implement getById
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<DataClass>> paginate(PaginateParams params) {
-    // TODO: implement paginate
     throw UnimplementedError();
   }
 
@@ -33,4 +26,15 @@ class DataClassRepository implements Repository<DataClass> {
     throw UnimplementedError();
   }
 
+  @override
+  Future<List<DataClass>> filter(PaginateParams params) {
+    // TODO: implement filter
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Page<DataClass>> paginate(Filter filter) {
+    // TODO: implement paginate
+    throw UnimplementedError();
+  }
 }

@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Filter;
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
@@ -32,7 +32,7 @@ class UseCaseRepositoryImpl implements UseCaseRepository {
   }
 
   @override
-  Future<List<UseCase>> paginate(PaginateParams params) async {
+  Future<List<UseCase>> filter(PaginateParams params) async {
     try {
       final result = await _firestore
           .collection(collection)
@@ -115,5 +115,11 @@ class UseCaseRepositoryImpl implements UseCaseRepository {
         context: 'UseCaseRepositoryImpl.delete',
       );
     }
+  }
+
+  @override
+  Future<Page<UseCase>> paginate(Filter filter) {
+    // TODO: implement paginate
+    throw UnimplementedError();
   }
 }

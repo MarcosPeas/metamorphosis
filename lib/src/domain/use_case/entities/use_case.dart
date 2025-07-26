@@ -29,7 +29,8 @@ class UseCase {
 
 enum UseCaseType {
   create('create'),
-  findOne('findOne'),
+  findById('findById'),
+  filterOne('filterOne'),
   update('update'),
   delete('delete'),
   paginate('paginate');
@@ -42,8 +43,10 @@ enum UseCaseType {
     switch (value) {
       case 'create':
         return UseCaseType.create;
-      case 'findOne':
-        return UseCaseType.findOne;
+      case 'findById':
+        return UseCaseType.findById;
+      case 'filterOne':
+        return UseCaseType.filterOne;
       case 'update':
         return UseCaseType.update;
       case 'delete':

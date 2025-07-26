@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Filter;
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
@@ -32,7 +32,7 @@ class ValueObjectRepositoryImpl implements ValueObjectRepository {
   }
 
   @override
-  Future<List<ValueObject>> paginate(PaginateParams params) async {
+  Future<List<ValueObject>> filter(PaginateParams params) async {
     try {
       final result = await _firestore
           .collection(collection)
@@ -117,5 +117,11 @@ class ValueObjectRepositoryImpl implements ValueObjectRepository {
         context: 'ValueObjectRepositoryImpl.delete',
       );
     }
+  }
+
+  @override
+  Future<Page<ValueObject>> paginate(Filter filter) {
+    // TODO: implement paginate
+    throw UnimplementedError();
   }
 }

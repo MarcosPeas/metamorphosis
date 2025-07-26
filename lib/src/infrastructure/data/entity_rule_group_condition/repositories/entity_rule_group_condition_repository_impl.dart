@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Filter;
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
@@ -34,7 +34,7 @@ class EntityRuleGroupConditionRepositoryImpl
   }
 
   @override
-  Future<List<EntityRuleGroupCondition>> paginate(PaginateParams params) async {
+  Future<List<EntityRuleGroupCondition>> filter(PaginateParams params) async {
     try {
       final result = await _firestore
           .collection(collection)
@@ -133,5 +133,11 @@ class EntityRuleGroupConditionRepositoryImpl
         context: 'EntityRuleGroupConditionRepositoryImpl.delete',
       );
     }
+  }
+
+  @override
+  Future<Page<EntityRuleGroupCondition>> paginate(Filter filter) {
+    // TODO: implement paginate
+    throw UnimplementedError();
   }
 }

@@ -15,12 +15,6 @@ class FieldRepository implements Repository<Field> {
   }
 
   @override
-  Future<List<Field>> paginate(PaginateParams params) {
-    // TODO: implement paginate
-    throw UnimplementedError();
-  }
-
-  @override
   Future<Field> save(Field entity) {
     // TODO: implement save
     throw UnimplementedError();
@@ -29,6 +23,18 @@ class FieldRepository implements Repository<Field> {
   @override
   Future<Field> update(Field entity) {
     // TODO: implement update
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Field>> filter(PaginateParams params) {
+    // TODO: implement filter
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Page<Field>> paginate(Filter filter) {
+    // TODO: implement paginate
     throw UnimplementedError();
   }
 }

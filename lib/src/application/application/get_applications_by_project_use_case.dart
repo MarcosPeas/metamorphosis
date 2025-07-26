@@ -17,7 +17,7 @@ class GetApplicationsByProjectUseCase {
     PaginateParams params,
   ) async {
     try {
-      final result = await _applicationRepository.paginate(params);
+      final result = await _applicationRepository.filter(params);
       return Right(result);
     } on DomainException catch (e) {
       return Left(e);

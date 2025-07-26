@@ -19,7 +19,7 @@ class GetEntityRuleGroupConditionsByEntityRuleUseCase {
     PaginateParams params,
   ) async {
     try {
-      final result = await _entityRuleGroupConditionRepository.paginate(params);
+      final result = await _entityRuleGroupConditionRepository.filter(params);
       return Right(result);
     } on DomainException catch (e) {
       return Left(e);

@@ -17,7 +17,7 @@ class TypesUtils {
     'Enum',
   ];
 
-  static const Map<String, String> _conditionsFieldBool = {
+  /*static const Map<String, String> _conditionsFieldBool = {
     'isTrue': 'none',
     'isFalse': 'none',
   };
@@ -128,9 +128,9 @@ class TypesUtils {
     'isLessThanOrEqualToCurrentTimeMinusHours': 'number',
     'isGreaterThanCurrentTimePlusHours': 'number',
     'isGreaterThanOrEqualToCurrentTimePlusHours': 'number',
-  };
+  };*/
 
-  static String inputConditionType({
+  /*static String inputConditionType({
     required String dateType,
     required String condition,
   }) {
@@ -152,7 +152,7 @@ class TypesUtils {
       return _conditionsFieldTime[condition]!;
     }
     return '';
-  }
+  }*/
 
   static List<String> conditions(String dataType) {
     final conditionsMap = {
@@ -244,6 +244,8 @@ class TypesUtils {
         'matches',
         'isCpf',
         'isCnpj',
+        'isEmail',
+        'isUrl',
       ],
       'Date': [
         'isEqualTo',

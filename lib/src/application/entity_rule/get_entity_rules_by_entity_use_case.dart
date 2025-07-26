@@ -17,7 +17,7 @@ class GetEntityRulesByProjectUseCase {
     PaginateParams params,
   ) async {
     try {
-      final result = await _entityRuleRepository.paginate(params);
+      final result = await _entityRuleRepository.filter(params);
       return Right(result);
     } on DomainException catch (e) {
       return Left(e);

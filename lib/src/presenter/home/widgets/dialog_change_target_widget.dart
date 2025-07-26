@@ -42,7 +42,7 @@ class DialogSelectTargetWidget extends StatelessWidget {
                     trailing: const Icon(Icons.chevron_right),
                   ),
                   ListTile(
-                    title: const Text('Golang'),
+                    title: const Text('Rust'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
                       controller.buildGolang();

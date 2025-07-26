@@ -19,7 +19,7 @@ class GetValueObjectGroupConditionsByProjectUseCase {
     PaginateParams params,
   ) async {
     try {
-      final result = await _valueObjectRuleConditionRepository.paginate(params);
+      final result = await _valueObjectRuleConditionRepository.filter(params);
       return Right(result);
     } on DomainException catch (e) {
       return Left(e);

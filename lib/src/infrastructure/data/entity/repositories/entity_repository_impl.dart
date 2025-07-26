@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Filter;
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
@@ -32,7 +32,7 @@ class EntityRepositoryImpl implements EntityRepository {
   }
 
   @override
-  Future<List<Entity>> paginate(PaginateParams params) async {
+  Future<List<Entity>> filter(PaginateParams params) async {
     try {
       final result = await _firestore
           .collection(collection)
@@ -118,5 +118,11 @@ class EntityRepositoryImpl implements EntityRepository {
         context: 'EntityRepositoryImpl.delete',
       );
     }
+  }
+
+  @override
+  Future<Page<Entity>> paginate(Filter filter) {
+    // TODO: implement paginate
+    throw UnimplementedError();
   }
 }
