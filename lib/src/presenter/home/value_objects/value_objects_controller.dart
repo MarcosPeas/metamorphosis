@@ -105,14 +105,12 @@ class ValueObjectsController {
     required String logicOperator,
     required String targetValue,
     required String comparatorOperator,
-    required String regex,
   }) {
     final condition = ValueObjectRuleCondition(
       id: const Uuid().v4(),
       logicOperator: logicOperator,
       targetValue: targetValue,
       comparatorOperator: comparatorOperator,
-      regex: regex,
       valueObjectGroupConditionId: group.id,
     );
     group.conditions.add(condition);

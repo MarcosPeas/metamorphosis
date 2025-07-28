@@ -104,17 +104,13 @@ class ValueObject {
     return true;
   }
 
-  bool get isDate {
-    return type == 'Date';
-  }
+  bool get isDate => type == 'Date';
 
-  bool get isDateTime {
-    return type == 'DateTime';
-  }
+  bool get isDateTime => type == 'DateTime';
 
-  bool get isTime {
-    return type == 'Time';
-  }
+  bool get isTime => type == 'Time';
+
+  bool get isString => type == 'String';
 
   void removeEnumValue(String value) {
     final valuesList = _enumValues.split(',');

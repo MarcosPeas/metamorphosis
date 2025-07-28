@@ -1,4 +1,6 @@
-extension RustTypeExtension on String {
+import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
+
+extension RustTypeExtension on ValueObject {
   String toRustType() {
     Map<String, String> types = {
       'bool': 'bool',
@@ -15,6 +17,10 @@ extension RustTypeExtension on String {
       'DateTime': 'DateTime<Utc>',
       'Enum': 'String',
     };
-    return types.containsKey(this) ? types[this]! : this;
+    final result = types.containsKey(type) ? types[type]! : type;
+    if (isNullable) {
+      return 'Option<$result>';
+    }
+    return result;
   }
 }

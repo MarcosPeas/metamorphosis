@@ -5,7 +5,6 @@ class ValueObjectRuleCondition {
   String? logicOperator;
   String? targetValue;
   String? comparatorOperator;
-  String? regex;
   final String valueObjectGroupConditionId;
 
   ValueObjectRuleCondition({
@@ -13,7 +12,6 @@ class ValueObjectRuleCondition {
     this.logicOperator,
     this.targetValue,
     this.comparatorOperator,
-    this.regex,
     required this.valueObjectGroupConditionId,
   }) {
     {

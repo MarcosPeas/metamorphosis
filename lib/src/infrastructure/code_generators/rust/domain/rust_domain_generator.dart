@@ -7,7 +7,7 @@ import 'package:metamorphis/src/infrastructure/code_generators/rust/utils/rust_t
 import 'package:metamorphis/src/infrastructure/code_generators/rust/utils/rust_utils.dart';
 
 import 'rust_domain_utils_generator.dart';
-import 'rust_value_object_generator.dart';
+import 'value_objects/rust_value_object_generator.dart';
 
 class RustDomainGenerator {
   static List<ArchiveFile> generate(Application application) {
@@ -40,7 +40,11 @@ class RustDomainGenerator {
     model += _buildEnum(entity);
     final entityPath = 'src/domain/$nameSnack/';
     final entitiesPath = '${entityPath}entities/';
-    final file = ArchiveFile('$entitiesPath$nameSnack.rs', model.length, model);
+    final file = ArchiveFile(
+      '$entitiesPath$nameSnack.rs',
+      model.length,
+      model.codeUnits,
+    );
     final modEntities = RustUtils.genMod(
       path: entitiesPath,
       imports: [nameSnack],
@@ -70,7 +74,7 @@ class RustDomainGenerator {
       if (vo.isEnum) {
         return '${vo.name.toSnakeCase()}: ${vo.name.toPascalCase()}';
       }
-      return '${vo.name.toSnakeCase()}: ${vo.type.toRustType()}';
+      return '${vo.name.toSnakeCase()}: ${vo.toRustType()}';
     });
     return params.join(', ');
   }

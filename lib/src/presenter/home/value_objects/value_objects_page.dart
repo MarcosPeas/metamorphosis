@@ -923,8 +923,7 @@ class _GroupConditionWidget extends StatelessWidget {
     final comparatorOperators = TypesUtils.conditions(valueObject.type);
     final selectedComparatorOperator = ValueNotifier(comparatorOperators.first);
     final targetValueController = TextEditingController();
-    final regexController = TextEditingController();
-    final shortOperators = ['is empty', 'is not empty', 'matches'];
+    final shortOperators = ['is empty', 'is not empty'];
     showDialog(
       context: context,
       builder: (context) {
@@ -991,13 +990,6 @@ class _GroupConditionWidget extends StatelessWidget {
                             labelText: 'Target value',
                           ),
                         ),
-                      if (selectedComparatorOperator.value == 'matches')
-                        const SizedBox(height: 8),
-                      if (selectedComparatorOperator.value == 'matches')
-                        TextField(
-                          controller: regexController,
-                          decoration: const InputDecoration(labelText: 'Regex'),
-                        ),
                       const SizedBox(height: 8),
                     ],
                   );
@@ -1020,7 +1012,6 @@ class _GroupConditionWidget extends StatelessWidget {
                   logicOperator: selectedLogicOperator.value,
                   comparatorOperator: selectedComparatorOperator.value,
                   targetValue: targetValueController.text.trim(),
-                  regex: regexController.text.trim(),
                 );
               },
               child: const Text('OK'),
@@ -1124,7 +1115,6 @@ class _GroupConditionWidget extends StatelessWidget {
                   logicOperator: selectedLogicOperator.value,
                   comparatorOperator: selectedComparatorOperator.value,
                   targetValue: targetValueController.text.trim(),
-                  regex: '',
                 );
               },
               child: const Text('OK'),
@@ -1146,8 +1136,7 @@ class _GroupConditionWidget extends StatelessWidget {
     final comparatorOperators = TypesUtils.conditions(valueObject.type);
     final selectedComparatorOperator = ValueNotifier(comparatorOperators.first);
     final targetValueController = TextEditingController();
-    final regexController = TextEditingController();
-    final shortOperators = ['is empty', 'is not empty', 'matches'];
+    final shortOperators = ['is empty', 'is not empty'];
     showDialog(
       context: context,
       builder: (context) {
@@ -1236,7 +1225,6 @@ class _GroupConditionWidget extends StatelessWidget {
                   logicOperator: selectedLogicOperator.value,
                   comparatorOperator: selectedComparatorOperator.value,
                   targetValue: targetValueController.text.trim(),
-                  regex: regexController.text.trim(),
                 );
               },
               child: const Text('OK'),

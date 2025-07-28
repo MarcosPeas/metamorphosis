@@ -18,7 +18,7 @@ class BuildsGenerator {
     return ArchiveFile(
       'build-win.bat',
       content.length,
-      content,
+      content.codeUnits,
     );
   }
 
@@ -29,7 +29,7 @@ class BuildsGenerator {
     return ArchiveFile(
       'build-ubuntu.sh',
       content.length,
-      content,
+      content.codeUnits,
     );
   }
 
@@ -39,7 +39,7 @@ class BuildsGenerator {
     return ArchiveFile(
       'build-mac.sh',
       content.length,
-      content,
+      content.codeUnits,
     );
   }
 

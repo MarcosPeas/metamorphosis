@@ -6,7 +6,6 @@ class ValueObjectRuleConditionModel extends ValueObjectRuleCondition {
     super.logicOperator,
     super.targetValue,
     super.comparatorOperator,
-    super.regex,
     required super.valueObjectGroupConditionId,
   });
 
@@ -16,7 +15,6 @@ class ValueObjectRuleConditionModel extends ValueObjectRuleCondition {
       logicOperator: application.logicOperator,
       targetValue: application.targetValue,
       comparatorOperator: application.comparatorOperator,
-      regex: application.regex,
       valueObjectGroupConditionId: application.valueObjectGroupConditionId,
     );
   }
@@ -25,9 +23,8 @@ class ValueObjectRuleConditionModel extends ValueObjectRuleCondition {
     return ValueObjectRuleConditionModel(
       id: json['id'],
       logicOperator: json['logicOperator'],
-      targetValue: json['targetValue'],
+      targetValue: json['targetValue'] ?? json['regex'],
       comparatorOperator: json['comparatorOperator'],
-      regex: json['regex'],
       valueObjectGroupConditionId: json['valueObjectGroupConditionId'],
     );
   }
@@ -38,7 +35,6 @@ class ValueObjectRuleConditionModel extends ValueObjectRuleCondition {
       'logicOperator': super.logicOperator,
       'targetValue': super.targetValue,
       'comparatorOperator': super.comparatorOperator,
-      'regex': super.regex,
       'valueObjectGroupConditionId': super.valueObjectGroupConditionId,
     };
   }

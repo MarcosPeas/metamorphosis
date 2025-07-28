@@ -1,14 +1,13 @@
-import 'package:archive/archive.dart';
+
+import 'dart:convert';
+
+import 'package:archive/archive_io.dart';
 
 class RustUtils {
-  static ArchiveFile genFile({
-    required String path,
-    required String content,
-  }) {
-    return ArchiveFile(
+  static ArchiveFile genFile({required String path, required String content}) {
+    return ArchiveFile.bytes(
       path,
-      content.length,
-      content.codeUnits,
+      utf8.encode(content),
     );
   }
 

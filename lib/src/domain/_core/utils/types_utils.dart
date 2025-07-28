@@ -234,7 +234,6 @@ class TypesUtils {
         'isGreaterThanOrEqualTo',
       ],
       'String': [
-        'isEmpty',
         'isNotEmpty',
         'minLength',
         'maxLength',
