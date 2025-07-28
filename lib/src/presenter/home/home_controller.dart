@@ -123,6 +123,7 @@ class HomeController {
   void _buildCode(GeneratorTarget target) {
     homeStore.generating = true;
     final application = appStore.application!;
+    application.entities = homeStore.entities;
     final name = ChangeCase(application.name).toSnakeCase();
     final archive = CodeGenerators.generateCode(
       application: application,

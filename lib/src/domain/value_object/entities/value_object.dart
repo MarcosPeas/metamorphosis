@@ -104,6 +104,18 @@ class ValueObject {
     return true;
   }
 
+  bool get isDate {
+    return type == 'Date';
+  }
+
+  bool get isDateTime {
+    return type == 'DateTime';
+  }
+
+  bool get isTime {
+    return type == 'Time';
+  }
+
   void removeEnumValue(String value) {
     final valuesList = _enumValues.split(',');
     valuesList.remove(value.toConstantCase());

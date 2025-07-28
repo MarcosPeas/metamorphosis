@@ -1,6 +1,6 @@
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:archive/archive.dart';
-import 'package:metamorphis/src/infrastructure/code_generators/rust/domain/domain_generator.dart';
+import 'package:metamorphis/src/infrastructure/code_generators/rust/domain/rust_domain_generator.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/rust/settings_files/builds_generator.dart';
 
 import 'main_generator.dart';
@@ -16,7 +16,7 @@ class RustGenerator {
     final main = MainGenerator.generate(application);
     final toml = TomlGenerator.generate(application);
     final builds = BuildsGenerator.generate(application);
-    final domain = DomainGenerator.generate(application);
+    final domain = RustDomainGenerator.generate(application);
     archive.addFile(main);
     archive.addFile(toml);
     builds.forEach(archive.addFile);
