@@ -517,7 +517,8 @@ class _EntityRuleWidget extends StatelessWidget {
     final rules = valueObject.rules;
     String title = '${valueObject.name} (${valueObject.type})';
     if (!valueObject.isEnum) {
-      title += '${valueObject.isUnique ? ', unique' : ''}${valueObject.isNullable ? ', nullable' : ''}';
+      title +=
+          '${valueObject.isUnique ? ', unique' : ''}${valueObject.isNullable ? ', nullable' : ''}';
     }
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -553,136 +554,138 @@ class _EntityRuleWidget extends StatelessWidget {
             child: Text(valueObject.enumValues),
           ),
         if (!valueObject.isEnum)
-        Padding(
-          padding: const EdgeInsets.only(left: 16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: rules.length,
-                itemBuilder: (_, index) {
-                  final rule = rules[index];
-                  return ValueListenableBuilder(
-                    valueListenable: hoverIndex,
-                    builder: (_, __, ___) {
-                      final hoverAddRuleGroup = ValueNotifier(false);
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                onEnter: (_) {
-                                  hoverIndex.value = index;
-                                },
-                                onExit: (_) {
-                                  hoverIndex.value = -1;
-                                },
-                                child: GestureDetector(
-                                  onTap: () {
-                                    onValueObjectRuleTap(rule);
-                                  },
-                                  child: Text(
-                                    rule.errorMessage,
-                                    style: textTheme.bodyLarge?.copyWith(
-                                      color: colorScheme.primary,
-                                      decoration: hoverIndex.value == index
-                                          ? TextDecoration.underline
-                                          : TextDecoration.none,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              IconButton(
-                                icon: const Icon(Icons.delete, size: 18),
-                                onPressed: () {
-                                  onDeleteRule(rule);
-                                },
-                              ),
-                            ],
-                          ),
-                          _GroupConditionWidget(
-                            rule: rule,
-                            valueObject: valueObject,
-                            controller: controller,
-                          ),
-                          const SizedBox(height: 4),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 24),
-                            child: ValueListenableBuilder(
-                              valueListenable: hoverAddRuleGroup,
-                              builder: (_, __, ___) {
-                                return MouseRegion(
+          Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: rules.length,
+                  itemBuilder: (_, index) {
+                    final rule = rules[index];
+                    return ValueListenableBuilder(
+                      valueListenable: hoverIndex,
+                      builder: (_, __, ___) {
+                        final hoverAddRuleGroup = ValueNotifier(false);
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                MouseRegion(
                                   cursor: SystemMouseCursors.click,
                                   onEnter: (_) {
-                                    hoverAddRuleGroup.value = true;
+                                    hoverIndex.value = index;
                                   },
                                   onExit: (_) {
-                                    hoverAddRuleGroup.value = false;
+                                    hoverIndex.value = -1;
                                   },
                                   child: GestureDetector(
                                     onTap: () {
-                                      _showDialogCreateValueObjectGroupCondition(
-                                        context: context,
-                                        rule: rule,
-                                      );
+                                      onValueObjectRuleTap(rule);
                                     },
                                     child: Text(
-                                      'Add conditions group',
-                                      style: textTheme.bodySmall?.copyWith(
+                                      rule.errorMessage,
+                                      style: textTheme.bodyLarge?.copyWith(
                                         color: colorScheme.primary,
-                                        decoration: hoverAddRuleGroup.value
+                                        decoration: hoverIndex.value == index
                                             ? TextDecoration.underline
                                             : TextDecoration.none,
                                       ),
                                     ),
                                   ),
-                                );
-                              },
+                                ),
+                                const SizedBox(width: 8),
+                                IconButton(
+                                  icon: const Icon(Icons.delete, size: 18),
+                                  onPressed: () {
+                                    onDeleteRule(rule);
+                                  },
+                                ),
+                              ],
                             ),
+                            _GroupConditionWidget(
+                              rule: rule,
+                              valueObject: valueObject,
+                              controller: controller,
+                            ),
+                            const SizedBox(height: 4),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                              ),
+                              child: ValueListenableBuilder(
+                                valueListenable: hoverAddRuleGroup,
+                                builder: (_, __, ___) {
+                                  return MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    onEnter: (_) {
+                                      hoverAddRuleGroup.value = true;
+                                    },
+                                    onExit: (_) {
+                                      hoverAddRuleGroup.value = false;
+                                    },
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        _showDialogCreateValueObjectGroupCondition(
+                                          context: context,
+                                          rule: rule,
+                                        );
+                                      },
+                                      child: Text(
+                                        'Add conditions group',
+                                        style: textTheme.bodySmall?.copyWith(
+                                          color: colorScheme.primary,
+                                          decoration: hoverAddRuleGroup.value
+                                              ? TextDecoration.underline
+                                              : TextDecoration.none,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 8),
+                ValueListenableBuilder(
+                  valueListenable: hoverAddRule,
+                  builder: (_, __, ___) {
+                    return MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      onEnter: (_) {
+                        hoverAddRule.value = true;
+                      },
+                      onExit: (_) {
+                        hoverAddRule.value = false;
+                      },
+                      child: GestureDetector(
+                        onTap: onAddTap,
+                        child: Text(
+                          'Add rule',
+                          style: textTheme.bodySmall?.copyWith(
+                            color: colorScheme.primary,
+                            decoration: hoverAddRule.value
+                                ? TextDecoration.underline
+                                : TextDecoration.none,
                           ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
-              const SizedBox(height: 8),
-              ValueListenableBuilder(
-                valueListenable: hoverAddRule,
-                builder: (_, __, ___) {
-                  return MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    onEnter: (_) {
-                      hoverAddRule.value = true;
-                    },
-                    onExit: (_) {
-                      hoverAddRule.value = false;
-                    },
-                    child: GestureDetector(
-                      onTap: onAddTap,
-                      child: Text(
-                        'Add rule',
-                        style: textTheme.bodySmall?.copyWith(
-                          color: colorScheme.primary,
-                          decoration: hoverAddRule.value
-                              ? TextDecoration.underline
-                              : TextDecoration.none,
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
         const Divider(),
       ],
     );
@@ -877,15 +880,7 @@ class _GroupConditionWidget extends StatelessWidget {
     required BuildContext context,
     required bool isFirst,
   }) {
-    final numbers = [
-      'byte/int8',
-      'short/int16',
-      'int/int32',
-      'long/int64',
-      'float/float32',
-      'double/float64',
-    ];
-    if (valueObject.type == 'String') {
+    if (valueObject.isString) {
       _showDialogCreateValueObjectConditionWithString(
         groupIndex: groupIndex,
         valueObject: valueObject,
@@ -893,8 +888,16 @@ class _GroupConditionWidget extends StatelessWidget {
         context: context,
         isFirst: isFirst,
       );
-    } else if (numbers.contains(valueObject.type)) {
+    } else if (valueObject.isNumber) {
       _showDialogCreateValueObjectConditionWithNumber(
+        groupIndex: groupIndex,
+        valueObject: valueObject,
+        groupCondition: groupCondition,
+        context: context,
+        isFirst: isFirst,
+      );
+    } else if (valueObject.isDateTime) {
+      _showDialogCreateValueObjectConditionWithDateTime(
         groupIndex: groupIndex,
         valueObject: valueObject,
         groupCondition: groupCondition,
@@ -1125,6 +1128,185 @@ class _GroupConditionWidget extends StatelessWidget {
     );
   }
 
+  void _showDialogCreateValueObjectConditionWithDateTime({
+    required int groupIndex,
+    required ValueObject valueObject,
+    required ValueObjectGroupCondition groupCondition,
+    required BuildContext context,
+    required bool isFirst,
+  }) {
+    final selectedLogicOperator = ValueNotifier('AND');
+    final comparatorOperators = TypesUtils.conditions(valueObject.type);
+    final selectedComparatorOperator = ValueNotifier(comparatorOperators.first);
+    final dateNotifier = ValueNotifier<String?>(null);
+    final targetValueController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'Create a value object condition:\ngroup ${groupIndex + 1}',
+          ),
+          content: ValueListenableBuilder(
+            valueListenable: dateNotifier,
+            builder: (_, __, ___) {
+              return ValueListenableBuilder(
+                valueListenable: selectedLogicOperator,
+                builder: (_, operator, __) {
+                  return ValueListenableBuilder(
+                    valueListenable: selectedComparatorOperator,
+                    builder: (_, b, __) {
+                      final textTheme = Theme.of(context).textTheme;
+                      final colorScheme = Theme.of(context).colorScheme;
+                      final comparator = selectedComparatorOperator.value;
+                      final isInputInt =
+                          TypesUtils.isInputIntegerComparatorForDate(
+                            comparator,
+                          );
+                      final isInputDate =
+                          TypesUtils.isSelectableComparatorForDate(comparator);
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(rule.errorMessage),
+                          const SizedBox(height: 16),
+                          if (!isFirst) const Text('Logic Operator'),
+                          if (!isFirst)
+                            DropdownButton(
+                              value: operator,
+                              isExpanded: true,
+                              onChanged: (value) {
+                                selectedLogicOperator.value = value.toString();
+                              },
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 'AND',
+                                  child: Text('AND'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'OR',
+                                  child: Text('OR'),
+                                ),
+                              ],
+                            ),
+                          if (!isFirst) const SizedBox(height: 8),
+                          const Text('Comparator Operator'),
+                          ValueListenableBuilder(
+                            valueListenable: selectedComparatorOperator,
+                            builder: (_, operator, __) {
+                              return DropdownButton(
+                                value: operator,
+                                isExpanded: true,
+                                onChanged: (value) {
+                                  selectedComparatorOperator.value = value
+                                      .toString();
+                                },
+                                items: comparatorOperators.map((item) {
+                                  return DropdownMenuItem(
+                                    value: item,
+                                    child: Text(item),
+                                  );
+                                }).toList(),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 8),
+                          if (isInputDate)
+                            GestureDetector(
+                              onTap: () async {
+                                final date = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime(2100),
+                                );
+                                if (date == null) {
+                                  return;
+                                }
+                                final time = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay.fromDateTime(
+                                    DateTime.now(),
+                                  ),
+                                );
+                                if (time == null) {
+                                  return;
+                                }
+                                final dateTime = DateTime(
+                                  date.year,
+                                  date.month,
+                                  date.day,
+                                  time.hour,
+                                  time.minute,
+                                );
+                                dateNotifier.value = dateTime.toIso8601String();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(12.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  border: Border.all(
+                                    color: colorScheme.primary,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                child: Text(
+                                  dateNotifier.value ?? 'Select the date',
+                                  style: textTheme.bodyMedium?.copyWith(
+                                    color: colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (isInputInt)
+                            TextField(
+                              onChanged: (value) {
+                                dateNotifier.value = null;
+                              },
+                              controller: targetValueController,
+                              decoration: const InputDecoration(
+                                labelText: 'Add a number',
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                            ),
+                          const SizedBox(height: 8),
+                        ],
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                context.pop();
+                controller.createValueObjectRuleCondition(
+                  group: groupCondition,
+                  logicOperator: selectedLogicOperator.value,
+                  comparatorOperator: selectedComparatorOperator.value,
+                  targetValue:
+                      dateNotifier.value ?? targetValueController.text.trim(),
+                );
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showDialogCreateValueObjectConditionDefault({
     required int groupIndex,
     required ValueObject valueObject,
@@ -1249,7 +1431,6 @@ class _ConditionsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final conditions = groupCondition.conditions;
     final colorScheme = Theme.of(context).colorScheme;
-    /*final textTheme = Theme.of(context).textTheme;*/
     return ListView.builder(
       shrinkWrap: true,
       itemCount: conditions.length,

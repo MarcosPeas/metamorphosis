@@ -12,6 +12,9 @@ class RustConditionsGenerator {
     'float/float32': _buildWithFloat,
     'double/float64': _buildWithDouble,
     'BigDecimal': _buildWithBigDecimal,
+    'Date': _buildWithAnyDate,
+    'Time': _buildWithAnyDate,
+    'DateTime': _buildWithDateTime,
   };
 
   static String buildCondition({
@@ -216,7 +219,6 @@ class RustConditionsGenerator {
     final value = condition.targetValue;
     String content = isFirst ? '' : ' ${logics[condition.logicOperator]} ';
     final unwrap = isNullable ? '.clone().unwrap()' : '';
-    //self.value < BigDecimal::from_f64(10.5).unwrap()
     if (condition.comparatorOperator == 'isEqualTo') {
       content += 'self.value$unwrap != BigDecimal::from_f64(${value}f64).unwrap()';
     } else if (condition.comparatorOperator == 'isNotEqualTo') {
@@ -229,6 +231,87 @@ class RustConditionsGenerator {
       content += 'self.value$unwrap <= BigDecimal::from_f64(${value}f64).unwrap()';
     } else if (condition.comparatorOperator == 'isGreaterThanOrEqualTo') {
       content += 'self.value$unwrap < BigDecimal::from_f64(${value}f64).unwrap()';
+    }
+    return content;
+  }
+
+  static String _buildWithDateTime({
+    required ValueObjectRuleCondition condition,
+    required bool isFirst,
+    required bool isNullable,
+  }) {
+    String value = condition.targetValue ?? '';
+    if (value.contains('.')) {
+      value = '${value.substring(0, value.length - 1)}Z';
+    }
+    String content = isFirst ? '' : ' ${logics[condition.logicOperator]} ';
+    final unwrap = isNullable ? '.clone().unwrap()' : '';
+    if (condition.comparatorOperator == 'isEqualTo') {
+      content += 'self.value$unwrap != DateTime::parse_from_rfc3339("$value").unwrap()';
+    } else if (condition.comparatorOperator == 'isNotEqualTo') {
+      content += 'self.value$unwrap == DateTime::parse_from_rfc3339("$value").unwrap()';
+    } else if (condition.comparatorOperator == 'isLessThan') {
+      content += 'self.value$unwrap >= DateTime::parse_from_rfc3339("$value").unwrap()';
+    } else if (condition.comparatorOperator == 'isLessThanOrEqualTo') {
+      content += 'self.value$unwrap > DateTime::parse_from_rfc3339("$value").unwrap()';
+    } else if (condition.comparatorOperator == 'isGreaterThan') {
+      content += 'self.value$unwrap <= DateTime::parse_from_rfc3339("$value").unwrap()';
+    } else if (condition.comparatorOperator == 'isGreaterThanOrEqualTo') {
+      content += 'self.value$unwrap < DateTime::parse_from_rfc3339("$value").unwrap()';
+    } else if (condition.comparatorOperator == 'isLessThanCurrentDateTime') {
+      content += 'self.value$unwrap >= Utc::now()';
+    } else if (condition.comparatorOperator == 'isLessThanOrEqualToCurrentDateTime') {
+      content += 'self.value$unwrap > Utc::now()';
+    } else if (condition.comparatorOperator == 'isGreaterThanCurrentDateTime') {
+      content += 'self.value$unwrap <= Utc::now()';
+    } else if (condition.comparatorOperator == 'isGreaterThanOrEqualToCurrentDateTime') {
+      content += 'self.value$unwrap < Utc::now()';
+    } else if (condition.comparatorOperator == 'isLessThanCurrentDateTimeMinusSeconds') {
+      content += 'self.value$unwrap >= (Utc::now() - Duration::seconds($value))';
+    } else if (condition.comparatorOperator == 'isLessThanOrEqualToCurrentDateTimeMinusSeconds') {
+      content += 'self.value$unwrap > (Utc::now() - Duration::seconds($value))';
+    } else if (condition.comparatorOperator == 'isGreaterThanCurrentDateTimePlusSeconds') {
+      content += 'self.value$unwrap <= (Utc::now() + Duration::seconds($value))';
+    } else if (condition.comparatorOperator == 'isGreaterThanOrEqualToCurrentDateTimePlusSeconds') {
+      content += 'self.value$unwrap < (Utc::now() + Duration::seconds($value))';
+    } else if (condition.comparatorOperator == 'isLessThanCurrentDateTimeMinusMinutes') {
+      content += 'self.value$unwrap >= (Utc::now() - Duration::minutes($value))';
+    } else if (condition.comparatorOperator == 'isLessThanOrEqualToCurrentDateTimeMinusMinutes') {
+      content += 'self.value$unwrap > (Utc::now() - Duration::minutes($value))';
+    } else if (condition.comparatorOperator == 'isGreaterThanCurrentDateTimePlusMinutes') {
+      content += 'self.value$unwrap <= (Utc::now() + Duration::minutes($value))';
+    } else if (condition.comparatorOperator == 'isGreaterThanOrEqualToCurrentDateTimePlusMinutes') {
+      content += 'self.value$unwrap < (Utc::now() + Duration::minutes($value))';
+    } else if (condition.comparatorOperator == 'isLessThanCurrentDateTimeMinusHours') {
+      content += 'self.value$unwrap >= (Utc::now() - Duration::hours($value))';
+    } else if (condition.comparatorOperator == 'isLessThanOrEqualToCurrentDateTimeMinusHours') {
+      content += 'self.value$unwrap > (Utc::now() - Duration::hours($value))';
+    } else if (condition.comparatorOperator == 'isGreaterThanCurrentDateTimePlusHours') {
+      content += 'self.value$unwrap <= (Utc::now() + Duration::hours($value))';
+    } else if (condition.comparatorOperator == 'isGreaterThanOrEqualToCurrentDateTimePlusHours') {
+      content += 'self.value$unwrap < (Utc::now() + Duration::hours($value))';
+    } else if (condition.comparatorOperator == 'isLessThanCurrentDateTimeMinusDays') {
+      content += 'self.value$unwrap >= (Utc::now() - Duration::days($value))';
+    } else if (condition.comparatorOperator == 'isLessThanOrEqualToCurrentDateTimeMinusDays') {
+      content += 'self.value$unwrap > (Utc::now() - Duration::days($value))';
+    } else if (condition.comparatorOperator == 'isGreaterThanCurrentDateTimePlusDays') {
+      content += 'self.value$unwrap <= (Utc::now() + Duration::days($value))';
+    } else if (condition.comparatorOperator == 'isGreaterThanOrEqualToCurrentDateTimePlusDays') {
+      content += 'self.value$unwrap < (Utc::now() + Duration::days($value))';
+    }
+    return content;
+  }
+
+  static String _buildWithAnyDate({
+    required ValueObjectRuleCondition condition,
+    required bool isFirst,
+    required bool isNullable,
+  }) {
+    final value = condition.targetValue;
+    String content = isFirst ? '' : ' ${logics[condition.logicOperator]} ';
+    final unwrap = isNullable ? '.clone().unwrap()' : '';
+    if (condition.comparatorOperator == 'isEqualTo') {
+      content += 'self.value$unwrap == BigDecimal::from_f64(${value}f64).unwrap()';
     }
     return content;
   }

@@ -128,6 +128,16 @@ class ValueObject {
 
   bool get isBigDecimal => type == 'BigDecimal';
 
+  bool get isNumber {
+    return isByte ||
+        isShort ||
+        isInt ||
+        isLong ||
+        isFloat ||
+        isDouble ||
+        isBigDecimal;
+  }
+
   void removeEnumValue(String value) {
     final valuesList = _enumValues.split(',');
     valuesList.remove(value.toConstantCase());

@@ -1,5 +1,6 @@
 import 'package:archive/archive.dart';
 import 'package:change_case/change_case.dart';
+import 'package:metamorphis/src/domain/_core/utils/types_utils.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/rust/domain/value_objects/rust_value_objects_rules_generator.dart';
@@ -30,7 +31,7 @@ class RustValueObjectGenerator {
     final voType = vo.toRustType();
     final voValidations = _buildValidations(entity, vo);
 
-    String content = _structModel.replaceAll('%NAME%', voPascal);
+    String content = _structModel.replaceAll('{name}', voPascal);
     content = content.replaceAll('{imports}', imports);
     content = content.replaceAll('%VALIDATIONS%', voValidations);
     content = content.replaceAll('{type}', voType);
@@ -58,7 +59,20 @@ class RustValueObjectGenerator {
   static String _buildImports(ValueObject vo) {
     final imports = <String>[];
     if (vo.type == 'Date' || vo.type == 'Time' || vo.type == 'DateTime') {
-      imports.add('use chrono::{DateTime, Utc};');
+      imports.add('use chrono::DateTime;');
+      imports.add('use chrono::Utc;');
+      final anySumComparator = vo.rules.any((r) {
+        return r.groupConditions.any((gc) {
+          return gc.conditions.any((c) {
+            return TypesUtils.isInputIntegerComparatorForDate(
+              c.comparatorOperator,
+            );
+          });
+        });
+      });
+      if (anySumComparator) {
+        imports.add('use chrono::Duration;');
+      }
     }
     if (vo.type == 'BigDecimal') {
       imports.add('use bigdecimal::{BigDecimal, FromPrimitive};');
@@ -126,13 +140,13 @@ use crate::domain::_core::errors::domain_error::DomainError;
 {imports}
 
 #[derive(Clone)]
-pub struct %NAME% {
+pub struct {name} {
     pub value: {type},
 }
 
-impl %NAME% {
+impl {name} {
     pub fn new(value: {type}, errors: &mut Vec<DomainError>) -> Self {
-        let name = %NAME% { value };
+        let name = {name} { value };
         name.validate(errors);
         name
     }

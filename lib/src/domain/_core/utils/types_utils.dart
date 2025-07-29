@@ -2,19 +2,19 @@ class TypesUtils {
   TypesUtils._();
 
   static List<String> types = [
-    'bool', // ✅
-    'byte/int8', // ✅
-    'short/int16', // ✅
-    'int/int32', // ✅
-    'long/int64', // ✅
-    'float/float32', // ✅
-    'double/float64', // ✅
-    'BigDecimal', // ✅
-    'String', // ✅
+    'bool',
+    'byte/int8',
+    'short/int16',
+    'int/int32',
+    'long/int64',
+    'float/float32',
+    'double/float64',
+    'BigDecimal',
+    'String',
     'Date',
     'Time',
     'DateTime',
-    'Enum', // ✅
+    'Enum',
   ];
 
   /*static const Map<String, String> _conditionsFieldBool = {
@@ -287,28 +287,28 @@ class TypesUtils {
         'isGreaterThanOrEqualToCurrentTimePlusHours',
       ],
       'DateTime': [
-        'isEqualTo',
-        'isNotEqualTo',
-        'isLessThan',
-        'isLessThanOrEqualTo',
-        'isGreaterThan',
-        'isGreaterThanOrEqualTo', //ok
-        'isLessThanCurrentDateTime',
-        'isLessThanOrEqualToCurrentDateTime', //ok
-        'isGreaterThanCurrentDateTime',
-        'isGreaterThanOrEqualToCurrentDateTime', //ok
-        'isLessThanCurrentDateTimeMinusSeconds',
-        'isLessThanOrEqualToCurrentDateTimeMinusSeconds',
-        'isGreaterThanCurrentDateTimePlusSeconds',
-        'isGreaterThanOrEqualToCurrentDateTimePlusSeconds', //ok
-        'isLessThanCurrentDateTimeMinusMinutes',
-        'isLessThanOrEqualToCurrentDateTimeMinusMinutes',
-        'isGreaterThanCurrentDateTimePlusMinutes',
-        'isGreaterThanOrEqualToCurrentDateTimePlusMinutes', //ok
-        'isLessThanCurrentDateTimeMinusHours',
-        'isLessThanOrEqualToCurrentDateTimeMinusHours',
-        'isGreaterThanCurrentDateTimePlusHours',
-        'isGreaterThanOrEqualToCurrentDateTimePlusHours',
+        'isEqualTo', //✅
+        'isNotEqualTo', //✅
+        'isLessThan', //✅
+        'isLessThanOrEqualTo', //✅
+        'isGreaterThan' //✅,
+        'isGreaterThanOrEqualTo', //✅
+        'isLessThanCurrentDateTime', //✅
+        'isLessThanOrEqualToCurrentDateTime', //✅
+        'isGreaterThanCurrentDateTime', //✅
+        'isGreaterThanOrEqualToCurrentDateTime', //✅
+        'isLessThanCurrentDateTimeMinusSeconds', //✅
+        'isLessThanOrEqualToCurrentDateTimeMinusSeconds', //✅
+        'isGreaterThanCurrentDateTimePlusSeconds', //✅
+        'isGreaterThanOrEqualToCurrentDateTimePlusSeconds', //✅
+        'isLessThanCurrentDateTimeMinusMinutes', //✅
+        'isLessThanOrEqualToCurrentDateTimeMinusMinutes', //✅
+        'isGreaterThanCurrentDateTimePlusMinutes', //✅
+        'isGreaterThanOrEqualToCurrentDateTimePlusMinutes', //✅
+        'isLessThanCurrentDateTimeMinusHours', //✅
+        'isLessThanOrEqualToCurrentDateTimeMinusHours', //✅
+        'isGreaterThanCurrentDateTimePlusHours', //✅
+        'isGreaterThanOrEqualToCurrentDateTimePlusHours', //✅
         'isLessThanCurrentDateTimeMinusDays',
         'isLessThanOrEqualToCurrentDateTimeMinusDays',
         'isGreaterThanCurrentDateTimePlusDays',
@@ -484,5 +484,49 @@ class TypesUtils {
       ],
     };
     return conditionsMap[dataType] ?? [];
+  }
+
+  static bool isSelectableComparatorForDate(String? comparator) {
+    final dateComparators = [
+      'isEqualTo',
+      'isNotEqualTo',
+      'isLessThan',
+      'isLessThanOrEqualTo',
+      'isGreaterThan',
+      'isGreaterThanOrEqualTo',
+    ];
+    return dateComparators.contains(comparator);
+  }
+
+  static bool isInputIntegerComparatorForDate(String? comparator) {
+    final dateComparators = [
+      'isLessThanCurrentDateTimeMinusSeconds',
+      'isLessThanOrEqualToCurrentDateTimeMinusSeconds',
+      'isGreaterThanCurrentDateTimePlusSeconds',
+      'isGreaterThanOrEqualToCurrentDateTimePlusSeconds',
+      'isLessThanCurrentDateTimeMinusMinutes',
+      'isLessThanOrEqualToCurrentDateTimeMinusMinutes',
+      'isGreaterThanCurrentDateTimePlusMinutes',
+      'isGreaterThanOrEqualToCurrentDateTimePlusMinutes',
+      'isLessThanCurrentDateTimeMinusHours',
+      'isLessThanOrEqualToCurrentDateTimeMinusHours',
+      'isGreaterThanCurrentDateTimePlusHours',
+      'isGreaterThanOrEqualToCurrentDateTimePlusHours',
+      'isLessThanCurrentDateTimeMinusDays',
+      'isLessThanOrEqualToCurrentDateTimeMinusDays',
+      'isGreaterThanCurrentDateTimePlusDays',
+      'isGreaterThanOrEqualToCurrentDateTimePlusDays',
+    ];
+    return dateComparators.contains(comparator);
+  }
+
+  static bool isSingleComparatorForDate(String? comparator) {
+    final dateComparators = [
+      'isLessThanCurrentDateTime',
+      'isLessThanOrEqualToCurrentDateTime',
+      'isGreaterThanCurrentDateTime',
+      'isGreaterThanOrEqualToCurrentDateTime',
+    ];
+    return dateComparators.contains(comparator);
   }
 }
