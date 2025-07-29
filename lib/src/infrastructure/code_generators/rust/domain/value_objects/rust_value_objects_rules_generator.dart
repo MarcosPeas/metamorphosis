@@ -4,6 +4,8 @@ import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/domain/value_object_rule_condition/entities/value_object_rule_condition.dart';
 
 class RustValueObjectsRulesGenerator {
+  static final logics = {'AND': '||', 'OR': '&&'};
+
   static String generate(Entity entity, ValueObject valueObject) {
     final entityNamePascal = entity.name.toPascalCase();
     final valueObjectNamePascal = valueObject.name.toPascalCase();
@@ -12,10 +14,14 @@ class RustValueObjectsRulesGenerator {
     final rules = valueObject.rules;
     for (final rule in rules) {
       final groupsConditions = rule.groupConditions;
+      String ruleContent = '';
+      final parenthesesL = groupsConditions.length > 1 ? '(' : '';
+      final parenthesesR = groupsConditions.length > 1 ? ')' : '';
+      ruleContent += '\n        if ';
       for (int i = 0; i < groupsConditions.length; i++) {
-        String ruleContent = '';
-        ruleContent += '\n        if ';
         final group = groupsConditions[i];
+        ruleContent += i == 0 ? '' : ' ${logics[group.logicOperator]} ';
+        ruleContent += parenthesesL;
         final conditions = group.conditions;
         for (int y = 0; y < conditions.length; y++) {
           final condition = conditions[y];
@@ -27,23 +33,21 @@ class RustValueObjectsRulesGenerator {
             );
           }
         }
-        String errorContent = _addErrorTemplate.replaceAll(
-          '{message}',
-          rule.errorMessage,
-        );
-        errorContent = errorContent.replaceAll(
-          '{context}',
-          valueObjectFullName,
-        );
-        errorContent = errorContent.replaceAll(
-          '{trace}',
-          '$valueObjectFullName.validate',
-        );
-        ruleContent += ' {';
-        ruleContent += '\n$errorContent';
-        ruleContent += '\n        }';
-        totalContentRules += ruleContent;
+        ruleContent += parenthesesR;
       }
+      String errorContent = _addErrorTemplate.replaceAll(
+        '{message}',
+        rule.errorMessage,
+      );
+      errorContent = errorContent.replaceAll('{context}', valueObjectFullName);
+      errorContent = errorContent.replaceAll(
+        '{trace}',
+        '$valueObjectFullName.validate',
+      );
+      ruleContent += ' {';
+      ruleContent += '\n$errorContent';
+      ruleContent += '\n        }';
+      totalContentRules += ruleContent;
     }
     if (valueObject.isNullable) {
       return _noneSafe + totalContentRules;
@@ -57,7 +61,6 @@ class RustValueObjectsRulesGenerator {
     bool isNullable,
   ) {
     final value = condition.targetValue;
-    final logics = {'AND': '||', 'OR': '&&'};
     String content = isFirst ? '' : ' ${logics[condition.logicOperator]} ';
     final unwrap = isNullable ? '.clone().unwrap()' : '';
     if (condition.comparatorOperator == 'isNotEmpty') {
