@@ -99,10 +99,16 @@ class RustDomainGenerator {
   static String _buildImports(Entity entity) {
     String imports = '';
     final containsDates = entity.valueObjects.any((vo) {
-      return vo.isDate || vo.isTime || vo.isDateTime;
+      return vo.isAnyDate;
     });
     if (containsDates) {
       imports += 'use chrono::{DateTime, Utc};\n';
+    }
+    final containsBigDecimals = entity.valueObjects.any((vo) {
+      return vo.isBigDecimal;
+    });
+    if (containsBigDecimals) {
+      imports += 'use bigdecimal::BigDecimal;\n';
     }
     imports +=
         'use crate::domain::_core::id_generator::id_generator::IdGenerator;\n';

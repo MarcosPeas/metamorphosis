@@ -6,7 +6,7 @@ import 'package:metamorphis/src/infrastructure/code_generators/rust/utils/rust_u
 class TomlGenerator {
   static ArchiveFile generate(Application application) {
     String tomlContent = _tomlTemplate.replaceFirst(
-      "%NAME%",
+      "{name}",
       application.name.toSnakeCase(),
     );
     tomlContent = _chrono(tomlContent, application);
@@ -14,6 +14,7 @@ class TomlGenerator {
     tomlContent = _documentValidator(tomlContent, application);
     tomlContent = _urlValidator(tomlContent, application);
     tomlContent = _regex(tomlContent, application);
+    tomlContent = _bigDecimal(tomlContent, application);
     final file = RustUtils.genFile(path: 'Cargo.toml', content: tomlContent);
     return file;
   }
@@ -97,20 +98,31 @@ class TomlGenerator {
         });
       });
     });
-    return content.replaceAll(
-      '{regex}',
-      hasAnyEmailVO ? 'regex = "1"\n' : '',
-    );
+    return content.replaceAll('{regex}', hasAnyEmailVO ? 'regex = "1"\n' : '');
+  }
+
+  static String _bigDecimal(String content, Application application) {
+    final bigDecimalDependencies = [
+      'bigdecimal = "0.4"',
+      'num-bigint = "0.4"',
+    ];
+    final libs = bigDecimalDependencies.join('\n');
+    final hasAnyEmailVO = application.entities.any((entity) {
+      return entity.valueObjects.any((vo) {
+        return vo.isBigDecimal;
+      });
+    });
+    return content.replaceAll('{bigDecimal}', hasAnyEmailVO ? '$libs\n' : '');
   }
 }
 
 const _tomlTemplate = '''
 [package]
-name = "%NAME%"
+name = "{name}"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 uuid = { version = "1.17.0", features = ["v7"] }
-{chrono}{emailValidator}{documentValidator}{urlValidator}{regex}
+{chrono}{emailValidator}{documentValidator}{urlValidator}{regex}{bigDecimal}
 ''';

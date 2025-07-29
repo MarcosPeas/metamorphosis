@@ -10,7 +10,7 @@ extension RustTypeExtension on ValueObject {
       'long/int64': 'i64',
       'float/float32': 'f32',
       'double/float64': 'f64',
-      'BigDecimal': 'f64',
+      'BigDecimal': 'BigDecimal',
       'String': 'String',
       'Date': 'DateTime<Utc>',
       'Time': 'DateTime<Utc>',

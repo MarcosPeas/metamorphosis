@@ -110,7 +110,23 @@ class ValueObject {
 
   bool get isTime => type == 'Time';
 
+  bool get isAnyDate => isDate || isDateTime || isTime;
+
   bool get isString => type == 'String';
+
+  bool get isByte => type == 'byte/int8';
+
+  bool get isShort => type == 'short/int16';
+
+  bool get isInt => type == 'int/int32';
+
+  bool get isLong => type == 'long/int64';
+
+  bool get isFloat => type == 'float/float32';
+
+  bool get isDouble => type == 'double/float64';
+
+  bool get isBigDecimal => type == 'BigDecimal';
 
   void removeEnumValue(String value) {
     final valuesList = _enumValues.split(',');

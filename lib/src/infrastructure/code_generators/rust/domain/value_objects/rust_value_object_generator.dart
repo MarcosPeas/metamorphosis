@@ -31,7 +31,7 @@ class RustValueObjectGenerator {
     final voValidations = _buildValidations(entity, vo);
 
     String content = _structModel.replaceAll('%NAME%', voPascal);
-    content = content.replaceAll('%IMPORTS%', imports);
+    content = content.replaceAll('{imports}', imports);
     content = content.replaceAll('%VALIDATIONS%', voValidations);
     content = content.replaceAll('{type}', voType);
 
@@ -61,7 +61,7 @@ class RustValueObjectGenerator {
       imports.add('use chrono::{DateTime, Utc};');
     }
     if (vo.type == 'BigDecimal') {
-      imports.add('bigdecimal::BigDecimal;');
+      imports.add('use bigdecimal::{BigDecimal, FromPrimitive};');
     }
     final containsEmailValidation = vo.rules.any(
       (rule) => rule.groupConditions.any(
@@ -123,7 +123,7 @@ class RustValueObjectGenerator {
 
 const _structModel = '''
 use crate::domain::_core::errors::domain_error::DomainError;
-%IMPORTS%
+{imports}
 
 #[derive(Clone)]
 pub struct %NAME% {

@@ -2,19 +2,19 @@ class TypesUtils {
   TypesUtils._();
 
   static List<String> types = [
-    'bool',
-    'byte/int8',
-    'short/int16',
-    'int/int32',
-    'long/int64',
-    'float/float32',
-    'double/float64',
-    'BigDecimal',
-    'String',
+    'bool', // ✅
+    'byte/int8', // ✅
+    'short/int16', // ✅
+    'int/int32', // ✅
+    'long/int64', // ✅
+    'float/float32', // ✅
+    'double/float64', // ✅
+    'BigDecimal', // ✅
+    'String', // ✅
     'Date',
     'Time',
     'DateTime',
-    'Enum',
+    'Enum', // ✅
   ];
 
   /*static const Map<String, String> _conditionsFieldBool = {
