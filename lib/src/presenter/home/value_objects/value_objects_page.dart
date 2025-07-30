@@ -914,6 +914,14 @@ class _GroupConditionWidget extends StatelessWidget {
         context: context,
         isFirst: isFirst,
       );
+    } else if (valueObject.isDate) {
+      _showDialogCreateValueObjectConditionWithDate(
+        groupIndex: groupIndex,
+        valueObject: valueObject,
+        groupCondition: groupCondition,
+        context: context,
+        isFirst: isFirst,
+      );
     } else {
       _showDialogCreateValueObjectConditionDefault(
         groupIndex: groupIndex,
@@ -1229,7 +1237,9 @@ class _GroupConditionWidget extends StatelessWidget {
                                   context: context,
                                   initialDate: DateTime.now(),
                                   firstDate: DateTime(1900),
-                                  lastDate: DateTime(2100),
+                                  lastDate: DateTime.now().add(
+                                    const Duration(days: 365 * 100),
+                                  ),
                                 );
                                 if (date == null) {
                                   return;
@@ -1353,7 +1363,7 @@ class _GroupConditionWidget extends StatelessWidget {
                       final colorScheme = Theme.of(context).colorScheme;
                       final comparator = selectedComparatorOperator.value;
                       final isInputInt =
-                          TypesUtils.isInputIntegerComparatorForTime(
+                          TypesUtils.isInputIntegerComparatorForDate(
                             comparator,
                           );
                       final isInputDate =
@@ -1425,6 +1435,176 @@ class _GroupConditionWidget extends StatelessWidget {
                                   time.minute,
                                 );
                                 dateNotifier.value = dateTime
+                                    .toUtc()
+                                    .toIso8601String();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(12.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  border: Border.all(
+                                    color: colorScheme.primary,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                child: Text(
+                                  dateText,
+                                  style: textTheme.bodyMedium?.copyWith(
+                                    color: colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (isInputInt)
+                            TextField(
+                              onChanged: (value) {
+                                dateNotifier.value = null;
+                              },
+                              controller: targetValueController,
+                              decoration: const InputDecoration(
+                                labelText: 'Add a number',
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                            ),
+                          const SizedBox(height: 8),
+                        ],
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                context.pop();
+                controller.createValueObjectRuleCondition(
+                  group: groupCondition,
+                  logicOperator: selectedLogicOperator.value,
+                  comparatorOperator: selectedComparatorOperator.value,
+                  targetValue:
+                      dateNotifier.value ?? targetValueController.text.trim(),
+                );
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDialogCreateValueObjectConditionWithDate({
+    required int groupIndex,
+    required ValueObject valueObject,
+    required ValueObjectGroupCondition groupCondition,
+    required BuildContext context,
+    required bool isFirst,
+  }) {
+    final selectedLogicOperator = ValueNotifier('AND');
+    final comparatorOperators = TypesUtils.conditions(valueObject.type);
+    final selectedComparatorOperator = ValueNotifier(comparatorOperators.first);
+    final dateNotifier = ValueNotifier<String?>(null);
+    final targetValueController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'Create a value object condition:\ngroup ${groupIndex + 1}',
+          ),
+          content: ValueListenableBuilder(
+            valueListenable: dateNotifier,
+            builder: (_, __, ___) {
+              final dateParsed = DateTime.tryParse(dateNotifier.value ?? '');
+              final local = dateParsed?.toLocal();
+              final dateText = local?.toIso8601String() ?? 'Select the date';
+              return ValueListenableBuilder(
+                valueListenable: selectedLogicOperator,
+                builder: (_, operator, __) {
+                  return ValueListenableBuilder(
+                    valueListenable: selectedComparatorOperator,
+                    builder: (_, b, __) {
+                      final textTheme = Theme.of(context).textTheme;
+                      final colorScheme = Theme.of(context).colorScheme;
+                      final comparator = selectedComparatorOperator.value;
+                      final isInputInt =
+                          TypesUtils.isInputIntegerComparatorForDate(
+                            comparator,
+                          );
+                      final isInputDate =
+                          TypesUtils.isSelectableComparatorForDate(comparator);
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(rule.errorMessage),
+                          const SizedBox(height: 16),
+                          if (!isFirst) const Text('Logic Operator'),
+                          if (!isFirst)
+                            DropdownButton(
+                              value: operator,
+                              isExpanded: true,
+                              onChanged: (value) {
+                                selectedLogicOperator.value = value.toString();
+                              },
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 'AND',
+                                  child: Text('AND'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'OR',
+                                  child: Text('OR'),
+                                ),
+                              ],
+                            ),
+                          if (!isFirst) const SizedBox(height: 8),
+                          const Text('Comparator Operator'),
+                          ValueListenableBuilder(
+                            valueListenable: selectedComparatorOperator,
+                            builder: (_, operator, __) {
+                              return DropdownButton(
+                                value: operator,
+                                isExpanded: true,
+                                onChanged: (value) {
+                                  selectedComparatorOperator.value = value
+                                      .toString();
+                                },
+                                items: comparatorOperators.map((item) {
+                                  return DropdownMenuItem(
+                                    value: item,
+                                    child: Text(item),
+                                  );
+                                }).toList(),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 8),
+                          if (isInputDate)
+                            GestureDetector(
+                              onTap: () async {
+                                final date = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime.now().add(
+                                    const Duration(days: 365 * 100),
+                                  ),
+                                );
+                                if (date == null) {
+                                  return;
+                                }
+                                dateNotifier.value = date
                                     .toUtc()
                                     .toIso8601String();
                               },

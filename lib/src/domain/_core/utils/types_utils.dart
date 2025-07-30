@@ -251,6 +251,22 @@ class TypesUtils {
       'Date': [
         'isEqualTo',
         'isNotEqualTo',
+        'isWeekend',
+        'isWeekday',
+        'isSunday',
+        'isMonday',
+        'isTuesday',
+        'isWednesday',
+        'isThursday',
+        'isFriday',
+        'isSaturday',
+        'isNotSunday',
+        'isNotMonday',
+        'isNotTuesday',
+        'isNotWednesday',
+        'isNotThursday',
+        'isNotFriday',
+        'isNotSaturday',
         'isLessThan',
         'isLessThanOrEqualTo',
         'isGreaterThan',
@@ -291,6 +307,22 @@ class TypesUtils {
       'DateTime': [
         'isEqualTo',
         'isNotEqualTo',
+        'isWeekend',
+        'isWeekday',
+        'isSunday',
+        'isMonday',
+        'isTuesday',
+        'isWednesday',
+        'isThursday',
+        'isFriday',
+        'isSaturday',
+        'isNotSunday',
+        'isNotMonday',
+        'isNotTuesday',
+        'isNotWednesday',
+        'isNotThursday',
+        'isNotFriday',
+        'isNotSaturday',
         'isLessThan',
         'isLessThanOrEqualTo',
         'isGreaterThan',
@@ -530,38 +562,10 @@ class TypesUtils {
       'isLessThanOrEqualToCurrentTimeMinusHours',
       'isGreaterThanCurrentTimePlusHours',
       'isGreaterThanOrEqualToCurrentTimePlusHours',
-    ];
-    return dateComparators.contains(comparator);
-  }
-
-  static bool isInputIntegerComparatorForTime(String? comparator) {
-    final dateComparators = [
-      'isLessThanCurrentTimeMinusSeconds',
-      'isLessThanOrEqualToCurrentTimeMinusSeconds',
-      'isGreaterThanCurrentTimePlusSeconds',
-      'isGreaterThanOrEqualToCurrentTimePlusSeconds',
-      'isLessThanCurrentTimeMinusMinutes',
-      'isLessThanOrEqualToCurrentTimeMinusMinutes',
-      'isGreaterThanCurrentTimePlusMinutes',
-      'isGreaterThanOrEqualToCurrentTimePlusMinutes',
-      'isLessThanCurrentTimeMinusHours',
-      'isLessThanOrEqualToCurrentTimeMinusHours',
-      'isGreaterThanCurrentTimePlusHours',
-      'isGreaterThanOrEqualToCurrentTimePlusHours',
-      'isLessThanCurrentTimeMinusDays',
-      'isLessThanOrEqualToCurrentTimeMinusDays',
-      'isGreaterThanCurrentTimePlusDays',
-      'isGreaterThanOrEqualToCurrentTimePlusDays',
-    ];
-    return dateComparators.contains(comparator);
-  }
-
-  static bool isSingleComparatorForDate(String? comparator) {
-    final dateComparators = [
-      'isLessThanCurrentDateTime',
-      'isLessThanOrEqualToCurrentDateTime',
-      'isGreaterThanCurrentDateTime',
-      'isGreaterThanOrEqualToCurrentDateTime',
+      'isLessThanCurrentDateMinusDays',
+      'isLessThanOrEqualToCurrentDateMinusDays',
+      'isGreaterThanCurrentDatePlusDays',
+      'isGreaterThanOrEqualToCurrentDatePlusDays',
     ];
     return dateComparators.contains(comparator);
   }

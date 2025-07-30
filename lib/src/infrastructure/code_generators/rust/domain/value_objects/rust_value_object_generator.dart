@@ -58,6 +58,34 @@ class RustValueObjectGenerator {
 
   static String _buildImports(ValueObject vo) {
     final imports = <String>[];
+    if (vo.rules.any((r) {
+      return r.groupConditions.any((gc) {
+        return gc.conditions.any((c) {
+          final daysClauses = [
+            'isWeekend',
+            'isWeekday',
+            'isSunday',
+            'isMonday',
+            'isTuesday',
+            'isWednesday',
+            'isThursday',
+            'isFriday',
+            'isSaturday',
+            'isNotSunday',
+            'isNotMonday',
+            'isNotTuesday',
+            'isNotWednesday',
+            'isNotThursday',
+            'isNotFriday',
+            'isNotSaturday',
+          ];
+          return daysClauses.contains(c.comparatorOperator);
+        });
+      });
+    })) {
+      imports.add('use chrono::Weekday;');
+      imports.add('use chrono::Datelike;');
+    }
     if (vo.isAnyDate) {
       imports.add('use chrono::DateTime;');
       imports.add('use chrono::Utc;');

@@ -12,7 +12,7 @@ class RustConditionsGenerator {
     'float/float32': _buildWithFloat,
     'double/float64': _buildWithDouble,
     'BigDecimal': _buildWithBigDecimal,
-    'Date': _buildWithAnyDate,
+    'Date': _buildWithDate,
     'Time': _buildWithTime,
     'DateTime': _buildWithDateTime,
   };
@@ -247,8 +247,12 @@ class RustConditionsGenerator {
     required bool isNullable,
   }) {
     String value = condition.targetValue ?? '';
-    if (value.contains('.')) {
-      value = '${value.substring(0, value.length - 1)}Z';
+    if (value.contains('.') && !value.endsWith('Z')) {
+      if (value.contains('000')) {
+        value = value.replaceAll('000', '00Z');
+      } else {
+        value = '${value.substring(0, value.length - 1)}Z';
+      }
     }
     String content = isFirst ? '' : ' ${logics[condition.logicOperator]} ';
     final unwrap = isNullable ? '.clone().unwrap()' : '';
@@ -332,6 +336,12 @@ class RustConditionsGenerator {
     } else if (condition.comparatorOperator ==
         'isGreaterThanOrEqualToCurrentDateTimePlusDays') {
       content += 'self.value$unwrap < (Utc::now() + Duration::days($value))';
+    } else {
+      content += _buildWithDate(
+        condition: condition,
+        isFirst: isFirst,
+        isNullable: isNullable,
+      );
     }
     return content;
   }
@@ -342,7 +352,7 @@ class RustConditionsGenerator {
     required bool isNullable,
   }) {
     String value = condition.targetValue ?? '';
-    if (value.contains('.')) {
+    if (value.contains('.') && !value.endsWith('Z')) {
       if (value.contains('000')) {
         value = value.replaceAll('000', '00Z');
       } else {
@@ -432,17 +442,101 @@ class RustConditionsGenerator {
     return content;
   }
 
-  static String _buildWithAnyDate({
+  static String _buildWithDate({
     required ValueObjectRuleCondition condition,
     required bool isFirst,
     required bool isNullable,
   }) {
-    final value = condition.targetValue;
+    String value = condition.targetValue ?? '';
+    if (value.contains('.') && !value.endsWith('Z')) {
+      if (value.contains('000')) {
+        value = value.replaceAll('000', '00Z');
+      } else {
+        value = '${value.substring(0, value.length - 1)}Z';
+      }
+    }
     String content = isFirst ? '' : ' ${logics[condition.logicOperator]} ';
-    final unwrap = isNullable ? '.clone().unwrap()' : '';
+    String unwrap = isNullable ? '.clone().unwrap()' : '';
+    String shortUnwrap = unwrap;
+    unwrap += '.date_naive()';
     if (condition.comparatorOperator == 'isEqualTo') {
       content +=
-          'self.value$unwrap == BigDecimal::from_f64(${value}f64).unwrap()';
+          'self.value$unwrap != DateTime::parse_from_rfc3339("$value").unwrap().date_naive()';
+    } else if (condition.comparatorOperator == 'isNotEqualTo') {
+      content +=
+          'self.value$unwrap == DateTime::parse_from_rfc3339("$value").unwrap().date_naive()';
+    } else if (condition.comparatorOperator == 'isLessThan') {
+      content +=
+          'self.value$unwrap >= DateTime::parse_from_rfc3339("$value").unwrap().date_naive()';
+    } else if (condition.comparatorOperator == 'isLessThanOrEqualTo') {
+      content +=
+          'self.value$unwrap > DateTime::parse_from_rfc3339("$value").unwrap().date_naive()';
+    } else if (condition.comparatorOperator == 'isGreaterThan') {
+      content +=
+          'self.value$unwrap <= DateTime::parse_from_rfc3339("$value").unwrap().date_naive()';
+    } else if (condition.comparatorOperator == 'isGreaterThanOrEqualTo') {
+      content +=
+          'self.value$unwrap < DateTime::parse_from_rfc3339("$value").unwrap().date_naive()';
+    } else if (condition.comparatorOperator == 'isLessThanCurrentDate') {
+      content += 'self.value$unwrap >= Utc::now().date_naive()';
+    } else if (condition.comparatorOperator ==
+        'isLessThanOrEqualToCurrentDate') {
+      content += 'self.value$unwrap > Utc::now().date_naive()';
+    } else if (condition.comparatorOperator == 'isGreaterThanCurrentDate') {
+      content += 'self.value$unwrap <= Utc::now().date_naive()';
+    } else if (condition.comparatorOperator ==
+        'isGreaterThanOrEqualToCurrentDate') {
+      content += 'self.value$unwrap < Utc::now().date_naive()';
+    } else if (condition.comparatorOperator ==
+        'isLessThanCurrentDateMinusDays') {
+      content +=
+          'self.value$unwrap >= (Utc::now().date_naive() - Duration::days($value))';
+    } else if (condition.comparatorOperator ==
+        'isLessThanOrEqualToCurrentDateMinusDays') {
+      content +=
+          'self.value$unwrap > (Utc::now().date_naive() - Duration::days($value))';
+    } else if (condition.comparatorOperator ==
+        'isGreaterThanCurrentDatePlusDays') {
+      content +=
+          'self.value$unwrap <= (Utc::now().date_naive() + Duration::days($value))';
+    } else if (condition.comparatorOperator ==
+        'isGreaterThanOrEqualToCurrentDatePlusDays') {
+      content +=
+          'self.value$unwrap < (Utc::now().date_naive() + Duration::days($value))';
+    } else if (condition.comparatorOperator == 'isWeekend') {
+      content +=
+          'self.value$shortUnwrap.weekday() != Weekday::Sat && self.value$shortUnwrap.weekday() != Weekday::Sun';
+    } else if (condition.comparatorOperator == 'isWeekday') {
+      content +=
+          'self.value$shortUnwrap.weekday() == Weekday::Sat || self.value$shortUnwrap.weekday() == Weekday::Sun';
+    } else if (condition.comparatorOperator == 'isSunday') {
+      content += 'self.value$shortUnwrap.weekday() != Weekday::Sun';
+    } else if (condition.comparatorOperator == 'isMonday') {
+      content += 'self.value$shortUnwrap.weekday() != Weekday::Mon';
+    } else if (condition.comparatorOperator == 'isTuesday') {
+      content += 'self.value$shortUnwrap.weekday() != Weekday::Tue';
+    } else if (condition.comparatorOperator == 'isWednesday') {
+      content += 'self.value$shortUnwrap.weekday() != Weekday::Wed';
+    } else if (condition.comparatorOperator == 'isThursday') {
+      content += 'self.value$shortUnwrap.weekday() != Weekday::Thu';
+    } else if (condition.comparatorOperator == 'isFriday') {
+      content += 'self.value$shortUnwrap.weekday() != Weekday::Fri';
+    } else if (condition.comparatorOperator == 'isSaturday') {
+      content += 'self.value$shortUnwrap.weekday() != Weekday::Sat';
+    } else if (condition.comparatorOperator == 'isNotSunday') {
+      content += 'self.value$shortUnwrap.weekday() == Weekday::Sun';
+    } else if (condition.comparatorOperator == 'isNotMonday') {
+      content += 'self.value$shortUnwrap.weekday() == Weekday::Mon';
+    } else if (condition.comparatorOperator == 'isNotTuesday') {
+      content += 'self.value$shortUnwrap.weekday() == Weekday::Tue';
+    } else if (condition.comparatorOperator == 'isNotWednesday') {
+      content += 'self.value$shortUnwrap.weekday() == Weekday::Wed';
+    } else if (condition.comparatorOperator == 'isNotThursday') {
+      content += 'self.value$shortUnwrap.weekday() == Weekday::Thu';
+    } else if (condition.comparatorOperator == 'isNotFriday') {
+      content += 'self.value$shortUnwrap.weekday() == Weekday::Fri';
+    } else if (condition.comparatorOperator == 'isNotSaturday') {
+      content += 'self.value$shortUnwrap.weekday() == Weekday::Sat';
     }
     return content;
   }
