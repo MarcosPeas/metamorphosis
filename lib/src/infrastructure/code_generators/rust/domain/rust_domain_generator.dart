@@ -102,7 +102,8 @@ class RustDomainGenerator {
       return vo.isAnyDate;
     });
     if (containsDates) {
-      imports += 'use chrono::{DateTime, Utc};\n';
+      imports += 'use chrono::DateTime;\n';
+      imports += 'use chrono::Utc;\n';
     }
     final containsBigDecimals = entity.valueObjects.any((vo) {
       return vo.isBigDecimal;

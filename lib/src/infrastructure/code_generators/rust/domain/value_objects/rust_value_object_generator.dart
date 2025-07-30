@@ -58,7 +58,7 @@ class RustValueObjectGenerator {
 
   static String _buildImports(ValueObject vo) {
     final imports = <String>[];
-    if (vo.type == 'Date' || vo.type == 'Time' || vo.type == 'DateTime') {
+    if (vo.isAnyDate) {
       imports.add('use chrono::DateTime;');
       imports.add('use chrono::Utc;');
       final anySumComparator = vo.rules.any((r) {

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class TypesUtils {
   TypesUtils._();
 
@@ -287,28 +289,28 @@ class TypesUtils {
         'isGreaterThanOrEqualToCurrentTimePlusHours',
       ],
       'DateTime': [
-        'isEqualTo', //✅
-        'isNotEqualTo', //✅
-        'isLessThan', //✅
-        'isLessThanOrEqualTo', //✅
-        'isGreaterThan' //✅,
-        'isGreaterThanOrEqualTo', //✅
-        'isLessThanCurrentDateTime', //✅
-        'isLessThanOrEqualToCurrentDateTime', //✅
-        'isGreaterThanCurrentDateTime', //✅
-        'isGreaterThanOrEqualToCurrentDateTime', //✅
-        'isLessThanCurrentDateTimeMinusSeconds', //✅
-        'isLessThanOrEqualToCurrentDateTimeMinusSeconds', //✅
-        'isGreaterThanCurrentDateTimePlusSeconds', //✅
-        'isGreaterThanOrEqualToCurrentDateTimePlusSeconds', //✅
-        'isLessThanCurrentDateTimeMinusMinutes', //✅
-        'isLessThanOrEqualToCurrentDateTimeMinusMinutes', //✅
-        'isGreaterThanCurrentDateTimePlusMinutes', //✅
-        'isGreaterThanOrEqualToCurrentDateTimePlusMinutes', //✅
-        'isLessThanCurrentDateTimeMinusHours', //✅
-        'isLessThanOrEqualToCurrentDateTimeMinusHours', //✅
-        'isGreaterThanCurrentDateTimePlusHours', //✅
-        'isGreaterThanOrEqualToCurrentDateTimePlusHours', //✅
+        'isEqualTo',
+        'isNotEqualTo',
+        'isLessThan',
+        'isLessThanOrEqualTo',
+        'isGreaterThan',
+        'isGreaterThanOrEqualTo',
+        'isLessThanCurrentDateTime',
+        'isLessThanOrEqualToCurrentDateTime',
+        'isGreaterThanCurrentDateTime',
+        'isGreaterThanOrEqualToCurrentDateTime',
+        'isLessThanCurrentDateTimeMinusSeconds',
+        'isLessThanOrEqualToCurrentDateTimeMinusSeconds',
+        'isGreaterThanCurrentDateTimePlusSeconds',
+        'isGreaterThanOrEqualToCurrentDateTimePlusSeconds',
+        'isLessThanCurrentDateTimeMinusMinutes',
+        'isLessThanOrEqualToCurrentDateTimeMinusMinutes',
+        'isGreaterThanCurrentDateTimePlusMinutes',
+        'isGreaterThanOrEqualToCurrentDateTimePlusMinutes',
+        'isLessThanCurrentDateTimeMinusHours',
+        'isLessThanOrEqualToCurrentDateTimeMinusHours',
+        'isGreaterThanCurrentDateTimePlusHours',
+        'isGreaterThanOrEqualToCurrentDateTimePlusHours',
         'isLessThanCurrentDateTimeMinusDays',
         'isLessThanOrEqualToCurrentDateTimeMinusDays',
         'isGreaterThanCurrentDateTimePlusDays',
@@ -516,6 +518,40 @@ class TypesUtils {
       'isLessThanOrEqualToCurrentDateTimeMinusDays',
       'isGreaterThanCurrentDateTimePlusDays',
       'isGreaterThanOrEqualToCurrentDateTimePlusDays',
+      'isLessThanCurrentTimeMinusSeconds',
+      'isLessThanOrEqualToCurrentTimeMinusSeconds',
+      'isGreaterThanCurrentTimePlusSeconds',
+      'isGreaterThanOrEqualToCurrentTimePlusSeconds',
+      'isLessThanCurrentTimeMinusMinutes',
+      'isLessThanOrEqualToCurrentTimeMinusMinutes',
+      'isGreaterThanCurrentTimePlusMinutes',
+      'isGreaterThanOrEqualToCurrentTimePlusMinutes',
+      'isLessThanCurrentTimeMinusHours',
+      'isLessThanOrEqualToCurrentTimeMinusHours',
+      'isGreaterThanCurrentTimePlusHours',
+      'isGreaterThanOrEqualToCurrentTimePlusHours',
+    ];
+    return dateComparators.contains(comparator);
+  }
+
+  static bool isInputIntegerComparatorForTime(String? comparator) {
+    final dateComparators = [
+      'isLessThanCurrentTimeMinusSeconds',
+      'isLessThanOrEqualToCurrentTimeMinusSeconds',
+      'isGreaterThanCurrentTimePlusSeconds',
+      'isGreaterThanOrEqualToCurrentTimePlusSeconds',
+      'isLessThanCurrentTimeMinusMinutes',
+      'isLessThanOrEqualToCurrentTimeMinusMinutes',
+      'isGreaterThanCurrentTimePlusMinutes',
+      'isGreaterThanOrEqualToCurrentTimePlusMinutes',
+      'isLessThanCurrentTimeMinusHours',
+      'isLessThanOrEqualToCurrentTimeMinusHours',
+      'isGreaterThanCurrentTimePlusHours',
+      'isGreaterThanOrEqualToCurrentTimePlusHours',
+      'isLessThanCurrentTimeMinusDays',
+      'isLessThanOrEqualToCurrentTimeMinusDays',
+      'isGreaterThanCurrentTimePlusDays',
+      'isGreaterThanOrEqualToCurrentTimePlusDays',
     ];
     return dateComparators.contains(comparator);
   }
@@ -528,5 +564,11 @@ class TypesUtils {
       'isGreaterThanOrEqualToCurrentDateTime',
     ];
     return dateComparators.contains(comparator);
+  }
+
+  static String parseTime(TimeOfDay time) {
+    final hours = time.hour.toString().padLeft(2, '0');
+    final minutes = time.minute.toString().padLeft(2, '0');
+    return '$hours:$minutes';
   }
 }

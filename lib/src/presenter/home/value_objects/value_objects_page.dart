@@ -7,6 +7,7 @@ import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/domain/value_object_group_condition/entities/value_object_group_condition.dart';
 import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_rule.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
+import 'package:metamorphis/src/presenter/home/value_objects/view_models/value_object_rule_condition_view_model.dart';
 
 import 'value_objects_controller.dart';
 import 'widgets/value_object_group_conditions_widget.dart';
@@ -820,6 +821,7 @@ class _GroupConditionWidget extends StatelessWidget {
                       _ConditionsWidget(
                         controller: controller,
                         groupCondition: groupCondition,
+                        valueObject: valueObject,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
@@ -898,6 +900,14 @@ class _GroupConditionWidget extends StatelessWidget {
       );
     } else if (valueObject.isDateTime) {
       _showDialogCreateValueObjectConditionWithDateTime(
+        groupIndex: groupIndex,
+        valueObject: valueObject,
+        groupCondition: groupCondition,
+        context: context,
+        isFirst: isFirst,
+      );
+    } else if (valueObject.isTime) {
+      _showDialogCreateValueObjectConditionWithTime(
         groupIndex: groupIndex,
         valueObject: valueObject,
         groupCondition: groupCondition,
@@ -1252,7 +1262,183 @@ class _GroupConditionWidget extends StatelessWidget {
                                   ),
                                 ),
                                 child: Text(
-                                  dateNotifier.value ?? 'Select the date',
+                                  dateNotifier.value ??
+                                      'Select the date and time',
+                                  style: textTheme.bodyMedium?.copyWith(
+                                    color: colorScheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (isInputInt)
+                            TextField(
+                              onChanged: (value) {
+                                dateNotifier.value = null;
+                              },
+                              controller: targetValueController,
+                              decoration: const InputDecoration(
+                                labelText: 'Add a number',
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                            ),
+                          const SizedBox(height: 8),
+                        ],
+                      );
+                    },
+                  );
+                },
+              );
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                context.pop();
+                controller.createValueObjectRuleCondition(
+                  group: groupCondition,
+                  logicOperator: selectedLogicOperator.value,
+                  comparatorOperator: selectedComparatorOperator.value,
+                  targetValue:
+                      dateNotifier.value ?? targetValueController.text.trim(),
+                );
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDialogCreateValueObjectConditionWithTime({
+    required int groupIndex,
+    required ValueObject valueObject,
+    required ValueObjectGroupCondition groupCondition,
+    required BuildContext context,
+    required bool isFirst,
+  }) {
+    final selectedLogicOperator = ValueNotifier('AND');
+    final comparatorOperators = TypesUtils.conditions(valueObject.type);
+    final selectedComparatorOperator = ValueNotifier(comparatorOperators.first);
+    final dateNotifier = ValueNotifier<String?>(null);
+    final targetValueController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            'Create a value object condition:\ngroup ${groupIndex + 1}',
+          ),
+          content: ValueListenableBuilder(
+            valueListenable: dateNotifier,
+            builder: (_, __, ___) {
+              final dateParsed = DateTime.tryParse(dateNotifier.value ?? '');
+              final local = dateParsed?.toLocal();
+              final dateText = local?.toIso8601String() ?? 'Select the time';
+              return ValueListenableBuilder(
+                valueListenable: selectedLogicOperator,
+                builder: (_, operator, __) {
+                  return ValueListenableBuilder(
+                    valueListenable: selectedComparatorOperator,
+                    builder: (_, b, __) {
+                      final textTheme = Theme.of(context).textTheme;
+                      final colorScheme = Theme.of(context).colorScheme;
+                      final comparator = selectedComparatorOperator.value;
+                      final isInputInt =
+                          TypesUtils.isInputIntegerComparatorForTime(
+                            comparator,
+                          );
+                      final isInputDate =
+                          TypesUtils.isSelectableComparatorForDate(comparator);
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(rule.errorMessage),
+                          const SizedBox(height: 16),
+                          if (!isFirst) const Text('Logic Operator'),
+                          if (!isFirst)
+                            DropdownButton(
+                              value: operator,
+                              isExpanded: true,
+                              onChanged: (value) {
+                                selectedLogicOperator.value = value.toString();
+                              },
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 'AND',
+                                  child: Text('AND'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'OR',
+                                  child: Text('OR'),
+                                ),
+                              ],
+                            ),
+                          if (!isFirst) const SizedBox(height: 8),
+                          const Text('Comparator Operator'),
+                          ValueListenableBuilder(
+                            valueListenable: selectedComparatorOperator,
+                            builder: (_, operator, __) {
+                              return DropdownButton(
+                                value: operator,
+                                isExpanded: true,
+                                onChanged: (value) {
+                                  selectedComparatorOperator.value = value
+                                      .toString();
+                                },
+                                items: comparatorOperators.map((item) {
+                                  return DropdownMenuItem(
+                                    value: item,
+                                    child: Text(item),
+                                  );
+                                }).toList(),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 8),
+                          if (isInputDate)
+                            GestureDetector(
+                              onTap: () async {
+                                final time = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay.fromDateTime(
+                                    DateTime.now(),
+                                  ),
+                                );
+                                if (time == null) {
+                                  return;
+                                }
+                                final dateTime = DateTime(
+                                  DateTime.now().year,
+                                  DateTime.now().month,
+                                  DateTime.now().day,
+                                  time.hour,
+                                  time.minute,
+                                );
+                                dateNotifier.value = dateTime
+                                    .toUtc()
+                                    .toIso8601String();
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(12.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  border: Border.all(
+                                    color: colorScheme.primary,
+                                    width: 1.0,
+                                  ),
+                                ),
+                                child: Text(
+                                  dateText,
                                   style: textTheme.bodyMedium?.copyWith(
                                     color: colorScheme.primary,
                                   ),
@@ -1421,10 +1607,12 @@ class _GroupConditionWidget extends StatelessWidget {
 class _ConditionsWidget extends StatelessWidget {
   final ValueObjectsController controller;
   final ValueObjectGroupCondition groupCondition;
+  final ValueObject valueObject;
 
   const _ConditionsWidget({
     required this.controller,
     required this.groupCondition,
+    required this.valueObject,
   });
 
   @override
@@ -1435,7 +1623,10 @@ class _ConditionsWidget extends StatelessWidget {
       shrinkWrap: true,
       itemCount: conditions.length,
       itemBuilder: (_, index) {
-        final condition = conditions[index];
+        final condition = ValueObjectRuleConditionViewModel.fromEntity(
+          conditions[index],
+          valueObject,
+        );
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
@@ -1451,7 +1642,7 @@ class _ConditionsWidget extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '${condition.comparatorOperator}: ${condition.targetValue}',
+                    '${condition.comparatorOperator}: ${condition.getTargetValue()}',
                   ),
                   const SizedBox(width: 4),
                   IconButton(
