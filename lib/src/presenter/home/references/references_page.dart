@@ -47,7 +47,7 @@ class _ReferencesPageState extends State<ReferencesPage> {
             ),
             const SizedBox(width: 4),
             IconButton(
-              onPressed: _showDialogCreateList,
+              onPressed: _showDialogReference,
               icon: Icon(color: colorScheme.primary, Icons.add, size: 22),
             ),
           ],
@@ -94,7 +94,7 @@ class _ReferencesPageState extends State<ReferencesPage> {
                             IconButton(
                               icon: const Icon(Icons.edit, size: 18),
                               onPressed: () {
-                                _showDialogUpdateList(reference);
+                                _showDialogUpdateReference(reference);
                               },
                             ),
                             const SizedBox(width: 1),
@@ -136,9 +136,10 @@ class _ReferencesPageState extends State<ReferencesPage> {
     }
   }
 
-  void _showDialogCreateList() {
+  void _showDialogReference() {
     final nameController = TextEditingController();
     final selectedEntity = ValueNotifier<Entity?>(null);
+    final autoLoadNotifier = ValueNotifier<bool>(false);
     final referenceType = ValueNotifier(ReferenceType.oneToOne);
     showDialog(
       context: context,
@@ -155,9 +156,10 @@ class _ReferencesPageState extends State<ReferencesPage> {
                   if (text.isEmpty) {
                     return;
                   }
-                  controller.createComposition(
+                  controller.createReference(
                     name: nameController.text.trim(),
                     entity: selectedEntity.value,
+                    autoLoad: autoLoadNotifier.value,
                     compositionType: referenceType.value,
                   );
                   context.pop();
@@ -213,6 +215,17 @@ class _ReferencesPageState extends State<ReferencesPage> {
                 },
               ),
               const SizedBox(height: 16),
+              ValueListenableBuilder(
+                valueListenable: autoLoadNotifier,
+                builder: (_, autoLoad, ___) {
+                  return SwitchListTile(
+                    onChanged: (value) => autoLoadNotifier.value = value,
+                    value: autoLoad,
+                    title: Text('Autoload'),
+                  );
+                }
+              ),
+              const SizedBox(height: 16),
             ],
           ),
           actions: [
@@ -224,9 +237,10 @@ class _ReferencesPageState extends State<ReferencesPage> {
             ),
             TextButton(
               onPressed: () {
-                controller.createComposition(
+                controller.createReference(
                   name: nameController.text.trim(),
                   entity: selectedEntity.value,
+                  autoLoad: autoLoadNotifier.value,
                   compositionType: referenceType.value,
                 );
                 context.pop();
@@ -239,10 +253,11 @@ class _ReferencesPageState extends State<ReferencesPage> {
     );
   }
 
-  void _showDialogUpdateList(Reference reference) {
+  void _showDialogUpdateReference(Reference reference) {
     final nameController = TextEditingController(text: reference.name);
     final selectedEntity = ValueNotifier<Entity>(reference.entity);
     final compositionType = ValueNotifier(reference.referenceType);
+    final autoLoadNotifier = ValueNotifier<bool>(reference.autoLoad);
     final entities = [...widget.entities];
     final index = entities.indexWhere((item) {
       return item.id == reference.entity.id;
@@ -266,8 +281,9 @@ class _ReferencesPageState extends State<ReferencesPage> {
                   controller.updateComposition(
                     entity: selectedEntity.value,
                     name: nameController.text.trim(),
-                    list: reference,
+                    reference: reference,
                     compositionType: compositionType.value,
+                    autoLoad: autoLoadNotifier.value,
                   );
                   context.pop();
                 },
@@ -321,6 +337,17 @@ class _ReferencesPageState extends State<ReferencesPage> {
                 },
               ),
               const SizedBox(height: 16),
+              ValueListenableBuilder(
+                  valueListenable: autoLoadNotifier,
+                  builder: (_, autoLoad, ___) {
+                    return SwitchListTile(
+                      onChanged: (value) => autoLoadNotifier.value = value,
+                      value: autoLoad,
+                      title: Text('Autoload'),
+                    );
+                  }
+              ),
+              const SizedBox(height: 16),
             ],
           ),
           actions: [
@@ -335,12 +362,13 @@ class _ReferencesPageState extends State<ReferencesPage> {
                 controller.updateComposition(
                   entity: selectedEntity.value,
                   name: nameController.text.trim(),
-                  list: reference,
+                  reference: reference,
                   compositionType: compositionType.value,
+                  autoLoad: autoLoadNotifier.value,
                 );
                 context.pop();
               },
-              child: const Text('Create'),
+              child: const Text('Update'),
             ),
           ],
         );

@@ -5,12 +5,14 @@ class Reference {
   late final String id;
   String name;
   Entity entity;
+  bool autoLoad;
   ReferenceType referenceType;
 
   Reference({
     String? id,
     required this.name,
     required this.entity,
+    required this.autoLoad,
     required this.referenceType,
   }) {
     this.id = id ?? const Uuid().v4();

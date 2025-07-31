@@ -27,9 +27,10 @@ class ReferencesController {
     );
   }
 
-  void createComposition({
+  void createReference({
     required String name,
     Entity? entity,
+    required bool autoLoad,
     required ReferenceType compositionType,
   }) {
     if (entity == null) {
@@ -38,6 +39,7 @@ class ReferencesController {
     final entityList = Reference(
       name: name,
       entity: entity,
+      autoLoad: autoLoad,
       referenceType: compositionType,
     );
     entityStore.entity.references.add(entityList);
@@ -47,12 +49,14 @@ class ReferencesController {
   void updateComposition({
     required String name,
     required Entity entity,
-    required Reference list,
+    required Reference reference,
     required ReferenceType compositionType,
+    required bool autoLoad,
   }) {
-    list.name = name;
-    list.referenceType = compositionType;
-    list.entity = entity;
+    reference.name = name;
+    reference.referenceType = compositionType;
+    reference.entity = entity;
+    reference.autoLoad = autoLoad;
     updateEntity();
   }
 

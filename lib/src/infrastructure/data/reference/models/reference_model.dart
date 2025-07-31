@@ -8,6 +8,7 @@ class ReferenceModel extends Reference {
     required super.id,
     required super.name,
     required super.entity,
+    required super.autoLoad,
     required super.referenceType,
   });
 
@@ -16,6 +17,7 @@ class ReferenceModel extends Reference {
       id: reference.id,
       name: reference.name,
       entity: reference.entity,
+      autoLoad: reference.autoLoad,
       referenceType: reference.referenceType,
     );
   }
@@ -29,6 +31,7 @@ class ReferenceModel extends Reference {
         name: map['entityName'],
         applicationId: '',
       ),
+      autoLoad: map['autoLoad'] ?? false,
       referenceType: ReferenceType.fromString(map['referenceType'] ?? ''),
     );
   }
@@ -44,6 +47,7 @@ class ReferenceModel extends Reference {
       'entityId': super.entity.id,
       'entityName': super.entity.name,
       'referenceType': super.referenceType.name,
+      'autoLoad': super.autoLoad,
     };
   }
 
