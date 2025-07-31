@@ -1,8 +1,10 @@
 import 'package:change_case/change_case.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/domain/use_case/entities/use_case.dart';
 import 'package:metamorphis/src/presenter/_core/extensions/words_extensions.dart';
+import 'package:metamorphis/src/presenter/_core/utils/custom_input_formatters.dart';
 import 'package:metamorphis/src/presenter/home/use_cases/use_cases_controller.dart';
 
 class UseCasesPage extends StatefulWidget {
@@ -294,15 +296,84 @@ class _UseCaseItemList extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          trailing: IconButton(
-            icon: Icon(Icons.delete, size: 18, color: colorScheme.error),
-            onPressed: () {
-              controller.deleteUseCase(useCase);
-            },
+          subtitle: useCase.jwtRules.isNotEmpty
+              ? Text(useCase.jwtRules.join(', '))
+              : null,
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(Icons.edit, size: 18),
+                onPressed: () {
+                  _showDialogEditUseCase(context, useCase);
+                },
+              ),
+              const SizedBox(width: 4),
+              IconButton(
+                icon: Icon(Icons.delete, size: 18, color: colorScheme.error),
+                onPressed: () {
+                  controller.deleteUseCase(useCase);
+                },
+              ),
+            ],
           ),
         ),
         const Divider(),
       ],
+    );
+  }
+
+  void _showDialogEditUseCase(BuildContext context, UseCase useCase) {
+    final textController = TextEditingController(
+      text: useCase.jwtRules.join(', '),
+    );
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add profiles to access: ${useCase.name}'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: textController,
+                onSubmitted: (_) {
+                  context.pop();
+                  controller.addProfilesToUseCase(
+                    useCase,
+                    textController.text.trim(),
+                  );
+                },
+                inputFormatters: [CustomInputFormatters.onlyAZ09AndUnderscore],
+                decoration: const InputDecoration(
+                  labelText: 'JWT Profiles',
+                  hint: Text('Ex.: ADMIN, USER, GUEST'),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                context.pop();
+                controller.addProfilesToUseCase(
+                  useCase,
+                  textController.text.trim(),
+                );
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

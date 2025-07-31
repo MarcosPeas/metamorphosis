@@ -14,6 +14,7 @@ class UseCaseModel extends UseCase {
     required super.entityId,
     required super.input,
     required super.output,
+    required super.jwtRules,
   });
 
   factory UseCaseModel.fromEntity(UseCase useCase) {
@@ -27,10 +28,16 @@ class UseCaseModel extends UseCase {
       entityId: useCase.entityId,
       input: useCase.input,
       output: useCase.output,
+      jwtRules: useCase.jwtRules,
     );
   }
 
   factory UseCaseModel.fromMap(Map<String, dynamic> map) {
+    List<String> jwtRules = [];
+    if (map['jwtRules'] != null && map['jwtRules'] is String) {
+      final rulesString = map['jwtRules'] as String;
+      jwtRules = rulesString.split(',').toList();
+    }
     return UseCaseModel(
       id: map['id'],
       name: map['name'],
@@ -41,6 +48,7 @@ class UseCaseModel extends UseCase {
       entityId: map['entityId'],
       input: DataClassModel.fromMap(map['input']),
       output: DataClassModel.fromMap(map['output']),
+      jwtRules: jwtRules,
     );
   }
 
@@ -59,6 +67,7 @@ class UseCaseModel extends UseCase {
       'entityId': entityId,
       'input': DataClassModel.fromEntity(input)?.toMap(),
       'output': DataClassModel.fromEntity(output)?.toMap(),
+      'jwtRules': jwtRules.join(','),
     };
   }
 

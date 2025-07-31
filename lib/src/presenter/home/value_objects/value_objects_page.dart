@@ -6,6 +6,7 @@ import 'package:metamorphis/src/domain/_core/utils/types_utils.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/domain/value_object_group_condition/entities/value_object_group_condition.dart';
 import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_rule.dart';
+import 'package:metamorphis/src/presenter/_core/utils/custom_input_formatters.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
 import 'package:metamorphis/src/presenter/home/value_objects/view_models/value_object_rule_condition_view_model.dart';
 
@@ -172,15 +173,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                         hint: Text('Ex.: RED, GREEN, DARK_BLUE'),
                       ),
                       inputFormatters: [
-                        TextInputFormatter.withFunction((oldValue, newValue) {
-                          final validCharacters = RegExp(r'^[a-zA-Z0-9_, ]*$');
-                          if (validCharacters.hasMatch(newValue.text)) {
-                            return newValue.copyWith(
-                              text: newValue.text.toUpperCase(),
-                            );
-                          }
-                          return oldValue;
-                        }),
+                        CustomInputFormatters.onlyAZ09AndUnderscore
                       ],
                       onChanged: (text) {
                         valueObject.value = vo.copyWith(

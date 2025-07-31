@@ -40,6 +40,7 @@ class UseCasesController {
       name: '${name}UseCase',
       useCaseType: UseCaseType.create,
       entityId: entityStore.entity.id,
+      jwtRules: [],
     );
     final input = InOutGenerator.generate(
       name: '${name}Input',
@@ -67,6 +68,7 @@ class UseCasesController {
       name: '${name}UseCase',
       useCaseType: UseCaseType.findById,
       entityId: entityStore.entity.id,
+      jwtRules: [],
     );
     final input = InOutGenerator.generate(
       name: '${name}Input',
@@ -92,6 +94,7 @@ class UseCasesController {
       name: '${name}UseCase',
       useCaseType: UseCaseType.update,
       entityId: entityStore.entity.id,
+      jwtRules: [],
     );
     final input = InOutGenerator.generate(
       name: '${name}Input',
@@ -117,6 +120,7 @@ class UseCasesController {
       name: '${name}UseCase',
       useCaseType: UseCaseType.delete,
       entityId: entityStore.entity.id,
+      jwtRules: [],
     );
     final input = InOutGenerator.generate(
       name: '${name}Input',
@@ -135,6 +139,7 @@ class UseCasesController {
       name: '${name}UseCase',
       useCaseType: UseCaseType.filterOne,
       entityId: entityStore.entity.id,
+      jwtRules: [],
     );
     final output = InOutGenerator.generate(
       name: '${name}Output',
@@ -155,6 +160,7 @@ class UseCasesController {
       name: '${name}UseCase',
       useCaseType: UseCaseType.paginate,
       entityId: entityStore.entity.id,
+      jwtRules: [],
     );
     final output = InOutGenerator.generate(
       name: '${name}Output',
@@ -170,6 +176,11 @@ class UseCasesController {
 
   void deleteUseCase(UseCase useCase) {
     entityStore.entity.useCases.remove(useCase);
+    updateEntity();
+  }
+
+  void addProfilesToUseCase(UseCase useCase, String profiles) {
+    useCase.addJwtRules(profiles);
     updateEntity();
   }
 }

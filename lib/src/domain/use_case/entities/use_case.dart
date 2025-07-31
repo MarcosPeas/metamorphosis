@@ -11,6 +11,7 @@ class UseCase {
   final String entityId;
   DataClass? input;
   DataClass? output;
+  late final List<String> _jwtRules;
 
   UseCase({
     String? id,
@@ -22,9 +23,21 @@ class UseCase {
     this.input,
     this.output,
     required this.entityId,
+    required List<String >jwtRules,
   }) {
     this.id = id ?? const Uuid().v4();
+    _jwtRules = jwtRules;
   }
+
+  void addJwtRules(String jwtRules) {
+    _jwtRules.clear();
+    String rules = jwtRules.trim().replaceAll(' ', '');
+    List<String> rulesList = rules.split(',');
+    rulesList.removeWhere((rule) => rule.isEmpty);
+    _jwtRules.addAll(rulesList);
+  }
+
+  List<String> get jwtRules => _jwtRules;
 }
 
 enum UseCaseType {
