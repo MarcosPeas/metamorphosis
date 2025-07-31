@@ -25,16 +25,20 @@ class FieldModel extends Field {
     );
   }
 
-  factory FieldModel.fromMap(Map<String, dynamic> json) {
+  factory FieldModel.fromMap(Map<String, dynamic> map) {
     return FieldModel(
-      id: json['id'],
-      name: json['name'],
-      type: json['type'],
-      isNullable: json['isNullable'] ?? false,
-      enumName: json['enumName'] ?? '',
-      enumValues: json['enumValues'] ?? '',
-      dataClassId: json['dataClassId'],
+      id: map['id'],
+      name: map['name'],
+      type: map['type'],
+      isNullable: map['isNullable'] ?? false,
+      enumName: map['enumName'] ?? '',
+      enumValues: map['enumValues'] ?? '',
+      dataClassId: map['dataClassId'],
     );
+  }
+
+  factory FieldModel.fromJson(String json) {
+    return FieldModel.fromMap(jsonDecode(json));
   }
 
   Map<String, dynamic> toMap() {
@@ -47,10 +51,6 @@ class FieldModel extends Field {
       'enumValues': super.enumValues,
       'dataClassId': super.dataClassId,
     };
-  }
-
-  factory FieldModel.fromJson(String json) {
-    return FieldModel.fromMap(jsonDecode(json));
   }
 
   String toJson() {

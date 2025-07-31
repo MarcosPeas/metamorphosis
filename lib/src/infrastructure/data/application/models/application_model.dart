@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:metamorphis/src/domain/application/entities/api_type.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 
@@ -24,21 +26,25 @@ class ApplicationModel extends Application {
     );
   }
 
-  factory ApplicationModel.fromMap(Map<String, dynamic> json) {
+  factory ApplicationModel.fromMap(Map<String, dynamic> map) {
     return ApplicationModel(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      isMicroservice: json['isMicroservice'],
-      projectId: json['projectId'],
-      createdAt: DateTime.parse(json['createdAt']),
-      apiOptions: json.containsKey('apiOptions')
-          ? ApiOptionsModel.fromMap(json['apiOptions'])
+      id: map['id'],
+      name: map['name'],
+      description: map['description'],
+      isMicroservice: map['isMicroservice'],
+      projectId: map['projectId'],
+      createdAt: DateTime.parse(map['createdAt']),
+      apiOptions: map.containsKey('apiOptions')
+          ? ApiOptionsModel.fromMap(map['apiOptions'])
           : ApiOptions.empty(),
     );
   }
 
-  Map<String, dynamic> toJson() {
+  factory ApplicationModel.fromJson(String json) {
+    return ApplicationModel.fromMap(jsonDecode(json));
+  }
+
+  Map<String, dynamic> toMap() {
     return {
       'id': super.id,
       'name': super.name,
@@ -46,8 +52,12 @@ class ApplicationModel extends Application {
       'isMicroservice': super.isMicroservice,
       'projectId': super.projectId,
       'createdAt': super.createdAt.toIso8601String(),
-      'apiOptions': ApiOptionsModel.fromEntity(apiOptions).toJson(),
+      'apiOptions': ApiOptionsModel.fromEntity(apiOptions).toMap(),
     };
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }
 
@@ -70,17 +80,21 @@ class ApiOptionsModel extends ApiOptions {
     );
   }
 
-  factory ApiOptionsModel.fromMap(Map<String, dynamic> json) {
+  factory ApiOptionsModel.fromMap(Map<String, dynamic> map) {
     return ApiOptionsModel(
-      apiType: ApiType.fromString(json['apiType'] ?? ''),
-      devUrl: json['devUrl'] ?? '',
-      prodUrl: json['prodUrl'] ?? '',
-      devKey: json['devKey'] ?? '',
-      prodKey: json['prodKey'] ?? '',
+      apiType: ApiType.fromString(map['apiType'] ?? ''),
+      devUrl: map['devUrl'] ?? '',
+      prodUrl: map['prodUrl'] ?? '',
+      devKey: map['devKey'] ?? '',
+      prodKey: map['prodKey'] ?? '',
     );
   }
 
-  Map<String, dynamic> toJson() {
+  factory ApiOptionsModel.fromJson(String json) {
+    return ApiOptionsModel.fromMap(jsonDecode(json));
+  }
+
+  Map<String, dynamic> toMap() {
     return {
       'apiType': apiType.name,
       'devUrl': devUrl,
@@ -88,5 +102,9 @@ class ApiOptionsModel extends ApiOptions {
       'devKey': devKey,
       'prodKey': prodKey,
     };
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }

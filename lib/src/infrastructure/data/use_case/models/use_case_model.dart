@@ -30,23 +30,22 @@ class UseCaseModel extends UseCase {
     );
   }
 
-  factory UseCaseModel.fromMap(Map<String, dynamic> json) {
+  factory UseCaseModel.fromMap(Map<String, dynamic> map) {
     return UseCaseModel(
-      id: json['id'],
-      name: json['name'],
-      useCaseType: UseCaseType.fromString(json['useCaseType']),
-      searchField: json['searchField'],
-      orderByField: json['orderByField'],
-      isAscending: json['isAscending'],
-      entityId: json['entityId'],
-      input: DataClassModel.fromMap(json['input']),
-      output: DataClassModel.fromMap(json['output']),
+      id: map['id'],
+      name: map['name'],
+      useCaseType: UseCaseType.fromString(map['useCaseType']),
+      searchField: map['searchField'],
+      orderByField: map['orderByField'],
+      isAscending: map['isAscending'],
+      entityId: map['entityId'],
+      input: DataClassModel.fromMap(map['input']),
+      output: DataClassModel.fromMap(map['output']),
     );
   }
 
   factory UseCaseModel.fromJson(String json) {
-    final Map<String, dynamic> map = jsonDecode(json);
-    return UseCaseModel.fromMap(map);
+    return UseCaseModel.fromMap(jsonDecode(json));
   }
 
   Map<String, dynamic> toMap() {

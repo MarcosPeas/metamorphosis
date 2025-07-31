@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:metamorphis/src/domain/entity_rule_condition/entity_rule_condition.dart';
 import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
-import 'package:metamorphis/src/infrastructure/data/reference/models/composition_model.dart';
+import 'package:metamorphis/src/infrastructure/data/reference/models/reference_model.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object/models/value_object_model.dart';
 
 class EntityRuleConditionModel extends EntityRuleCondition {
@@ -62,7 +64,35 @@ class EntityRuleConditionModel extends EntityRuleCondition {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  factory EntityRuleConditionModel.fromMap(Map<String, dynamic> map) {
+    ValueObject? leftValueObject;
+    ValueObject? rightValueObject;
+    Reference? composition;
+    if (map['leftValueObject'] != null) {
+      leftValueObject = ValueObjectModel.fromMap(map['leftValueObject']);
+    }
+    if (map['rightValueObject'] != null) {
+      rightValueObject = ValueObjectModel.fromMap(map['rightValueObject']);
+    }
+    if (map['reference'] != null) {
+      composition = ReferenceModel.fromMap(map['reference']);
+    }
+    return EntityRuleConditionModel._(
+      id: map['id'],
+      logicOperator: map['logicOperator'],
+      targetValue: map['targetValue'],
+      comparatorOperator: map['comparatorOperator'],
+      leftValueObject: leftValueObject,
+      rightValueObject: rightValueObject,
+      composition: composition,
+    );
+  }
+
+  factory EntityRuleConditionModel.fromJson(String json) {
+    return EntityRuleConditionModel.fromMap(jsonDecode(json));
+  }
+
+  Map<String, dynamic> toMap() {
     ValueObjectModel? leftValueObject;
     ValueObjectModel? rightValueObject;
     ReferenceModel? composition;
@@ -88,27 +118,7 @@ class EntityRuleConditionModel extends EntityRuleCondition {
     };
   }
 
-  factory EntityRuleConditionModel.fromMap(Map<String, dynamic> json) {
-    ValueObject? leftValueObject;
-    ValueObject? rightValueObject;
-    Reference? composition;
-    if (json['leftValueObject'] != null) {
-      leftValueObject = ValueObjectModel.fromMap(json['leftValueObject']);
-    }
-    if (json['rightValueObject'] != null) {
-      rightValueObject = ValueObjectModel.fromMap(json['rightValueObject']);
-    }
-    if (json['reference'] != null) {
-      composition = ReferenceModel.fromMap(json['reference']);
-    }
-    return EntityRuleConditionModel._(
-      id: json['id'],
-      logicOperator: json['logicOperator'],
-      targetValue: json['targetValue'],
-      comparatorOperator: json['comparatorOperator'],
-      leftValueObject: leftValueObject,
-      rightValueObject: rightValueObject,
-      composition: composition,
-    );
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }

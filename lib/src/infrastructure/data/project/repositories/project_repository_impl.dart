@@ -59,7 +59,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
     try {
       final doc = _firestore.collection(collection).doc(project.id);
       final projectModel = ProjectModel.fromEntity(project);
-      await doc.set(projectModel.toJson());
+      await doc.set(projectModel.toMap());
       return projectModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
@@ -81,7 +81,7 @@ class ProjectRepositoryImpl implements ProjectRepository {
     try {
       final doc = _firestore.collection(collection).doc(project.id);
       final projectModel = ProjectModel.fromEntity(project);
-      await doc.update(projectModel.toJson());
+      await doc.update(projectModel.toMap());
       return projectModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(

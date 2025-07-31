@@ -69,7 +69,7 @@ class EntityRuleGroupConditionRepositoryImpl
           .doc(entityRuleGroupCondition.id);
       final entityRuleGroupConditionModel =
           EntityRuleGroupConditionModel.fromEntity(entityRuleGroupCondition);
-      await doc.set(entityRuleGroupConditionModel.toJson());
+      await doc.set(entityRuleGroupConditionModel.toMap());
       return entityRuleGroupConditionModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
@@ -97,7 +97,7 @@ class EntityRuleGroupConditionRepositoryImpl
           .doc(entityRuleGroupCondition.id);
       final entityRuleGroupConditionModel =
           EntityRuleGroupConditionModel.fromEntity(entityRuleGroupCondition);
-      await doc.update(entityRuleGroupConditionModel.toJson());
+      await doc.update(entityRuleGroupConditionModel.toMap());
       return entityRuleGroupConditionModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(

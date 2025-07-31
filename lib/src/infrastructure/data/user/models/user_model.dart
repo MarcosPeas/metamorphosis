@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:metamorphis/src/domain/user/entities/user.dart';
 
 class UserModel extends User {
@@ -23,11 +25,19 @@ class UserModel extends User {
     );
   }
 
+  factory UserModel.fromJson(String json) {
+    return UserModel.fromMap(jsonDecode(json));
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id': super.id,
       'name': super.name,
       'email': super.email,
     };
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }

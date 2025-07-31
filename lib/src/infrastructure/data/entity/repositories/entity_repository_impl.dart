@@ -62,7 +62,7 @@ class EntityRepositoryImpl implements EntityRepository {
     try {
       final doc = _firestore.collection(collection).doc(entity.id);
       final applicationModel = EntityModel.fromEntity(entity);
-      await doc.set(applicationModel.toJson());
+      await doc.set(applicationModel.toMap());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
@@ -84,7 +84,7 @@ class EntityRepositoryImpl implements EntityRepository {
     try {
       final doc = _firestore.collection(collection).doc(entity.id);
       final entityModel = EntityModel.fromEntity(entity);
-      await doc.set(entityModel.toJson());
+      await doc.set(entityModel.toMap());
       return entityModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(

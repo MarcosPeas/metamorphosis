@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:metamorphis/src/domain/value_object_group_condition/entities/value_object_group_condition.dart';
 import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_rule.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object_group_condition/models/value_object_group_condition_model.dart';
@@ -21,10 +23,10 @@ class ValueObjectRuleModel extends ValueObjectRule {
     );
   }
 
-  factory ValueObjectRuleModel.fromMap(Map<String, dynamic> json) {
+  factory ValueObjectRuleModel.fromMap(Map<String, dynamic> map) {
     final List<ValueObjectGroupCondition> groupConditions = [];
-    if (json['groupConditions'] != null) {
-      final conditions = json['groupConditions'] as List;
+    if (map['groupConditions'] != null) {
+      final conditions = map['groupConditions'] as List;
       groupConditions.addAll(
         conditions.map((condition) {
           return ValueObjectGroupConditionModel.fromMap(condition);
@@ -32,11 +34,15 @@ class ValueObjectRuleModel extends ValueObjectRule {
       );
     }
     return ValueObjectRuleModel(
-      id: json['id'],
-      errorMessage: json['errorMessage'],
-      valueObjectId: json['valueObjectId'],
+      id: map['id'],
+      errorMessage: map['errorMessage'],
+      valueObjectId: map['valueObjectId'],
       groupConditions: groupConditions,
     );
+  }
+
+  factory ValueObjectRuleModel.fromJson(String json) {
+    return ValueObjectRuleModel.fromMap(jsonDecode(json));
   }
 
   Map<String, dynamic> toMap() {
@@ -49,5 +55,9 @@ class ValueObjectRuleModel extends ValueObjectRule {
         return model.toMap();
       }).toList(),
     };
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }

@@ -1,10 +1,12 @@
+import 'dart:convert';
+
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
 import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 import 'package:metamorphis/src/domain/use_case/entities/use_case.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/infrastructure/data/entity_rule/models/entity_rule_model.dart';
-import 'package:metamorphis/src/infrastructure/data/reference/models/composition_model.dart';
+import 'package:metamorphis/src/infrastructure/data/reference/models/reference_model.dart';
 import 'package:metamorphis/src/infrastructure/data/use_case/models/use_case_model.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object/models/value_object_model.dart';
 
@@ -31,35 +33,35 @@ class EntityModel extends Entity {
     );
   }
 
-  factory EntityModel.fromMap(Map<String, dynamic> json) {
+  factory EntityModel.fromMap(Map<String, dynamic> map) {
     final valueObjects = <ValueObject>[];
     final useCases = <UseCase>[];
     final entityRules = <EntityRule>[];
     final references = <Reference>[];
-    if (json['valueObjects'] != null) {
-      json['valueObjects'].forEach((valueObject) {
+    if (map['valueObjects'] != null) {
+      map['valueObjects'].forEach((valueObject) {
         valueObjects.add(ValueObjectModel.fromMap(valueObject));
       });
     }
-    if (json['useCases'] != null) {
-      json['useCases'].forEach((useCase) {
+    if (map['useCases'] != null) {
+      map['useCases'].forEach((useCase) {
         useCases.add(UseCaseModel.fromMap(useCase));
       });
     }
-    if (json['entityRules'] != null) {
-      json['entityRules'].forEach((entityRule) {
+    if (map['entityRules'] != null) {
+      map['entityRules'].forEach((entityRule) {
         entityRules.add(EntityRuleModel.fromMap(entityRule));
       });
     }
-    if (json['references'] != null) {
-      json['references'].forEach((reference) {
+    if (map['references'] != null) {
+      map['references'].forEach((reference) {
         references.add(ReferenceModel.fromMap(reference));
       });
     }
     return EntityModel(
-      id: json['id'],
-      name: json['name'],
-      applicationId: json['applicationId'],
+      id: map['id'],
+      name: map['name'],
+      applicationId: map['applicationId'],
       valueObjects: valueObjects,
       useCases: useCases,
       entityRules: entityRules,
@@ -67,7 +69,11 @@ class EntityModel extends Entity {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  factory EntityModel.fromJson(String json) {
+    return EntityModel.fromMap(jsonDecode(json));
+  }
+
+  Map<String, dynamic> toMap() {
     final valueObjectsModel = valueObjects.map((valueObject) {
       return ValueObjectModel.fromValueObject(valueObject).toMap();
     }).toList();
@@ -75,7 +81,7 @@ class EntityModel extends Entity {
       return UseCaseModel.fromEntity(useCase).toMap();
     }).toList();
     final entityRulesModel = entityRules.map((entityRule) {
-      return EntityRuleModel.fromEntity(entityRule).toJson();
+      return EntityRuleModel.fromEntity(entityRule).toMap();
     }).toList();
     final referencesModel = references.map((entityList) {
       return ReferenceModel.fromEntity(entityList).toMap();
@@ -89,5 +95,9 @@ class EntityModel extends Entity {
       'entityRules': entityRulesModel,
       'references': referencesModel,
     };
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }

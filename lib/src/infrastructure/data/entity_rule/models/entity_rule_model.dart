@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
 import 'package:metamorphis/src/domain/entity_rule_group_condition/entities/entity_rule_group_condition.dart';
 import 'package:metamorphis/src/infrastructure/data/entity_rule_group_condition/models/entity_rule_group_condition_model.dart';
@@ -19,10 +21,10 @@ class EntityRuleModel extends EntityRule {
     );
   }
 
-  factory EntityRuleModel.fromMap(Map<String, dynamic> json) {
+  factory EntityRuleModel.fromMap(Map<String, dynamic> map) {
     List<EntityRuleGroupCondition> groupConditions = [];
-    if (json['groupConditions'] != null) {
-      final groupConditionsJson = json['groupConditions'] as List;
+    if (map['groupConditions'] != null) {
+      final groupConditionsJson = map['groupConditions'] as List;
       groupConditions.addAll(
         groupConditionsJson.map((groupCondition) {
           return EntityRuleGroupConditionModel.fromMap(groupCondition);
@@ -30,21 +32,29 @@ class EntityRuleModel extends EntityRule {
       );
     }
     return EntityRuleModel(
-      id: json['id'],
-      errorMessage: json['errorMessage'],
-      entityId: json['entityId'],
+      id: map['id'],
+      errorMessage: map['errorMessage'],
+      entityId: map['entityId'],
       groupConditions: groupConditions,
     );
   }
 
-  Map<String, dynamic> toJson() {
+  factory EntityRuleModel.fromJson(String json) {
+    return EntityRuleModel.fromMap(jsonDecode(json));
+  }
+
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'errorMessage': errorMessage,
       'entityId': entityId,
       'groupConditions': groupConditions.map((groupCondition) {
-        return EntityRuleGroupConditionModel.fromEntity(groupCondition).toJson();
+        return EntityRuleGroupConditionModel.fromEntity(groupCondition).toMap();
       }).toList(),
     };
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }

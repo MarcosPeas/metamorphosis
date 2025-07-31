@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:metamorphis/src/domain/value_object_rule_condition/entities/value_object_rule_condition.dart';
 
 class ValueObjectRuleConditionModel extends ValueObjectRuleCondition {
@@ -19,14 +21,18 @@ class ValueObjectRuleConditionModel extends ValueObjectRuleCondition {
     );
   }
 
-  factory ValueObjectRuleConditionModel.fromMap(Map<String, dynamic> json) {
+  factory ValueObjectRuleConditionModel.fromMap(Map<String, dynamic> map) {
     return ValueObjectRuleConditionModel(
-      id: json['id'],
-      logicOperator: json['logicOperator'],
-      targetValue: json['targetValue'] ?? json['regex'],
-      comparatorOperator: json['comparatorOperator'],
-      valueObjectGroupConditionId: json['valueObjectGroupConditionId'],
+      id: map['id'],
+      logicOperator: map['logicOperator'],
+      targetValue: map['targetValue'] ?? map['regex'],
+      comparatorOperator: map['comparatorOperator'],
+      valueObjectGroupConditionId: map['valueObjectGroupConditionId'],
     );
+  }
+
+  factory ValueObjectRuleConditionModel.fromJson(String json) {
+    return ValueObjectRuleConditionModel.fromMap(jsonDecode(json));
   }
 
   Map<String, dynamic> toMap() {
@@ -37,5 +43,9 @@ class ValueObjectRuleConditionModel extends ValueObjectRuleCondition {
       'comparatorOperator': super.comparatorOperator,
       'valueObjectGroupConditionId': super.valueObjectGroupConditionId,
     };
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }

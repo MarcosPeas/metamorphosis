@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:metamorphis/src/domain/value_object_group_condition/entities/value_object_group_condition.dart';
 import 'package:metamorphis/src/domain/value_object_rule_condition/entities/value_object_rule_condition.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object_rule_condition/models/value_object_rule_condition_model.dart';
@@ -23,19 +25,19 @@ class ValueObjectGroupConditionModel extends ValueObjectGroupCondition {
     );
   }
 
-  factory ValueObjectGroupConditionModel.fromMap(Map<String, dynamic> json) {
+  factory ValueObjectGroupConditionModel.fromMap(Map<String, dynamic> map) {
     final conditions = <ValueObjectRuleCondition>[];
     final groupConditions = <ValueObjectGroupCondition>[];
-    if (json['conditions'] != null) {
-      final rules = json['conditions'] as List;
+    if (map['conditions'] != null) {
+      final rules = map['conditions'] as List;
       conditions.addAll(
         rules.map((rule) {
           return ValueObjectRuleConditionModel.fromMap(rule);
         }).toList(),
       );
     }
-    if (json['groupConditions'] != null) {
-      final groupConditionsJson = json['groupConditions'] as List;
+    if (map['groupConditions'] != null) {
+      final groupConditionsJson = map['groupConditions'] as List;
       groupConditions.addAll(
         groupConditionsJson.map((groupCondition) {
           return ValueObjectGroupConditionModel.fromMap(groupCondition);
@@ -43,12 +45,16 @@ class ValueObjectGroupConditionModel extends ValueObjectGroupCondition {
       );
     }
     return ValueObjectGroupConditionModel(
-      id: json['id'],
-      logicOperator: json['logicOperator'],
-      valueObjectRuleId: json['valueObjectRuleId'],
+      id: map['id'],
+      logicOperator: map['logicOperator'],
+      valueObjectRuleId: map['valueObjectRuleId'],
       groupConditions: groupConditions,
       conditions: conditions,
     );
+  }
+
+  factory ValueObjectGroupConditionModel.fromJson(String json) {
+    return ValueObjectGroupConditionModel.fromMap(jsonDecode(json));
   }
 
   Map<String, dynamic> toMap() {
@@ -63,5 +69,9 @@ class ValueObjectGroupConditionModel extends ValueObjectGroupCondition {
         return ValueObjectRuleConditionModel.fromEntity(item).toMap();
       }),
     };
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }

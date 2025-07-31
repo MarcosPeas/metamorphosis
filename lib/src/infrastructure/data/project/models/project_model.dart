@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:metamorphis/src/domain/project/entities/project.dart';
 
 class ProjectModel extends Project {
@@ -19,17 +21,21 @@ class ProjectModel extends Project {
     );
   }
 
-  factory ProjectModel.fromMap(Map<String, dynamic> json) {
+  factory ProjectModel.fromMap(Map<String, dynamic> map) {
     return ProjectModel(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      createdAt: DateTime.parse(json['createdAt']),
-      userId: json['userId'],
+      id: map['id'],
+      name: map['name'],
+      description: map['description'],
+      createdAt: DateTime.parse(map['createdAt']),
+      userId: map['userId'],
     );
   }
 
-  Map<String, dynamic> toJson() {
+  factory ProjectModel.fromJson(String json) {
+    return ProjectModel.fromMap(jsonDecode(json));
+  }
+
+  Map<String, dynamic> toMap() {
     return {
       'id': super.id,
       'name': super.name,
@@ -37,5 +43,9 @@ class ProjectModel extends Project {
       'createdAt': super.createdAt.toIso8601String(),
       'userId': super.userId,
     };
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_rule.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object_rule/models/value_object_rule_model.dart';
@@ -29,25 +31,29 @@ class ValueObjectModel extends ValueObject {
     );
   }
 
-  factory ValueObjectModel.fromMap(Map<String, dynamic> json) {
+  factory ValueObjectModel.fromMap(Map<String, dynamic> map) {
     final List<ValueObjectRule> rulesModel = [];
-    if (json['rules'] != null) {
-      final rules = json['rules'] as List;
+    if (map['rules'] != null) {
+      final rules = map['rules'] as List;
       rulesModel.addAll(
         rules.map((rule) => ValueObjectRuleModel.fromMap(rule)).toList(),
       );
     }
     return ValueObjectModel(
-      id: json['id'],
-      name: json['name'],
-      type: json['type'],
-      isNullable: json['isNullable'] ?? false,
-      entityId: json['entityId'],
-      isUnique: json['isUnique'] ?? false,
+      id: map['id'],
+      name: map['name'],
+      type: map['type'],
+      isNullable: map['isNullable'] ?? false,
+      entityId: map['entityId'],
+      isUnique: map['isUnique'] ?? false,
       rules: rulesModel,
-      enumName: json['enumName'] ?? '',
-      enumValues: json['enumValues'] ?? '',
+      enumName: map['enumName'] ?? '',
+      enumValues: map['enumValues'] ?? '',
     );
+  }
+
+  factory ValueObjectModel.fromJson(String json) {
+    return ValueObjectModel.fromMap(jsonDecode(json));
   }
 
   Map<String, dynamic> toMap() {
@@ -68,5 +74,9 @@ class ValueObjectModel extends ValueObject {
       'enumName': enumName,
       'enumValues': enumValues,
     };
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }

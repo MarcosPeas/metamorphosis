@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 
@@ -18,17 +20,21 @@ class ReferenceModel extends Reference {
     );
   }
 
-  factory ReferenceModel.fromMap(Map<String, dynamic> json) {
+  factory ReferenceModel.fromMap(Map<String, dynamic> map) {
     return ReferenceModel(
-      id: json['id'],
-      name: json['name'],
+      id: map['id'],
+      name: map['name'],
       entity: Entity(
-        id: json['entityId'],
-        name: json['entityName'],
+        id: map['entityId'],
+        name: map['entityName'],
         applicationId: '',
       ),
-      referenceType: ReferenceType.fromString(json['referenceType'] ?? ''),
+      referenceType: ReferenceType.fromString(map['referenceType'] ?? ''),
     );
+  }
+
+  factory ReferenceModel.fromJson(String json) {
+    return ReferenceModel.fromMap(jsonDecode(json));
   }
 
   Map<String, dynamic> toMap() {
@@ -39,5 +45,9 @@ class ReferenceModel extends Reference {
       'entityName': super.entity.name,
       'referenceType': super.referenceType.name,
     };
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }

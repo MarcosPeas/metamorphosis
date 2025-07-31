@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:metamorphis/src/domain/entity_rule_condition/entity_rule_condition.dart';
 import 'package:metamorphis/src/domain/entity_rule_group_condition/entities/entity_rule_group_condition.dart';
 import 'package:metamorphis/src/infrastructure/data/entity_rule_condition/models/entity_rule_condition_model.dart';
@@ -23,23 +25,27 @@ class EntityRuleGroupConditionModel extends EntityRuleGroupCondition {
     );
   }
 
-  factory EntityRuleGroupConditionModel.fromMap(Map<String, dynamic> json) {
+  factory EntityRuleGroupConditionModel.fromMap(Map<String, dynamic> map) {
     return EntityRuleGroupConditionModel(
-      id: json['id'],
-      logicOperator: json['logicOperator'],
-      entityRuleId: json['entityRuleId'],
-      entityRuleGroupCondition: json['entityRuleGroupCondition'] != null
+      id: map['id'],
+      logicOperator: map['logicOperator'],
+      entityRuleId: map['entityRuleId'],
+      entityRuleGroupCondition: map['entityRuleGroupCondition'] != null
           ? EntityRuleGroupConditionModel.fromMap(
-              json['entityRuleGroupCondition'],
+              map['entityRuleGroupCondition'],
             )
           : null,
-      conditions: json['conditions'].map<EntityRuleCondition>((condition) {
+      conditions: map['conditions'].map<EntityRuleCondition>((condition) {
         return EntityRuleConditionModel.fromMap(condition);
       }).toList(),
     );
   }
 
-  Map<String, dynamic> toJson() {
+  factory EntityRuleGroupConditionModel.fromJson(String json) {
+    return EntityRuleGroupConditionModel.fromMap(jsonDecode(json));
+  }
+
+  Map<String, dynamic> toMap() {
     EntityRuleGroupConditionModel? model;
     if (entityRuleGroupCondition != null) {
       model = EntityRuleGroupConditionModel.fromEntity(
@@ -50,10 +56,14 @@ class EntityRuleGroupConditionModel extends EntityRuleGroupCondition {
       'id': id,
       'logicOperator': logicOperator,
       'entityRuleId': entityRuleId,
-      'entityRuleGroupCondition': model?.toJson(),
+      'entityRuleGroupCondition': model?.toMap(),
       'conditions': conditions.map((condition) {
-        return EntityRuleConditionModel.fromEntity(condition).toJson();
+        return EntityRuleConditionModel.fromEntity(condition).toMap();
       }).toList(),
     };
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }
