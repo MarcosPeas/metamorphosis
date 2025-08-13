@@ -118,9 +118,9 @@ class ValueObjectRuleConditionRepositoryImpl
   }
 
   @override
-  Future<void> delete(String id) async {
+  Future<void> delete(ValueObjectRuleCondition rc) async {
     try {
-      _firestore.collection(collection).doc(id).delete();
+      _firestore.collection(collection).doc(rc.id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
         message: e.code,

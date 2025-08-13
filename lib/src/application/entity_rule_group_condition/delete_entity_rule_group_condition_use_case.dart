@@ -19,7 +19,7 @@ class DeleteEntityRuleGroupConditionUseCase {
   ) async {
     try {
       await _entityRuleGroupConditionRepository.delete(
-        entityRuleGroupCondition.id,
+        entityRuleGroupCondition,
       );
       return const Right(unit);
     } on DomainException catch (e) {

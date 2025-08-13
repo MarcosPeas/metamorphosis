@@ -3,8 +3,9 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/presenter/_core/extensions/navigator_extension.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
-import 'package:metamorphis/src/presenter/home/references/references_page.dart';
+import 'package:metamorphis/src/presenter/home/global_enumerators/global_enumerators_page.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
+import 'package:metamorphis/src/presenter/home/references/references_page.dart';
 import 'package:metamorphis/src/presenter/home/widgets/dialog_change_target_widget.dart';
 import 'package:metamorphis/src/presenter/home/widgets/selected_entity_widget.dart';
 import 'package:metamorphis/src/presenter/project/project_routers.dart';
@@ -78,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                   listenable: homeStore,
                   builder: (context, _) {
                     return Container(
-                      width: 200,
+                      width: 210,
                       height: double.infinity,
                       color: colorScheme.primaryContainer,
                       child: Column(
@@ -107,18 +108,28 @@ class _HomePageState extends State<HomePage> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              'Options',
+                              'Items',
                               style: textTheme.titleMedium?.copyWith(
                                 color: colorScheme.onSecondaryContainer,
                               ),
                             ),
                           ),
                           _MenuItem(
+                            icon: Icons.assignment,
                             title: 'Projects',
                             selected: false,
                             onTap: () => context.pushNamedAndRemoveUntil(
                               ProjectRouters.projects,
                             ),
+                          ),
+                          _MenuItem(
+                            icon: Icons.format_list_numbered,
+                            title: 'Global Enumerators',
+                            selected: false,
+                            onTap: () {
+                              controller.pageController.jumpToPage(4);
+                              homeStore.page = 4;
+                            },
                           ),
                           const Spacer(),
                           Padding(
@@ -151,6 +162,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         EntityRulesPage(key: ValueKey(entity.id)),
                         UseCasesPage(key: ValueKey(entity.id)),
+                        GlobalEnumeratorsPage(),
                       ],
                     ),
                   ),
@@ -497,11 +509,13 @@ class _MenuItem extends StatelessWidget {
   final bool selected;
   final void Function()? onTap;
   final String title;
+  final IconData? icon;
 
   const _MenuItem({
     required this.selected,
     required this.onTap,
     required this.title,
+    this.icon,
   });
 
   @override
@@ -512,7 +526,10 @@ class _MenuItem extends StatelessWidget {
     final onPrimary = colorScheme.onPrimary;
     final primaryContainer = colorScheme.primaryContainer;
     final onPrimaryContainer = colorScheme.onPrimaryContainer;
-    return ElevatedButton(
+    return ElevatedButton.icon(
+      icon: icon != null
+          ? Icon(icon, color: selected ? onPrimary : onPrimaryContainer)
+          : null,
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
         backgroundColor: selected ? primary : primaryContainer,
@@ -524,7 +541,7 @@ class _MenuItem extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       ),
-      child: Text(title),
+      label: Text(title),
     );
   }
 }

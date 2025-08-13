@@ -105,7 +105,7 @@ class _ReferencesPageState extends State<ReferencesPage> {
                                 color: colorScheme.error,
                               ),
                               onPressed: () {
-                                controller.removeComposition(reference);
+                                controller.removeReference(reference);
                               },
                             ),
                           ],
@@ -278,7 +278,7 @@ class _ReferencesPageState extends State<ReferencesPage> {
                   if (text.isEmpty) {
                     return;
                   }
-                  controller.updateComposition(
+                  controller.updateReference(
                     entity: selectedEntity.value,
                     name: nameController.text.trim(),
                     reference: reference,
@@ -359,7 +359,7 @@ class _ReferencesPageState extends State<ReferencesPage> {
             ),
             TextButton(
               onPressed: () {
-                controller.updateComposition(
+                controller.updateReference(
                   entity: selectedEntity.value,
                   name: nameController.text.trim(),
                   reference: reference,

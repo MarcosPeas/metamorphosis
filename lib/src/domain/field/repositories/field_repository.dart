@@ -3,7 +3,7 @@ import 'package:metamorphis/src/domain/field/entities/field.dart';
 
 class FieldRepository implements Repository<Field> {
   @override
-  Future<void> delete(String id) {
+  Future<void> delete(Field field) {
     // TODO: implement delete
     throw UnimplementedError();
   }

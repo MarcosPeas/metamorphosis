@@ -14,7 +14,7 @@ class DeleteUseCase {
 
   Future<Either<DomainException, Unit>> execute(UseCase useCase) async {
     try {
-      await _useCaseRepository.delete(useCase.id);
+      await _useCaseRepository.delete(useCase);
       return const Right(unit);
     } on DomainException catch (e) {
       return Left(e);

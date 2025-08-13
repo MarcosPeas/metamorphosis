@@ -137,7 +137,7 @@ class UserRepositoryFirebaseImpl implements UserRepository {
   }
 
   @override
-  Future<void> delete(String id) {
+  Future<void> delete(User user) {
     // TODO: implement delete
     throw UnimplementedError();
   }

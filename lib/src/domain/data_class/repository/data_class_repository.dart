@@ -3,7 +3,7 @@ import 'package:metamorphis/src/domain/data_class/entities/data_class.dart';
 
 class DataClassRepository implements Repository<DataClass> {
   @override
-  Future<void> delete(String id) {
+  Future<void> delete(DataClass dataClass) {
     // TODO: implement delete
     throw UnimplementedError();
   }

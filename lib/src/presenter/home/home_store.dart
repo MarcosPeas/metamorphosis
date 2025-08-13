@@ -1,3 +1,4 @@
+import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/presenter/_core/store.dart';
 

@@ -16,7 +16,7 @@ class DeleteValueObjectUseCase {
     ValueObject valueObject,
   ) async {
     try {
-      await _valueObjectRepository.delete(valueObject.id);
+      await _valueObjectRepository.delete(valueObject);
       return const Right(unit);
     } on DomainException catch (e) {
       return Left(e);

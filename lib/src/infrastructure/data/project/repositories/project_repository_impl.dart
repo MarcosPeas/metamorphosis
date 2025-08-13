@@ -99,9 +99,9 @@ class ProjectRepositoryImpl implements ProjectRepository {
   }
 
   @override
-  Future<void> delete(String id) async {
+  Future<void> delete(Project project) async {
     try {
-      _firestore.collection(collection).doc(id).delete();
+      _firestore.collection(collection).doc(project.id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
         message: e.code,

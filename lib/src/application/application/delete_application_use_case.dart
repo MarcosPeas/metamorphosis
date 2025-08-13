@@ -14,7 +14,7 @@ class DeleteApplicationUseCase {
 
   Future<Either<DomainException, Unit>> execute(Application application) async {
     try {
-      await _applicationRepository.delete(application.id);
+      await _applicationRepository.delete(application);
       return const Right(unit);
     } on DomainException catch (e) {
       return Left(e);

@@ -9,7 +9,7 @@ abstract class Repository<T> {
 
   Future<Page<T>> paginate(Filter filter);
 
-  Future<void> delete(String id);
+  Future<void> delete(T entity);
 }
 
 class Page<T> {

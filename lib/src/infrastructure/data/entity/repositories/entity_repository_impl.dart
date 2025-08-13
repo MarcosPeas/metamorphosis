@@ -5,15 +5,20 @@ import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/entity/repositories/entity_repository.dart';
 import 'package:metamorphis/src/infrastructure/data/entity/models/entity_model.dart';
+import 'package:metamorphis/src/infrastructure/data/global_enumerator/model/global_enumerator_model.dart';
 
 class EntityRepositoryImpl implements EntityRepository {
   final _firestore = FirebaseFirestore.instance;
-  final collection = 'entities';
+  final _entityCollection = 'entities';
+  final _enumeratorCollection = 'global_enumerators';
 
   @override
   Future<Entity> getById(String id) async {
     try {
-      final result = await _firestore.collection(collection).doc(id).get();
+      final result = await _firestore
+          .collection(_entityCollection)
+          .doc(id)
+          .get();
       final data = result.data() ?? {};
       return EntityModel.fromMap(data);
     } on auth.FirebaseAuthException catch (e, s) {
@@ -35,7 +40,7 @@ class EntityRepositoryImpl implements EntityRepository {
   Future<List<Entity>> filter(PaginateParams params) async {
     try {
       final result = await _firestore
-          .collection(collection)
+          .collection(_entityCollection)
           .where(params.filterBy ?? '', isEqualTo: params.filterValue)
           .get();
       final models = result.docs.map((e) {
@@ -46,13 +51,13 @@ class EntityRepositoryImpl implements EntityRepository {
       throw DomainException.of(
         message: e.code,
         trace: s.toString(),
-        context: 'EntityRepositoryImpl.paginate',
+        context: 'EntityRepositoryImpl.filter',
       );
     } catch (e, s) {
       throw DomainException.of(
         message: 'Não foi possível encontrar as entidades',
         trace: s.toString(),
-        context: 'EntityRepositoryImpl.paginate',
+        context: 'EntityRepositoryImpl.filter',
       );
     }
   }
@@ -60,7 +65,7 @@ class EntityRepositoryImpl implements EntityRepository {
   @override
   Future<Entity> save(Entity entity) async {
     try {
-      final doc = _firestore.collection(collection).doc(entity.id);
+      final doc = _firestore.collection(_entityCollection).doc(entity.id);
       final applicationModel = EntityModel.fromEntity(entity);
       await doc.set(applicationModel.toMap());
       return applicationModel;
@@ -82,9 +87,18 @@ class EntityRepositoryImpl implements EntityRepository {
   @override
   Future<Entity> update(Entity entity) async {
     try {
-      final doc = _firestore.collection(collection).doc(entity.id);
+      final batch = _firestore.batch();
+      final entityDoc = _firestore.collection(_entityCollection).doc(entity.id);
+      for (final enumerator in entity.globalEnumerators) {
+        final enumeratorDoc = _firestore
+            .collection(_enumeratorCollection)
+            .doc(enumerator.id);
+        final enumeratorModel = GlobalEnumeratorModel.fromEntity(enumerator);
+        batch.set(enumeratorDoc, enumeratorModel.toMap());
+      }
       final entityModel = EntityModel.fromEntity(entity);
-      await doc.set(entityModel.toMap());
+      batch.set(entityDoc, entityModel.toMap());
+      await batch.commit();
       return entityModel;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
@@ -102,9 +116,9 @@ class EntityRepositoryImpl implements EntityRepository {
   }
 
   @override
-  Future<void> delete(String id) async {
+  Future<void> delete(Entity entity) async {
     try {
-      _firestore.collection(collection).doc(id).delete();
+      _firestore.collection(_entityCollection).doc(entity.id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
         message: e.code,

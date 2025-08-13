@@ -16,7 +16,7 @@ class DeleteValueObjectRuleUseCase {
     ValueObjectRule valueObjectRule,
   ) async {
     try {
-      await _valueObjectRuleRepository.delete(valueObjectRule.id);
+      await _valueObjectRuleRepository.delete(valueObjectRule);
       return const Right(unit);
     } on DomainException catch (e) {
       return Left(e);

@@ -3,15 +3,22 @@ import 'package:metamorphis/src/application/entity/delete_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/get_entities_by_application_use_case.dart';
 import 'package:metamorphis/src/application/entity/save_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
+import 'package:metamorphis/src/application/global_enumerator/create_global_enumerator_use_case.dart';
+import 'package:metamorphis/src/application/global_enumerator/delete_global_enumerator_use_case.dart';
+import 'package:metamorphis/src/application/global_enumerator/get_global_enumerators_by_application_use_case.dart';
+import 'package:metamorphis/src/application/global_enumerator/update_global_enumerator_use_case.dart';
 import 'package:metamorphis/src/application/value_object/delete_value_object_use_case.dart';
 import 'package:metamorphis/src/application/value_object/get_value_objects_by_entity_use_case.dart';
 import 'package:metamorphis/src/application/value_object/save_value_object_use_case.dart';
 import 'package:metamorphis/src/application/value_object/update_value_object_use_case.dart';
 import 'package:metamorphis/src/domain/entity/repositories/entity_repository.dart';
+import 'package:metamorphis/src/domain/global_enumerator/repositories/global_enumerator_repository.dart';
 import 'package:metamorphis/src/domain/value_object/repositories/value_object_repository.dart';
 import 'package:metamorphis/src/infrastructure/data/entity/repositories/entity_repository_impl.dart';
+import 'package:metamorphis/src/infrastructure/data/global_enumerator/repositories/global_enumerator_repository_impl.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object/repositories/value_object_repository_impl.dart';
 import 'package:metamorphis/src/presenter/home/entity_rules/entity_rules_controller.dart';
+import 'package:metamorphis/src/presenter/home/global_enumerators/global_enumerators_controller.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/home_store.dart';
 import 'package:metamorphis/src/presenter/home/references/references_controller.dart';
@@ -40,6 +47,9 @@ class HomeInjector {
     getIt.registerFactory<ValueObjectRepository>(
       () => ValueObjectRepositoryImpl(),
     );
+    getIt.registerFactory<GlobalEnumeratorRepository>(
+      () => GlobalEnumeratorRepositoryImpl(),
+    );
   }
 
   static void _injectUseCases() {
@@ -67,6 +77,18 @@ class HomeInjector {
     );
     getIt.registerFactory<DeleteValueObjectUseCase>(
       () => DeleteValueObjectUseCase(valueObjectRepository: getIt()),
+    );
+    getIt.registerFactory<CreateGlobalEnumeratorUseCase>(
+      () => CreateGlobalEnumeratorUseCase(repository: getIt()),
+    );
+    getIt.registerFactory<UpdateGlobalEnumeratorUseCase>(
+      () => UpdateGlobalEnumeratorUseCase(repository: getIt()),
+    );
+    getIt.registerFactory<DeleteGlobalEnumeratorUseCase>(
+      () => DeleteGlobalEnumeratorUseCase(repository: getIt()),
+    );
+    getIt.registerFactory<GetGlobalEnumeratorsByApplicationUseCase>(
+      () => GetGlobalEnumeratorsByApplicationUseCase(repository: getIt()),
     );
   }
 
@@ -104,6 +126,15 @@ class HomeInjector {
       () => ReferencesController(
         entityStore: getIt(),
         updateEntityUseCase: getIt(),
+      ),
+    );
+    getIt.registerFactory<GlobalEnumeratorsController>(
+      () => GlobalEnumeratorsController(
+        appStore: getIt.get(),
+        createGlobalEnumeratorUseCase: getIt(),
+        deleteGlobalEnumeratorUseCase: getIt(),
+        updateGlobalEnumeratorUseCase: getIt(),
+        getGlobalEnumeratorsByApplicationUseCase: getIt(),
       ),
     );
   }

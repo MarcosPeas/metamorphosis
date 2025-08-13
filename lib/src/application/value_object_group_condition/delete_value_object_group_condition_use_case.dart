@@ -19,7 +19,7 @@ class DeleteValueObjectGroupConditionUseCase {
   ) async {
     try {
       await _valueObjectGroupConditionRepository.delete(
-        valueObjectGroupCondition.id,
+        valueObjectGroupCondition,
       );
       return const Right(unit);
     } on DomainException catch (e) {

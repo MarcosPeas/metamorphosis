@@ -99,9 +99,9 @@ class UseCaseRepositoryImpl implements UseCaseRepository {
   }
 
   @override
-  Future<void> delete(String id) async {
+  Future<void> delete(UseCase useCase) async {
     try {
-      _firestore.collection(collection).doc(id).delete();
+      _firestore.collection(collection).doc(useCase.id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
         message: e.code,

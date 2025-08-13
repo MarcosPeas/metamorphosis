@@ -14,7 +14,7 @@ class DeleteEntityRuleUseCase {
 
   Future<Either<DomainException, Unit>> execute(EntityRule entityRule) async {
     try {
-      await _entityRuleRepository.delete(entityRule.id);
+      await _entityRuleRepository.delete(entityRule);
       return const Right(unit);
     } on DomainException catch (e) {
       return Left(e);

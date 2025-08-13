@@ -116,9 +116,9 @@ class EntityRuleGroupConditionRepositoryImpl
   }
 
   @override
-  Future<void> delete(String id) async {
+  Future<void> delete(EntityRuleGroupCondition erg) async {
     try {
-      _firestore.collection(collection).doc(id).delete();
+      _firestore.collection(collection).doc(erg.id).delete();
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
         message: e.code,

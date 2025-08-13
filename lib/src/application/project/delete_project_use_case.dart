@@ -12,7 +12,7 @@ class DeleteProjectUseCase {
 
   Future<Either<DomainException, Unit>> execute(Project project) async {
     try {
-      await _projectRepository.delete(project.id);
+      await _projectRepository.delete(project);
       return const Right(unit);
     } on DomainException catch (e) {
       return Left(e);

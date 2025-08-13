@@ -46,12 +46,12 @@ class ApplicationModel extends Application {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': super.id,
-      'name': super.name,
-      'description': super.description,
-      'isMicroservice': super.isMicroservice,
-      'projectId': super.projectId,
-      'createdAt': super.createdAt.toIso8601String(),
+      'id': id,
+      'name': name,
+      'description': description,
+      'isMicroservice': isMicroservice,
+      'projectId': projectId,
+      'createdAt': createdAt.toIso8601String(),
       'apiOptions': ApiOptionsModel.fromEntity(apiOptions).toMap(),
     };
   }

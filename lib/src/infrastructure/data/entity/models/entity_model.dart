@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
+import 'package:metamorphis/src/domain/global_enumerator/entities/global_enumerator.dart';
 import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 import 'package:metamorphis/src/domain/use_case/entities/use_case.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/infrastructure/data/entity_rule/models/entity_rule_model.dart';
+import 'package:metamorphis/src/infrastructure/data/global_enumerator/model/global_enumerator_model.dart';
 import 'package:metamorphis/src/infrastructure/data/reference/models/reference_model.dart';
 import 'package:metamorphis/src/infrastructure/data/use_case/models/use_case_model.dart';
 import 'package:metamorphis/src/infrastructure/data/value_object/models/value_object_model.dart';
@@ -19,6 +21,7 @@ class EntityModel extends Entity {
     required super.useCases,
     required super.entityRules,
     required super.references,
+    required super.globalEnumerators,
   });
 
   factory EntityModel.fromEntity(Entity entity) {
@@ -30,32 +33,33 @@ class EntityModel extends Entity {
       useCases: entity.useCases,
       entityRules: entity.entityRules,
       references: entity.references,
+      globalEnumerators: entity.globalEnumerators,
     );
   }
 
-  factory EntityModel.fromMap(Map<String, dynamic> map) {
+  factory EntityModel.fromShortMap(Map<String, dynamic> map) {
     final valueObjects = <ValueObject>[];
     final useCases = <UseCase>[];
     final entityRules = <EntityRule>[];
     final references = <Reference>[];
     if (map['valueObjects'] != null) {
-      map['valueObjects'].forEach((valueObject) {
-        valueObjects.add(ValueObjectModel.fromMap(valueObject));
+      map['valueObjects'].forEach((map) {
+        valueObjects.add(ValueObjectModel.fromMap(map));
       });
     }
     if (map['useCases'] != null) {
-      map['useCases'].forEach((useCase) {
-        useCases.add(UseCaseModel.fromMap(useCase));
+      map['useCases'].forEach((map) {
+        useCases.add(UseCaseModel.fromMap(map));
       });
     }
     if (map['entityRules'] != null) {
-      map['entityRules'].forEach((entityRule) {
-        entityRules.add(EntityRuleModel.fromMap(entityRule));
+      map['entityRules'].forEach((map) {
+        entityRules.add(EntityRuleModel.fromMap(map));
       });
     }
     if (map['references'] != null) {
-      map['references'].forEach((reference) {
-        references.add(ReferenceModel.fromMap(reference));
+      map['references'].forEach((map) {
+        references.add(ReferenceModel.fromMap(map));
       });
     }
     return EntityModel(
@@ -66,6 +70,50 @@ class EntityModel extends Entity {
       useCases: useCases,
       entityRules: entityRules,
       references: references,
+      globalEnumerators: [],
+    );
+  }
+
+  factory EntityModel.fromMap(Map<String, dynamic> map) {
+    final valueObjects = <ValueObject>[];
+    final useCases = <UseCase>[];
+    final entityRules = <EntityRule>[];
+    final references = <Reference>[];
+    final globalEnumerators = <GlobalEnumerator>[];
+    if (map['valueObjects'] != null) {
+      map['valueObjects'].forEach((map) {
+        valueObjects.add(ValueObjectModel.fromMap(map));
+      });
+    }
+    if (map['useCases'] != null) {
+      map['useCases'].forEach((map) {
+        useCases.add(UseCaseModel.fromMap(map));
+      });
+    }
+    if (map['entityRules'] != null) {
+      map['entityRules'].forEach((map) {
+        entityRules.add(EntityRuleModel.fromMap(map));
+      });
+    }
+    if (map['references'] != null) {
+      map['references'].forEach((map) {
+        references.add(ReferenceModel.fromMap(map));
+      });
+    }
+    if (map['globalEnumerators'] != null) {
+      map['globalEnumerators'].forEach((map) {
+        globalEnumerators.add(GlobalEnumeratorModel.fromShortMap(map));
+      });
+    }
+    return EntityModel(
+      id: map['id'],
+      name: map['name'],
+      applicationId: map['applicationId'],
+      valueObjects: valueObjects,
+      useCases: useCases,
+      entityRules: entityRules,
+      references: references,
+      globalEnumerators: globalEnumerators,
     );
   }
 
@@ -101,3 +149,53 @@ class EntityModel extends Entity {
     return jsonEncode(toMap());
   }
 }
+
+/*class EntityGlobalEnumeratorModel extends EntityGlobalEnumerator {
+  EntityGlobalEnumeratorModel({
+    required super.id,
+    required super.entityId,
+    required super.globalEnumeratorId,
+    required super.name,
+    required super.enumerator,
+  });
+
+  factory EntityGlobalEnumeratorModel.fromEntity(
+    EntityGlobalEnumerator entityGlobalEnumerator,
+  ) {
+    return EntityGlobalEnumeratorModel(
+      id: entityGlobalEnumerator.id,
+      entityId: entityGlobalEnumerator.entityId,
+      globalEnumeratorId: entityGlobalEnumerator.globalEnumeratorId,
+      name: entityGlobalEnumerator.name,
+      enumerator: entityGlobalEnumerator.enumerator,
+    );
+  }
+
+  factory EntityGlobalEnumeratorModel.fromMap(Map<String, dynamic> map) {
+    return EntityGlobalEnumeratorModel(
+      id: map['id'],
+      entityId: map['entityId'],
+      globalEnumeratorId: map['globalEnumeratorId'],
+      name: map['name'],
+      enumerator: GlobalEnumeratorModel.fromMap(map['enumerator']),
+    );
+  }
+
+  factory EntityGlobalEnumeratorModel.fromJson(String json) {
+    return EntityGlobalEnumeratorModel.fromMap(jsonDecode(json));
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'entityId': entityId,
+      'globalEnumeratorId': globalEnumeratorId,
+      'name': name,
+      'enumerator': GlobalEnumeratorModel.fromEntity(enumerator).toMap(),
+    };
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
+  }
+}*/

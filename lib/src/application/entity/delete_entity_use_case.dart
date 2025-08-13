@@ -16,7 +16,7 @@ class DeleteEntityUseCase {
     Entity entity,
   ) async {
     try {
-      await _entityRepository.delete(entity.id);
+      await _entityRepository.delete(entity);
       return const Right(unit);
     } on DomainException catch (e) {
       return Left(e);

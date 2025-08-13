@@ -19,7 +19,7 @@ class DeleteValueObjectRuleConditionUseCase {
   ) async {
     try {
       await _valueObjectRuleConditionRepository.delete(
-        valueObjectRuleCondition.id,
+        valueObjectRuleCondition,
       );
       return const Right(unit);
     } on DomainException catch (e) {
