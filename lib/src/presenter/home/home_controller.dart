@@ -156,8 +156,9 @@ class HomeController {
     final archive = CodeGenerators.generateCode(
       application: application,
       target: target,
+      enumerators: homeStore.enumerators,
     );
-    final zipData = ZipEncoder().encode(archive)!;
+    final zipData = ZipEncoder().encode(archive);
     final blob = html.Blob([zipData], 'application/zip');
     final url = html.Url.createObjectUrlFromBlob(blob);
     final anchor = html.AnchorElement(href: url);

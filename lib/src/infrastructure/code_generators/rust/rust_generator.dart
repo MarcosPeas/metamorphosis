@@ -1,5 +1,6 @@
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:archive/archive.dart';
+import 'package:metamorphis/src/domain/global_enumerator/entities/global_enumerator.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/rust/domain/rust_domain_generator.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/rust/settings_files/builds_generator.dart';
 
@@ -11,12 +12,13 @@ class RustGenerator {
 
   static Archive generate({
     required Application application,
+    required List<GlobalEnumerator> enumerators,
   }) {
     final archive = Archive();
     final main = MainGenerator.generate(application);
     final toml = TomlGenerator.generate(application);
     final builds = BuildsGenerator.generate(application);
-    final domain = RustDomainGenerator.generate(application);
+    final domain = RustDomainGenerator.generate(application, enumerators);
     archive.addFile(main);
     archive.addFile(toml);
     builds.forEach(archive.addFile);

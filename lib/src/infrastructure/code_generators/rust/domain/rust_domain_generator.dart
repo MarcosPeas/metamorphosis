@@ -2,7 +2,9 @@ import 'package:archive/archive.dart';
 import 'package:change_case/change_case.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
+import 'package:metamorphis/src/domain/global_enumerator/entities/global_enumerator.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
+import 'package:metamorphis/src/infrastructure/code_generators/rust/domain/enumerators/rust_enumerators_generator.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/rust/utils/rust_type_extension.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/rust/utils/rust_utils.dart';
 
@@ -10,7 +12,10 @@ import 'rust_domain_utils_generator.dart';
 import 'value_objects/rust_value_object_generator.dart';
 
 class RustDomainGenerator {
-  static List<ArchiveFile> generate(Application application) {
+  static List<ArchiveFile> generate(
+    Application application,
+    List<GlobalEnumerator> enumerators,
+  ) {
     final archiveFiles = <ArchiveFile>[];
     final entities = application.entities;
     final List<String> entitiesNames = [];
@@ -20,12 +25,16 @@ class RustDomainGenerator {
       final valueObjectsFiles = RustValueObjectGenerator.generate(entity);
       archiveFiles.addAll(valueObjectsFiles);
     }
-    archiveFiles.addAll(RustDomainUtilsGenerator.generate());
+
+    archiveFiles.addAll(RustDomainUtilsGenerator.generate(enumerators));
     final domainMod = RustUtils.genMod(
       path: 'src/domain',
       imports: ['_core', ...entitiesNames],
     );
     archiveFiles.add(domainMod);
+
+    final enumeratorsFiles = RustEnumeratorsGenerator.generate(enumerators);
+    archiveFiles.addAll(enumeratorsFiles);
     return archiveFiles;
   }
 
@@ -64,9 +73,13 @@ class RustDomainGenerator {
     if (vo.isEnum) {
       fieldType = namePascal;
     }
-    return 'pub {name}: {type},'
-        .replaceAll('{name}', name)
-        .replaceAll('{type}', fieldType);
+    return 'pub $name: $fieldType,';
+  }
+
+  static String _parseGlobalEnumerator(EntityGlobalEnumerator enumerator) {
+    final name = enumerator.name.toSnakeCase();
+    final type = enumerator.enumerator?.name.toPascalCase();
+    return 'pub $name: $type,';
   }
 
   static String _buildParams(Entity entity) {
@@ -76,7 +89,10 @@ class RustDomainGenerator {
       }
       return '${vo.name.toSnakeCase()}: ${vo.toRustType()}';
     });
-    return params.join(', ');
+    final paramsEnum = entity.globalEnumerators.map((vo) {
+      return '${vo.name.toSnakeCase()}: ${vo.enumerator?.name.toPascalCase()}';
+    });
+    return [...params, ...paramsEnum].join(', ');
   }
 
   static String _buildAssignments(Entity entity) {
@@ -91,6 +107,12 @@ class RustDomainGenerator {
         voParam = '';
       }
       final ass = '$s$key: $value$voParam,';
+      assignments += ass;
+    }
+    for (final ge in entity.globalEnumerators) {
+      final s = '\n            ';
+      final type = ge.name.toSnakeCase();
+      final ass = '$s$type: $type,';
       assignments += ass;
     }
     return assignments;
@@ -124,6 +146,11 @@ class RustDomainGenerator {
       imports +=
           'use crate::domain::$entitySnack::value_objects::$voSnake::$voPascal;\n';
     }
+    for(final enumerator in entity.globalEnumerators) {
+      final enumNameSnack = enumerator.enumerator!.name.toSnakeCase();
+      final enumName = enumerator.enumerator!.name.toPascalCase();
+      imports += 'use crate::domain::_core::enumerators::$enumNameSnack::$enumName;\n';
+    }
     return imports;
   }
 
@@ -131,7 +158,10 @@ class RustDomainGenerator {
     final fields = entity.valueObjects.map(
       (item) => _parseValueObject(item, entity),
     );
-    return fields.join('\n    ');
+    final fieldsEnum = entity.globalEnumerators.map(
+      (item) => _parseGlobalEnumerator(item),
+    );
+    return [...fields, ...fieldsEnum].join('\n    ');
   }
 
   static String _buildEnum(Entity entity) {

@@ -282,7 +282,7 @@ class _EntityGlobalEnumeratorWidget extends StatelessWidget {
         Row(
           children: [
             Text(
-              enumerator.name,
+              '${enumerator.name} (${enumerator.enumerator?.name})',
               style: textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurface,
                 fontWeight: FontWeight.bold,

@@ -51,8 +51,8 @@ class GlobalEnumeratorsController {
         log(error.message);
         log(error.trace);
       },
-      (enumCreated) {
-        homeStore.updateEnumerator(enumCreated);
+      (updatedEnumerator) {
+        homeStore.updateEnumerator(updatedEnumerator);
       },
     );
   }
