@@ -50,6 +50,10 @@ class ValueObject {
 
   bool get isEnum => type == 'Enum';
 
+  bool get isValueObject {
+    return !isEnum && !isBoolean && name != 'createdAt' && name != 'updatedAt';
+  }
+
   void addRule(ValueObjectRule rule) {
     rules.add(rule);
   }
@@ -127,6 +131,8 @@ class ValueObject {
   bool get isDouble => type == 'double/float64';
 
   bool get isBigDecimal => type == 'BigDecimal';
+
+  bool get isBoolean => type == 'bool';
 
   bool get isNumber {
     return isByte ||

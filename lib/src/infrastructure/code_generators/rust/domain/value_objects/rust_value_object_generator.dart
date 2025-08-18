@@ -10,11 +10,9 @@ import 'package:metamorphis/src/infrastructure/code_generators/rust/utils/rust_u
 class RustValueObjectGenerator {
   static List<ArchiveFile> generate(Entity entity) {
     final files = <ArchiveFile>[];
-    final valueObjects = entity.valueObjects;
+    final valueObjects = [...entity.valueObjects];
+    valueObjects.removeWhere((vo) => !vo.isValueObject);
     for (final vo in valueObjects) {
-      if (vo.type == 'Enum') {
-        continue;
-      }
       final result = _generate(vo, entity);
       files.addAll(result);
     }
@@ -47,7 +45,7 @@ class RustValueObjectGenerator {
   static ArchiveFile _generateValueObjectsMod(String path, Entity entity) {
     final List<String> imports = [];
     for (final vo in entity.valueObjects) {
-      if (vo.isEnum) {
+      if (!vo.isValueObject) {
         continue;
       }
       final voSnake = "${entity.name.toSnakeCase()}_${vo.name.toSnakeCase()}";

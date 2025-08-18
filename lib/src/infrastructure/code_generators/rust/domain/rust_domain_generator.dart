@@ -73,6 +73,12 @@ class RustDomainGenerator {
     if (vo.isEnum) {
       fieldType = namePascal;
     }
+    if (vo.name == 'createdAt' || vo.name == 'updatedAt') {
+      fieldType = 'DateTime<Utc>';
+    }
+    if (vo.isBoolean) {
+      fieldType = 'bool';
+    }
     return 'pub $name: $fieldType,';
   }
 
@@ -86,6 +92,9 @@ class RustDomainGenerator {
     final params = entity.valueObjects.map((vo) {
       if (vo.isEnum) {
         return '${vo.name.toSnakeCase()}: ${vo.name.toPascalCase()}';
+      }
+      if (vo.name == 'createdAt' || vo.name == 'updatedAt') {
+        return '${vo.name.toSnakeCase()}: Option<DateTime<Utc>>';
       }
       return '${vo.name.toSnakeCase()}: ${vo.toRustType()}';
     });
@@ -104,6 +113,18 @@ class RustDomainGenerator {
       String voParam = '::new($key, &mut errors)';
       if (vo.isEnum) {
         value = vo.name.toSnakeCase();
+        voParam = '';
+      }
+      if (vo.isBoolean) {
+        value = vo.name.toSnakeCase();
+        voParam = '';
+      }
+      if (vo.name == 'createdAt') {
+        value = 'created_at.unwrap_or_else(|| Utc::now())';
+        voParam = '';
+      }
+      if (vo.name == 'updatedAt') {
+        value = 'updated_at.unwrap_or_else(|| Utc::now())';
         voParam = '';
       }
       final ass = '$s$key: $value$voParam,';
@@ -137,7 +158,7 @@ class RustDomainGenerator {
         'use crate::domain::_core::id_generator::id_generator::IdGenerator;\n';
     imports += 'use crate::domain::_core::errors::domain_error::DomainError;\n';
     for (final vo in entity.valueObjects) {
-      if (vo.isEnum) {
+      if (!vo.isValueObject) {
         continue;
       }
       final voSnake = '${entity.name.toSnakeCase()}_${vo.name.toSnakeCase()}';
