@@ -23,6 +23,7 @@ import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/home_store.dart';
 import 'package:metamorphis/src/presenter/home/references/references_controller.dart';
 import 'package:metamorphis/src/presenter/home/use_cases/use_cases_controller.dart';
+import 'package:metamorphis/src/presenter/home/used_enumerators/used_enumerators_controller.dart';
 import 'package:metamorphis/src/presenter/home/value_objects/value_objects_controller.dart';
 
 import 'entity_store.dart';
@@ -102,6 +103,7 @@ class HomeInjector {
         saveEntityUseCase: getIt(),
         updateEntityUseCase: getIt(),
         getEntitiesByApplicationUseCase: getIt(),
+        getGlobalEnumeratorsByApplicationUseCase: getIt(),
       ),
     );
     getIt.registerFactory<ValueObjectsController>(
@@ -135,6 +137,14 @@ class HomeInjector {
         deleteGlobalEnumeratorUseCase: getIt(),
         updateGlobalEnumeratorUseCase: getIt(),
         getGlobalEnumeratorsByApplicationUseCase: getIt(),
+        homeStore: getIt(),
+      ),
+    );
+    getIt.registerFactory<UsedEnumeratorsController>(
+      () => UsedEnumeratorsController(
+        entityStore: getIt(),
+        updateEntityUseCase: getIt(),
+        homeStore: getIt(),
       ),
     );
   }

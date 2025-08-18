@@ -6,6 +6,7 @@ import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.da
 import 'package:metamorphis/src/presenter/home/global_enumerators/global_enumerators_page.dart';
 import 'package:metamorphis/src/presenter/home/home_controller.dart';
 import 'package:metamorphis/src/presenter/home/references/references_page.dart';
+import 'package:metamorphis/src/presenter/home/used_enumerators/used_enumerators_page.dart';
 import 'package:metamorphis/src/presenter/home/widgets/dialog_change_target_widget.dart';
 import 'package:metamorphis/src/presenter/home/widgets/selected_entity_widget.dart';
 import 'package:metamorphis/src/presenter/project/project_routers.dart';
@@ -27,9 +28,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     controller = GetIt.instance();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.init();
-    });
+    controller.init();
     super.initState();
   }
 
@@ -79,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                   listenable: homeStore,
                   builder: (context, _) {
                     return Container(
-                      width: 210,
+                      width: 206,
                       height: double.infinity,
                       color: colorScheme.primaryContainer,
                       child: Column(
@@ -127,8 +126,8 @@ class _HomePageState extends State<HomePage> {
                             title: 'Global Enumerators',
                             selected: false,
                             onTap: () {
-                              controller.pageController.jumpToPage(4);
-                              homeStore.page = 4;
+                              controller.pageController.jumpToPage(5);
+                              homeStore.page = 5;
                             },
                           ),
                           const Spacer(),
@@ -156,6 +155,7 @@ class _HomePageState extends State<HomePage> {
                           entity: entity,
                           key: ValueKey(entity.id),
                         ),
+                        UsedEnumeratorsPage(key: ValueKey(entity.id)),
                         ReferencesPage(
                           entities: homeStore.entities,
                           key: ValueKey(entity.id),
@@ -486,19 +486,24 @@ class _MenuItems extends StatelessWidget {
           onTap: () => onTap(0),
         ),
         _MenuItem(
-          title: 'References',
+          title: 'Enumerators',
           selected: index == 1,
           onTap: () => onTap(1),
         ),
         _MenuItem(
-          title: 'Entity Rules',
+          title: 'References',
           selected: index == 2,
           onTap: () => onTap(2),
         ),
         _MenuItem(
-          title: 'Use Cases',
+          title: 'Entity Rules',
           selected: index == 3,
           onTap: () => onTap(3),
+        ),
+        _MenuItem(
+          title: 'Use Cases',
+          selected: index == 4,
+          onTap: () => onTap(4),
         ),
       ],
     );

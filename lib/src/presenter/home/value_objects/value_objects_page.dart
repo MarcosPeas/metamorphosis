@@ -173,7 +173,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                         hint: Text('Ex.: RED, GREEN, DARK_BLUE'),
                       ),
                       inputFormatters: [
-                        CustomInputFormatters.onlyAZ09AndUnderscore
+                        CustomInputFormatters.onlyAZ09AndUnderscore,
                       ],
                       onChanged: (text) {
                         valueObject.value = vo.copyWith(

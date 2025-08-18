@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/entity_rule/entities/entity_rule.dart';
-import 'package:metamorphis/src/domain/global_enumerator/entities/global_enumerator.dart';
 import 'package:metamorphis/src/domain/reference/entities/reference.dart';
 import 'package:metamorphis/src/domain/use_case/entities/use_case.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
@@ -79,7 +78,7 @@ class EntityModel extends Entity {
     final useCases = <UseCase>[];
     final entityRules = <EntityRule>[];
     final references = <Reference>[];
-    final globalEnumerators = <GlobalEnumerator>[];
+    final globalEnumerators = <EntityGlobalEnumerator>[];
     if (map['valueObjects'] != null) {
       map['valueObjects'].forEach((map) {
         valueObjects.add(ValueObjectModel.fromMap(map));
@@ -101,8 +100,8 @@ class EntityModel extends Entity {
       });
     }
     if (map['globalEnumerators'] != null) {
-      map['globalEnumerators'].forEach((map) {
-        globalEnumerators.add(GlobalEnumeratorModel.fromShortMap(map));
+      map['globalEnumerators'].forEach((item) {
+        globalEnumerators.add(EntityGlobalEnumeratorModel.fromMap(item));
       });
     }
     return EntityModel(
@@ -142,6 +141,9 @@ class EntityModel extends Entity {
       'useCases': useCasesModel,
       'entityRules': entityRulesModel,
       'references': referencesModel,
+      'globalEnumerators': globalEnumerators.map((enumerator) {
+        return EntityGlobalEnumeratorModel.fromEntity(enumerator).toMap();
+      }).toList(),
     };
   }
 
@@ -150,22 +152,13 @@ class EntityModel extends Entity {
   }
 }
 
-/*class EntityGlobalEnumeratorModel extends EntityGlobalEnumerator {
-  EntityGlobalEnumeratorModel({
-    required super.id,
-    required super.entityId,
-    required super.globalEnumeratorId,
-    required super.name,
-    required super.enumerator,
-  });
+class EntityGlobalEnumeratorModel extends EntityGlobalEnumerator {
+  EntityGlobalEnumeratorModel({required super.name, required super.enumerator});
 
   factory EntityGlobalEnumeratorModel.fromEntity(
     EntityGlobalEnumerator entityGlobalEnumerator,
   ) {
     return EntityGlobalEnumeratorModel(
-      id: entityGlobalEnumerator.id,
-      entityId: entityGlobalEnumerator.entityId,
-      globalEnumeratorId: entityGlobalEnumerator.globalEnumeratorId,
       name: entityGlobalEnumerator.name,
       enumerator: entityGlobalEnumerator.enumerator,
     );
@@ -173,11 +166,8 @@ class EntityModel extends Entity {
 
   factory EntityGlobalEnumeratorModel.fromMap(Map<String, dynamic> map) {
     return EntityGlobalEnumeratorModel(
-      id: map['id'],
-      entityId: map['entityId'],
-      globalEnumeratorId: map['globalEnumeratorId'],
       name: map['name'],
-      enumerator: GlobalEnumeratorModel.fromMap(map['enumerator']),
+      enumerator: GlobalEnumeratorModel.fromShortMap(map['enumerator']),
     );
   }
 
@@ -187,15 +177,12 @@ class EntityModel extends Entity {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
-      'entityId': entityId,
-      'globalEnumeratorId': globalEnumeratorId,
       'name': name,
-      'enumerator': GlobalEnumeratorModel.fromEntity(enumerator).toMap(),
+      'enumerator': GlobalEnumeratorModel.fromEntity(enumerator!).toShortMap(),
     };
   }
 
   String toJson() {
     return jsonEncode(toMap());
   }
-}*/
+}

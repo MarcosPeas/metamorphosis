@@ -82,6 +82,17 @@ class GlobalEnumeratorModel extends GlobalEnumerator {
     };
   }
 
+  Map<String, dynamic> toShortMap() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'values': values,
+      'applicationId': applicationId,
+      'createdAt': createdAt.toIso8601String(),
+    };
+  }
+
   String toJson() {
     return jsonEncode(toMap());
   }

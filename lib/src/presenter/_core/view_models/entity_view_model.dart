@@ -9,6 +9,7 @@ class EntityViewModel extends Entity {
     required super.useCases,
     required super.entityRules,
     required super.references,
+    required super.globalEnumerators,
   });
 
   factory EntityViewModel.fromEntity(Entity entity) {
@@ -20,6 +21,7 @@ class EntityViewModel extends Entity {
       useCases: entity.useCases,
       entityRules: entity.entityRules,
       references: entity.references,
+      globalEnumerators: entity.globalEnumerators,
     );
   }
 
@@ -32,6 +34,7 @@ class EntityViewModel extends Entity {
       useCases: useCases,
       entityRules: entityRules,
       references: references,
+      globalEnumerators: globalEnumerators,
     );
   }
 }

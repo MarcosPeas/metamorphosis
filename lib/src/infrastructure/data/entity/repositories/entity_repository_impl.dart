@@ -92,8 +92,10 @@ class EntityRepositoryImpl implements EntityRepository {
       for (final enumerator in entity.globalEnumerators) {
         final enumeratorDoc = _firestore
             .collection(_enumeratorCollection)
-            .doc(enumerator.id);
-        final enumeratorModel = GlobalEnumeratorModel.fromEntity(enumerator);
+            .doc(enumerator.enumerator!.id);
+        final enumeratorModel = GlobalEnumeratorModel.fromEntity(
+          enumerator.enumerator!,
+        );
         batch.set(enumeratorDoc, enumeratorModel.toMap());
       }
       final entityModel = EntityModel.fromEntity(entity);

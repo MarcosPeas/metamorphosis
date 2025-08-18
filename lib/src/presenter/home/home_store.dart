@@ -1,9 +1,12 @@
-import 'package:metamorphis/src/domain/application/entities/application.dart';
+import 'dart:developer';
+
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
+import 'package:metamorphis/src/domain/global_enumerator/entities/global_enumerator.dart';
 import 'package:metamorphis/src/presenter/_core/store.dart';
 
 class HomeStore extends Store {
   final _entities = <Entity>[];
+  final _enumerators = <GlobalEnumerator>[];
   int _page = 0;
 
   bool _generating = false;
@@ -17,10 +20,44 @@ class HomeStore extends Store {
 
   List<Entity> get entities => List.unmodifiable(_entities);
 
-  void setEntities(List<Entity> entities) {
+  List<GlobalEnumerator> get enumerators => List.unmodifiable(_enumerators);
+
+  set entities(List<Entity> entities) {
     _entities.clear();
     _entities.addAll(entities);
     notifyListeners();
+  }
+
+  set enumerators(List<GlobalEnumerator> enumerators) {
+    _enumerators.clear();
+    _enumerators.addAll(enumerators);
+    notifyListeners();
+  }
+
+  void addEnumerator(GlobalEnumerator enumerator) {
+    _enumerators.add(enumerator);
+    notifyListeners();
+  }
+
+  void removeEnumerator(GlobalEnumerator enumerator) {
+    _enumerators.remove(enumerator);
+    notifyListeners();
+  }
+
+  void updateEnumerator(GlobalEnumerator enumerator) {
+    final index = _enumerators.indexWhere((e) => e.id == enumerator.id);
+    if (index != -1) {
+      _enumerators[index] = enumerator;
+      notifyListeners();
+    }
+  }
+
+  void deleteEnumerator(GlobalEnumerator enumerator) {
+    final index = _enumerators.indexWhere((e) => e.id == enumerator.id);
+    if (index != -1) {
+      _enumerators.removeAt(index);
+      notifyListeners();
+    }
   }
 
   set page(int page) {

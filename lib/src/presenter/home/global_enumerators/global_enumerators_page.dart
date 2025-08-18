@@ -27,7 +27,7 @@ class _GlobalEnumeratorsPageState extends State<GlobalEnumeratorsPage> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final store = controller.store;
+    final homeStore = controller.homeStore;
     final textTheme = Theme.of(context).textTheme;
     final application = controller.application;
     return Column(
@@ -51,12 +51,12 @@ class _GlobalEnumeratorsPageState extends State<GlobalEnumeratorsPage> {
         ),
         Expanded(
           child: ListenableBuilder(
-            listenable: store,
+            listenable: homeStore,
             builder: (context, _) {
-              if (store.loading) {
+              if (homeStore.loading) {
                 return const Center(child: CircularProgressIndicator());
               }
-              final enumerators = store.enumerators;
+              final enumerators = homeStore.enumerators;
               if (enumerators.isEmpty) {
                 return const Center(child: Text('No enumerators found.'));
               }

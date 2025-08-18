@@ -8,6 +8,7 @@ import 'package:metamorphis/src/application/entity/delete_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/get_entities_by_application_use_case.dart';
 import 'package:metamorphis/src/application/entity/save_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
+import 'package:metamorphis/src/application/global_enumerator/get_global_enumerators_by_application_use_case.dart';
 import 'package:metamorphis/src/domain/_core/domain/repository.dart';
 import 'package:metamorphis/src/domain/application/entities/api_type.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
@@ -26,6 +27,8 @@ class HomeController {
   final SaveEntityUseCase saveEntityUseCase;
   final UpdateEntityUseCase updateEntityUseCase;
   final DeleteEntityUseCase deleteEntityUseCase;
+  final GetGlobalEnumeratorsByApplicationUseCase
+  getGlobalEnumeratorsByApplicationUseCase;
 
   HomeController({
     required this.appStore,
@@ -34,14 +37,21 @@ class HomeController {
     required this.saveEntityUseCase,
     required this.updateEntityUseCase,
     required this.deleteEntityUseCase,
+    required this.getGlobalEnumeratorsByApplicationUseCase,
   });
 
   Future<void> init() async {
+    homeStore.loading = true;
     homeStore.clear();
     if (appStore.project == null) {
       return;
     }
-    homeStore.loading = true;
+    await loadEnumerators();
+    await loadEntities();
+    homeStore.loading = false;
+  }
+
+  Future<void> loadEntities() async {
     final result = await getEntitiesByApplicationUseCase.execute(
       PaginateParams(
         filterBy: 'applicationId',
@@ -53,13 +63,31 @@ class HomeController {
         homeStore.error = error;
       },
       (entities) {
-        homeStore.setEntities(entities);
+        homeStore.entities = entities;
         if (entities.isNotEmpty) {
           appStore.entity = EntityViewModel.fromEntity(entities.first);
         }
       },
     );
-    homeStore.loading = false;
+  }
+
+  Future<void> loadEnumerators() async {
+    final result = await getGlobalEnumeratorsByApplicationUseCase.execute(
+      PaginateParams(
+        filterBy: 'applicationId',
+        filterValue: appStore.application!.id,
+      ),
+    );
+    result.fold(
+      (error) {
+        log(error.message);
+        log(error.trace);
+        homeStore.error = error;
+      },
+      (enumerators) {
+        homeStore.enumerators = enumerators;
+      },
+    );
   }
 
   void selectEntity({required Entity? entity}) {

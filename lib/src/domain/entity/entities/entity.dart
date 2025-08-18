@@ -13,7 +13,7 @@ class Entity {
   late final List<UseCase> useCases;
   late final List<EntityRule> entityRules;
   late final List<Reference> references;
-  late final List<GlobalEnumerator> globalEnumerators;
+  late final List<EntityGlobalEnumerator> globalEnumerators;
 
   Entity({
     String? id,
@@ -23,7 +23,7 @@ class Entity {
     List<UseCase>? useCases,
     List<EntityRule>? entityRules,
     List<Reference>? references,
-    List<GlobalEnumerator>? globalEnumerators,
+    List<EntityGlobalEnumerator>? globalEnumerators,
   }) {
     this.id = id ?? const Uuid().v4();
     this.valueObjects = valueObjects ?? [];
@@ -38,31 +38,49 @@ class Entity {
   }
 
   void removeEnumerator(GlobalEnumerator enumerator) {
-    globalEnumerators.removeWhere((e) => e.id == enumerator.id);
+    globalEnumerators.removeWhere((e) => e.enumerator?.id == enumerator.id);
   }
 
   void updateEnumerator(GlobalEnumerator enumerator) {
-    final index = globalEnumerators.indexWhere((e) => e.id == enumerator.id);
-    if (index != -1) {
-      globalEnumerators[index] = enumerator;
-    } else {
-      globalEnumerators.add(enumerator);
+    for (int i = 0; i < globalEnumerators.length; i++) {
+      if (globalEnumerators[i].enumerator?.id == enumerator.id) {
+        globalEnumerators[i].enumerator = enumerator;
+      }
     }
+  }
+
+  void addEnumerator(EntityGlobalEnumerator enumerator) {
+    if (globalEnumerators.any((e) => e.name == enumerator.name)) {
+      throw Exception('Enumerator with name ${enumerator.name} already exists.');
+    }
+    globalEnumerators.add(enumerator);
   }
 }
 
-/*class EntityGlobalEnumerator {
-  final String id;
-  final String entityId;
-  final String globalEnumeratorId;
+class EntityGlobalEnumerator {
   final String name;
-  final GlobalEnumerator enumerator;
+  GlobalEnumerator? enumerator;
 
-  EntityGlobalEnumerator({
-    required this.id,
-    required this.entityId,
-    required this.globalEnumeratorId,
-    required this.name,
-    required this.enumerator,
-  });
-}*/
+  EntityGlobalEnumerator({required this.name, required this.enumerator});
+
+  factory EntityGlobalEnumerator.empty() {
+    return EntityGlobalEnumerator(
+      name: '',
+      enumerator: GlobalEnumerator.empty(),
+    );
+  }
+
+  EntityGlobalEnumerator copyWith({
+    String? name,
+    GlobalEnumerator? enumerator,
+  }) {
+    return EntityGlobalEnumerator(
+      name: name ?? this.name,
+      enumerator: enumerator ?? this.enumerator,
+    );
+  }
+
+  bool get requirementsAreCompleted {
+    return name.length > 2 && enumerator?.requirementsAreCompleted == true;
+  }
+}

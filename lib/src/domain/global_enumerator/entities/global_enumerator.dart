@@ -35,6 +35,15 @@ class GlobalEnumerator {
     );
   }
 
+  factory GlobalEnumerator.empty() {
+    return GlobalEnumerator(
+      name: '',
+      description: '',
+      entities: [],
+      applicationId: '',
+    );
+  }
+
   void addValues(String values) {
     String result = values.trim();
     while (result.contains('  ')) {
