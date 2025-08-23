@@ -34,22 +34,7 @@ class ValueObjectsController {
       (e) => e.name.toLowerCase() == valueObject.name.toLowerCase(),
     );
     if (hasAnyVOWithName) {
-      FlashyFlushbar(
-        leadingWidget: const Icon(
-          Icons.error,
-          color: Colors.deepOrange,
-          size: 24,
-        ),
-        message: 'An item with that name already exists',
-        duration: const Duration(seconds: 5),
-        trailingWidget: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black, size: 24),
-          onPressed: () {
-            FlashyFlushbar.cancel();
-          },
-        ),
-        isDismissible: false,
-      ).show();
+      _showDuplicatedErrorMessage();
       return;
     }
     entity.valueObjects.add(valueObject);
@@ -58,6 +43,15 @@ class ValueObjectsController {
 
   Future<void> updateValueObject(ValueObject valueObject) async {
     final entity = entityStore.entity;
+    final vos = [...entity.valueObjects];
+    vos.removeWhere((item) => item.id == valueObject.id);
+    final hasAnyVOWithName = vos.any(
+      (e) => e.name.toLowerCase() == valueObject.name.toLowerCase(),
+    );
+    if (hasAnyVOWithName) {
+      _showDuplicatedErrorMessage();
+      return;
+    }
     final index = entity.valueObjects.indexWhere(
       (vo) => vo.id == valueObject.id,
     );
@@ -167,5 +161,24 @@ class ValueObjectsController {
     rule.errorMessage = errorMessage.trim();
     valueObject.updateRule(rule);
     updateEntity();
+  }
+
+  void _showDuplicatedErrorMessage() {
+    FlashyFlushbar(
+      leadingWidget: const Icon(
+        Icons.error,
+        color: Colors.deepOrange,
+        size: 24,
+      ),
+      message: 'An item with that name already exists',
+      duration: const Duration(seconds: 5),
+      trailingWidget: IconButton(
+        icon: const Icon(Icons.close, color: Colors.black, size: 24),
+        onPressed: () {
+          FlashyFlushbar.cancel();
+        },
+      ),
+      isDismissible: false,
+    ).show();
   }
 }
