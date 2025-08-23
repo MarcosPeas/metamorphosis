@@ -92,6 +92,9 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                         rule: rule,
                       );
                     },
+                    onEditRule: (rule) {
+                      _showDialogUpdateValueObjectRule(index, valueObject, rule);
+                    },
                     onValueObjectRuleTap: (rule) {
                       _showDialogCreateValueObjectGroupCondition(rule);
                     },
@@ -429,6 +432,62 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
     );
   }
 
+  void _showDialogUpdateValueObjectRule(
+      int viewIndex,
+      ValueObject valueObject,
+      ValueObjectRule rule,
+      ) {
+    final nameController = TextEditingController(text: rule.errorMessage);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Rule for ${valueObject.name}'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: nameController,
+                onSubmitted: (text) {
+                  if (text.isEmpty) {
+                    return;
+                  }
+                  context.pop();
+                  controller.updateValueObjectRule(
+                    errorMessage: nameController.text.trim(),
+                    viewIndex: viewIndex,
+                    rule: rule,
+                  );
+                },
+                decoration: const InputDecoration(labelText: 'Error message'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                context.pop();
+                controller.updateValueObjectRule(
+                  errorMessage: nameController.text.trim(),
+                  viewIndex: viewIndex,
+                  rule: rule,
+                );
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showDialogCreateValueObjectRule(
     int viewIndex,
     ValueObject valueObject,
@@ -489,6 +548,7 @@ class _EntityRuleWidget extends StatelessWidget {
   final VoidCallback onDeleteTap;
   final VoidCallback onAddTap;
   final void Function(ValueObjectRule rule) onDeleteRule;
+  final void Function(ValueObjectRule rule) onEditRule;
   final void Function(ValueObjectRule rule) onValueObjectRuleTap;
   final hoverIndex = ValueNotifier(-1);
   final hoverAddRule = ValueNotifier(false);
@@ -500,6 +560,7 @@ class _EntityRuleWidget extends StatelessWidget {
     required this.onDeleteTap,
     required this.onAddTap,
     required this.onDeleteRule,
+    required this.onEditRule,
     required this.onValueObjectRuleTap,
     required this.controller,
   });
@@ -594,6 +655,13 @@ class _EntityRuleWidget extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(width: 8),
+                                IconButton(
+                                  icon: const Icon(Icons.edit, size: 18),
+                                  onPressed: () {
+                                    onEditRule(rule);
+                                  },
+                                ),
+                                const SizedBox(width: 2),
                                 IconButton(
                                   icon: const Icon(Icons.delete, size: 18),
                                   onPressed: () {

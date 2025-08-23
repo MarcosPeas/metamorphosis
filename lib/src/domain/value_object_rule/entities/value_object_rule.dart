@@ -3,7 +3,7 @@ import 'package:uuid/uuid.dart';
 
 class ValueObjectRule {
   late final String id;
-  final String errorMessage;
+  String errorMessage;
   final String valueObjectId;
   late final List<ValueObjectGroupCondition> groupConditions;
 

@@ -68,16 +68,6 @@ class ValueObjectsController {
     updateEntity();
   }
 
-  Future<void> removeValueObjectRule({
-    required int viewIndex,
-    required ValueObjectRule rule,
-  }) async {
-    final entity = entityStore.entity;
-    final valueObject = entity.valueObjects[viewIndex];
-    valueObject.removeRule(rule);
-    updateEntity();
-  }
-
   Future<void> updateEntity() async {
     final result = await updateEntityUseCase.execute(entityStore.entity);
     result.fold((exception) {
@@ -130,6 +120,28 @@ class ValueObjectsController {
     required ValueObjectGroupCondition groupCondition,
   }) {
     rule.groupConditions.remove(groupCondition);
+    updateEntity();
+  }
+
+  Future<void> removeValueObjectRule({
+    required int viewIndex,
+    required ValueObjectRule rule,
+  }) async {
+    final entity = entityStore.entity;
+    final valueObject = entity.valueObjects[viewIndex];
+    valueObject.removeRule(rule);
+    updateEntity();
+  }
+
+  void updateValueObjectRule({
+    required String errorMessage,
+    required int viewIndex,
+    required ValueObjectRule rule,
+  }) {
+    final entity = entityStore.entity;
+    final valueObject = entity.valueObjects[viewIndex];
+    rule.errorMessage = errorMessage.trim();
+    valueObject.updateRule(rule);
     updateEntity();
   }
 }
