@@ -144,6 +144,16 @@ class ValueObject {
         isBigDecimal;
   }
 
+  bool get isAllInt {
+    return isByte || isShort || isInt || isLong;
+  }
+
+  bool get isAllDecimal {
+    return isFloat ||
+        isDouble ||
+        isBigDecimal;
+  }
+
   void removeEnumValue(String value) {
     final valuesList = _enumValues.split(',');
     valuesList.remove(value.toConstantCase());

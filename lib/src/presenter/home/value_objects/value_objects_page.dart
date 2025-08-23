@@ -651,36 +651,37 @@ class _EntityRuleWidget extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 8),
-                ValueListenableBuilder(
-                  valueListenable: hoverAddRule,
-                  builder: (_, __, ___) {
-                    return MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      onEnter: (_) {
-                        hoverAddRule.value = true;
-                      },
-                      onExit: (_) {
-                        hoverAddRule.value = false;
-                      },
-                      child: GestureDetector(
-                        onTap: onAddTap,
-                        child: Text(
-                          'Add rule',
-                          style: textTheme.bodySmall?.copyWith(
-                            color: colorScheme.primary,
-                            decoration: hoverAddRule.value
-                                ? TextDecoration.underline
-                                : TextDecoration.none,
+                if (!valueObject.isBoolean)
+                  ValueListenableBuilder(
+                    valueListenable: hoverAddRule,
+                    builder: (_, __, ___) {
+                      return MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        onEnter: (_) {
+                          hoverAddRule.value = true;
+                        },
+                        onExit: (_) {
+                          hoverAddRule.value = false;
+                        },
+                        child: GestureDetector(
+                          onTap: onAddTap,
+                          child: Text(
+                            'Add rule',
+                            style: textTheme.bodySmall?.copyWith(
+                              color: colorScheme.primary,
+                              decoration: hoverAddRule.value
+                                  ? TextDecoration.underline
+                                  : TextDecoration.none,
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  ),
               ],
             ),
           ),
-        const Divider(),
+        const Divider(height: 1),
       ],
     );
   }
@@ -1000,6 +1001,12 @@ class _GroupConditionWidget extends StatelessWidget {
                       ))
                         TextField(
                           controller: targetValueController,
+                          inputFormatters: [
+                            CustomInputFormatters.fromType(
+                              valueObject,
+                              selectedComparatorOperator.value,
+                            ),
+                          ],
                           decoration: const InputDecoration(
                             labelText: 'Target value',
                           ),
@@ -1102,6 +1109,12 @@ class _GroupConditionWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       TextField(
+                        inputFormatters: [
+                          CustomInputFormatters.fromType(
+                            valueObject,
+                            selectedComparatorOperator.value,
+                          ),
+                        ],
                         controller: targetValueController,
                         decoration: const InputDecoration(
                           labelText: 'Target value',
