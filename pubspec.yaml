@@ -24,6 +24,7 @@ dependencies:
   archive: ^4.0.7
   change_case: ^2.1.0
   supabase_flutter: ^2.8.0
+  flashy_flushbar: ^1.0.0
 
 dev_dependencies:
   flutter_test:

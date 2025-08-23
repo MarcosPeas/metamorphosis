@@ -51,9 +51,17 @@ class Entity {
 
   void addEnumerator(EntityGlobalEnumerator enumerator) {
     if (globalEnumerators.any((e) => e.name == enumerator.name)) {
-      throw Exception('Enumerator with name ${enumerator.name} already exists.');
+      throw Exception(
+        'Enumerator with name ${enumerator.name} already exists.',
+      );
     }
     globalEnumerators.add(enumerator);
+  }
+
+  bool containsUpdatedAt() {
+    return valueObjects.any((vo) {
+      return vo.name == 'updatedAt';
+    });
   }
 }
 

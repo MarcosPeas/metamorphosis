@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:flashy_flushbar/flashy_flushbar.dart';
+import 'package:flutter/material.dart';
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/domain/value_object_group_condition/entities/value_object_group_condition.dart';
@@ -28,6 +30,28 @@ class ValueObjectsController {
 
   Future<void> createValueObject(ValueObject valueObject) async {
     final entity = entityStore.entity;
+    final hasAnyVOWithName = entity.valueObjects.any(
+      (e) => e.name.toLowerCase() == valueObject.name.toLowerCase(),
+    );
+    if (hasAnyVOWithName) {
+      FlashyFlushbar(
+        leadingWidget: const Icon(
+          Icons.error,
+          color: Colors.deepOrange,
+          size: 24,
+        ),
+        message: 'An item with that name already exists',
+        duration: const Duration(seconds: 5),
+        trailingWidget: IconButton(
+          icon: const Icon(Icons.close, color: Colors.black, size: 24),
+          onPressed: () {
+            FlashyFlushbar.cancel();
+          },
+        ),
+        isDismissible: false,
+      ).show();
+      return;
+    }
     entity.valueObjects.add(valueObject);
     updateEntity();
   }

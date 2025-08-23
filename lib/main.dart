@@ -1,3 +1,4 @@
+import 'package:flashy_flushbar/flashy_flushbar_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       title: 'Metamorphis',
       themeMode: ThemeMode.light,
       routerConfig: Routers.router,
+      builder: FlashyFlushbarProvider.init(),
     );
   }
 }

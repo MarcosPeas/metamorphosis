@@ -46,6 +46,7 @@ class RustDomainGenerator {
     model = model.replaceAll('{fields}', _buildFields(entity));
     model = model.replaceAll('{params}', _buildParams(entity));
     model = model.replaceAll('{assignments}', _buildAssignments(entity));
+    model = model.replaceAll('{methods}', _buildMethods(entity));
     model += _buildEnum(entity);
     final entityPath = 'src/domain/$nameSnack/';
     final entitiesPath = '${entityPath}entities/';
@@ -167,10 +168,11 @@ class RustDomainGenerator {
       imports +=
           'use crate::domain::$entitySnack::value_objects::$voSnake::$voPascal;\n';
     }
-    for(final enumerator in entity.globalEnumerators) {
+    for (final enumerator in entity.globalEnumerators) {
       final enumNameSnack = enumerator.enumerator!.name.toSnakeCase();
       final enumName = enumerator.enumerator!.name.toPascalCase();
-      imports += 'use crate::domain::_core::enumerators::$enumNameSnack::$enumName;\n';
+      imports +=
+          'use crate::domain::_core::enumerators::$enumNameSnack::$enumName;\n';
     }
     return imports;
   }
@@ -198,6 +200,42 @@ class RustDomainGenerator {
     }
     return enums;
   }
+
+  static String _buildMethods(Entity entity) {
+    String methods = '';
+    final entityPascal = entity.name.toPascalCase();
+    final vos = entity.valueObjects;
+    for (final vo in vos) {
+      if (vo.name == 'createdAt') {
+        continue;
+      }
+      if (vo.name == 'updatedAt') {
+        continue;
+      }
+      final voSnack = vo.name.toSnakeCase();
+      final voPascal = vo.name.toPascalCase();
+      methods += '\n    ';
+      methods += 'pub fn change_$voSnack(&mut self, ';
+      if (vo.isEnum) {
+        methods += '$voSnack: ${vo.enumName}) {\n';
+      } else {
+        methods += '$voSnack: ${vo.toRustType()}) {\n';
+      }
+      methods += '        ';
+      if (vo.isEnum || vo.isBoolean) {
+        methods += 'self.$voSnack = $voSnack;\n';
+      } else {
+        methods += 'self.$voSnack = $entityPascal$voPascal::';
+        methods += 'new($voSnack, &mut self.errors);\n';
+      }
+      if (entity.containsUpdatedAt()) {
+        methods += '        ';
+        methods += 'self.updated_at = Utc::now();\n';
+      }
+      methods += '    }\n';
+    }
+    return methods;
+  }
 }
 
 const _structModel = '''
@@ -216,6 +254,7 @@ impl {name} {
             errors,
         }
     }
+{methods}
 }
 ''';
 
