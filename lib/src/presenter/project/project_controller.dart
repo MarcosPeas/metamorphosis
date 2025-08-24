@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flashy_flushbar/flashy_flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/application/project/delete_project_use_case.dart';
@@ -63,6 +64,14 @@ class ProjectController {
     required String name,
     required String description,
   }) async {
+    final projects = projectStore.projects;
+    final hasAnyWithName = projects.any((project) {
+      return project.name.toLowerCase() == name.toLowerCase();
+    });
+    if (hasAnyWithName) {
+      _showDuplicatedErrorMessage();
+      return;
+    }
     final project = Project(
       name: name,
       description: description,
@@ -82,6 +91,17 @@ class ProjectController {
   }
 
   Future<void> updateProject({required Project project}) async {
+    final projects = [...projectStore.projects];
+    projects.removeWhere((p) {
+      return p.id == project.id;
+    });
+    final hasAnyWithName = projects.any((p) {
+      return p.name.toLowerCase() == project.name.toLowerCase();
+    });
+    if (hasAnyWithName) {
+      _showDuplicatedErrorMessage();
+      return;
+    }
     final result = await updateProjectUseCase.execute(project);
     result.fold(
       (error) {
@@ -107,5 +127,24 @@ class ProjectController {
         projectStore.deleteProject(project);
       },
     );
+  }
+
+  void _showDuplicatedErrorMessage() {
+    FlashyFlushbar(
+      leadingWidget: const Icon(
+        Icons.error,
+        color: Colors.deepOrange,
+        size: 24,
+      ),
+      message: 'An item with that name already exists',
+      duration: const Duration(seconds: 5),
+      trailingWidget: IconButton(
+        icon: const Icon(Icons.close, color: Colors.black, size: 24),
+        onPressed: () {
+          FlashyFlushbar.cancel();
+        },
+      ),
+      isDismissible: false,
+    ).show();
   }
 }

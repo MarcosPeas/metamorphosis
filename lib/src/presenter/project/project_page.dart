@@ -29,7 +29,7 @@ class _ProjectPageState extends State<ProjectPage> {
     final store = controller.projectStore;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Projetos'),
+        title: const Text('Projects'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -65,7 +65,7 @@ class _ProjectPageState extends State<ProjectPage> {
                   onTap: () {
                     showCreateProjectDialog();
                   },
-                  text: 'Novo projeto',
+                  text: 'New project',
                 ),
               ],
             );
@@ -82,13 +82,13 @@ class _ProjectPageState extends State<ProjectPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Novo projeto'),
+          title: const Text('New project'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 decoration: const InputDecoration(
-                  labelText: 'Nome',
+                  labelText: 'Name',
                 ),
                 onChanged: (text) {
                   projectName.value = text.trim();
@@ -100,7 +100,7 @@ class _ProjectPageState extends State<ProjectPage> {
                   projectDescription = text.trim();
                 },
                 decoration: const InputDecoration(
-                  labelText: 'Descrição',
+                  labelText: 'Description',
                 ),
               ),
             ],
@@ -110,7 +110,7 @@ class _ProjectPageState extends State<ProjectPage> {
               onPressed: () {
                 context.pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
             ValueListenableBuilder(
               valueListenable: projectName,
@@ -125,7 +125,7 @@ class _ProjectPageState extends State<ProjectPage> {
                           context.pop();
                         }
                       : null,
-                  child: const Text('Salvar'),
+                  child: const Text('Save'),
                 );
               },
             ),
@@ -142,13 +142,13 @@ class _ProjectPageState extends State<ProjectPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Editar projeto'),
+          title: const Text('Edit project'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 decoration: const InputDecoration(
-                  labelText: 'Nome',
+                  labelText: 'Name',
                 ),
                 controller: TextEditingController(text: project.name),
                 onChanged: (text) {
@@ -162,7 +162,7 @@ class _ProjectPageState extends State<ProjectPage> {
                   projectDescription = text.trim();
                 },
                 decoration: const InputDecoration(
-                  labelText: 'Descrição',
+                  labelText: 'Description',
                 ),
               ),
               const SizedBox(height: 16),
@@ -172,7 +172,7 @@ class _ProjectPageState extends State<ProjectPage> {
                   showRemoveProjectDialog(project);
                 },
                 child: Text(
-                  'Remover este projeto',
+                  'Remove this project',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.error,
                   ),
@@ -185,7 +185,7 @@ class _ProjectPageState extends State<ProjectPage> {
               onPressed: () {
                 context.pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
             ValueListenableBuilder(
               valueListenable: projectName,
@@ -201,7 +201,7 @@ class _ProjectPageState extends State<ProjectPage> {
                           context.pop();
                         }
                       : null,
-                  child: const Text('Salvar'),
+                  child: const Text('Save'),
                 );
               },
             ),
@@ -218,13 +218,13 @@ class _ProjectPageState extends State<ProjectPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Remover projeto'),
+          title: const Text('Remove project'),
           content: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Tem certeza que deseja remover o seguinte projeto?'),
+              const Text('Are you sure you want to remove the following project?'),
               const SizedBox(height: 8),
               Text(
                 project.name,
@@ -239,7 +239,7 @@ class _ProjectPageState extends State<ProjectPage> {
               onPressed: () {
                 context.pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
