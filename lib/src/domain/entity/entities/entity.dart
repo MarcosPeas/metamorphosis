@@ -14,6 +14,38 @@ class Entity {
   late final List<EntityRule> entityRules;
   late final List<Reference> references;
   late final List<EntityGlobalEnumerator> globalEnumerators;
+  Entity? child;
+
+  bool isSimilar(Entity other) {
+    if (other.name != name) {
+      return false;
+    }
+    if (valueObjects.length != other.valueObjects.length) {
+      return false;
+    }
+    if (globalEnumerators.length != other.globalEnumerators.length) {
+      return false;
+    }
+    if (references.length != other.references.length) {
+      return false;
+    }
+    for(int i = 0; i < valueObjects.length; i++) {
+      if (!valueObjects[i].isSimilar(other.valueObjects[i])) {
+        return false;
+      }
+    }
+    for(int i = 0; i < globalEnumerators.length; i++) {
+      if (!globalEnumerators[i].isSimilar(other.globalEnumerators[i])) {
+        return false;
+      }
+    }
+    for(int i = 0; i < references.length; i++) {
+      if (!references[i].isSimilar(other.references[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   Entity({
     String? id,
@@ -24,6 +56,7 @@ class Entity {
     List<EntityRule>? entityRules,
     List<Reference>? references,
     List<EntityGlobalEnumerator>? globalEnumerators,
+    this.child,
   }) {
     this.id = id ?? const Uuid().v4();
     this.valueObjects = valueObjects ?? [];
@@ -31,6 +64,25 @@ class Entity {
     this.entityRules = entityRules ?? [];
     this.references = references ?? [];
     this.globalEnumerators = globalEnumerators ?? [];
+  }
+
+  Entity copyWith({
+    String? name,
+    List<ValueObject>? valueObjects,
+    List<Reference>? references,
+    List<EntityGlobalEnumerator>? globalEnumerators,
+  }) {
+    return Entity(
+      id: id,
+      name: name ?? this.name,
+      applicationId: applicationId,
+      valueObjects: valueObjects ?? this.valueObjects,
+      useCases: useCases,
+      entityRules: entityRules,
+      references: references ?? this.references,
+      globalEnumerators: globalEnumerators ?? this.globalEnumerators,
+      child: child,
+    );
   }
 
   bool containsAnyUseCaseByType(UseCaseType type) {
@@ -90,5 +142,12 @@ class EntityGlobalEnumerator {
 
   bool get requirementsAreCompleted {
     return name.length > 2 && enumerator?.requirementsAreCompleted == true;
+  }
+
+  bool isSimilar(EntityGlobalEnumerator other) {
+    if (name != other.name) {
+      return false;
+    }
+    return true;
   }
 }

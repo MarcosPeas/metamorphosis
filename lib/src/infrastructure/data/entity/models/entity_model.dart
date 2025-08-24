@@ -21,6 +21,7 @@ class EntityModel extends Entity {
     required super.entityRules,
     required super.references,
     required super.globalEnumerators,
+    required super.child,
   });
 
   factory EntityModel.fromEntity(Entity entity) {
@@ -33,6 +34,7 @@ class EntityModel extends Entity {
       entityRules: entity.entityRules,
       references: entity.references,
       globalEnumerators: entity.globalEnumerators,
+      child: entity.child,
     );
   }
 
@@ -61,6 +63,10 @@ class EntityModel extends Entity {
         references.add(ReferenceModel.fromMap(map));
       });
     }
+    Entity? child;
+    if (map['child'] != null) {
+      child = EntityModel.fromShortMap(map['child']);
+    }
     return EntityModel(
       id: map['id'],
       name: map['name'],
@@ -70,6 +76,7 @@ class EntityModel extends Entity {
       entityRules: entityRules,
       references: references,
       globalEnumerators: [],
+      child: child,
     );
   }
 
@@ -104,6 +111,10 @@ class EntityModel extends Entity {
         globalEnumerators.add(EntityGlobalEnumeratorModel.fromMap(item));
       });
     }
+    Entity? child;
+    if (map['child'] != null) {
+      child = EntityModel.fromMap(map['child']);
+    }
     return EntityModel(
       id: map['id'],
       name: map['name'],
@@ -113,6 +124,7 @@ class EntityModel extends Entity {
       entityRules: entityRules,
       references: references,
       globalEnumerators: globalEnumerators,
+      child: child,
     );
   }
 
@@ -133,6 +145,10 @@ class EntityModel extends Entity {
     final referencesModel = references.map((entityList) {
       return ReferenceModel.fromEntity(entityList).toMap();
     }).toList();
+    EntityModel? child;
+    if (this.child != null) {
+      child = EntityModel.fromEntity(this.child!);
+    }
     return {
       'id': id,
       'name': name,
@@ -144,6 +160,7 @@ class EntityModel extends Entity {
       'globalEnumerators': globalEnumerators.map((enumerator) {
         return EntityGlobalEnumeratorModel.fromEntity(enumerator).toMap();
       }).toList(),
+      'child': child?.toMap(),
     };
   }
 

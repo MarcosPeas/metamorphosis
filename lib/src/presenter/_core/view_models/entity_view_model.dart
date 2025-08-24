@@ -10,6 +10,7 @@ class EntityViewModel extends Entity {
     required super.entityRules,
     required super.references,
     required super.globalEnumerators,
+    required super.child
   });
 
   factory EntityViewModel.fromEntity(Entity entity) {
@@ -22,10 +23,11 @@ class EntityViewModel extends Entity {
       entityRules: entity.entityRules,
       references: entity.references,
       globalEnumerators: entity.globalEnumerators,
+      child:  entity.child,
     );
   }
 
-  EntityViewModel copyWith({String? id, String? name, String? applicationId}) {
+  EntityViewModel customCopyWith({String? id, String? name, String? applicationId}) {
     return EntityViewModel._(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -35,6 +37,7 @@ class EntityViewModel extends Entity {
       entityRules: entityRules,
       references: references,
       globalEnumerators: globalEnumerators,
+      child: child,
     );
   }
 }

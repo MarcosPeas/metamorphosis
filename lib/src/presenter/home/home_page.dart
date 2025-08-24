@@ -356,7 +356,7 @@ class _HomePageState extends State<HomePage> {
                 onSubmitted: (value) {
                   if (applicationName.value.length > 2) {
                     controller.updateEntity(
-                      entity: entity.copyWith(name: applicationName.value),
+                      entity: entity.customCopyWith(name: applicationName.value),
                     );
                     context.pop();
                   }
@@ -383,7 +383,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: name.length > 2
                       ? () {
                           controller.updateEntity(
-                            entity: entity.copyWith(
+                            entity: entity.customCopyWith(
                               name: applicationName.value,
                             ),
                           );

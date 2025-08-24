@@ -3,6 +3,7 @@ import 'dart:html' as html;
 
 import 'package:archive/archive.dart';
 import 'package:change_case/change_case.dart';
+import 'package:flashy_flushbar/flashy_flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:metamorphis/src/application/entity/delete_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/get_entities_by_application_use_case.dart';
@@ -103,6 +104,14 @@ class HomeController {
   }
 
   Future<void> saveEntity({required String name}) async {
+    final entities = homeStore.entities;
+    final hasAnyWithName = entities.any((entity) {
+      return entity.name.toLowerCase() == name.toLowerCase();
+    });
+    if (hasAnyWithName) {
+      _showDuplicatedErrorMessage();
+      return;
+    }
     final entity = Entity(name: name, applicationId: appStore.application!.id);
     final result = await saveEntityUseCase.execute(entity);
     result.fold(
@@ -119,6 +128,17 @@ class HomeController {
   }
 
   Future<void> updateEntity({required Entity entity}) async {
+    final entities = [...homeStore.entities];
+    entities.removeWhere((item) {
+      return item.id == entity.id;
+    });
+    final hasAnyWithName = entities.any((entity) {
+      return entity.name.toLowerCase() == entity.name.toLowerCase();
+    });
+    if (hasAnyWithName) {
+      _showDuplicatedErrorMessage();
+      return;
+    }
     final result = await updateEntityUseCase.execute(entity);
     result.fold(
       (error) {
@@ -192,5 +212,24 @@ class HomeController {
 
   void buildGolang() {
     _buildCode(GeneratorTarget.rust);
+  }
+
+  void _showDuplicatedErrorMessage() {
+    FlashyFlushbar(
+      leadingWidget: const Icon(
+        Icons.error,
+        color: Colors.deepOrange,
+        size: 24,
+      ),
+      message: 'An item with that name already exists',
+      duration: const Duration(seconds: 5),
+      trailingWidget: IconButton(
+        icon: const Icon(Icons.close, color: Colors.black, size: 24),
+        onPressed: () {
+          FlashyFlushbar.cancel();
+        },
+      ),
+      isDismissible: false,
+    ).show();
   }
 }

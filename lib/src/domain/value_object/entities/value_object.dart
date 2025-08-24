@@ -149,15 +149,32 @@ class ValueObject {
   }
 
   bool get isAllDecimal {
-    return isFloat ||
-        isDouble ||
-        isBigDecimal;
+    return isFloat || isDouble || isBigDecimal;
   }
 
   void removeEnumValue(String value) {
     final valuesList = _enumValues.split(',');
     valuesList.remove(value.toConstantCase());
     _enumValues = valuesList.join(',');
+  }
+
+  bool isSimilar(ValueObject other) {
+    if (name != other.name) {
+      return false;
+    }
+    if (type != other.type) {
+      return false;
+    }
+    if (isNullable != other.isNullable) {
+      return false;
+    }
+    if (isUnique != other.isUnique) {
+      return false;
+    }
+    if (_enumName != other._enumName) {
+      return false;
+    }
+    return true;
   }
 
   ValueObject copyWith({

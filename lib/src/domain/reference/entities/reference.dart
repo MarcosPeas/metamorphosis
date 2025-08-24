@@ -17,6 +17,13 @@ class Reference {
   }) {
     this.id = id ?? const Uuid().v4();
   }
+
+  bool isSimilar(Reference other) {
+    if (name != other.name) {
+      return false;
+    }
+    return true;
+  }
 }
 
 enum ReferenceType {
