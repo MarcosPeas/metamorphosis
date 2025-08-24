@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flashy_flushbar/flashy_flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:metamorphis/src/application/application/delete_application_use_case.dart';
@@ -64,6 +65,14 @@ class ApplicationController {
     required String name,
     required String description,
   }) async {
+    final apps = applicationStore.applications;
+    final hasAnyWithName = apps.any((app) {
+      return app.name.toLowerCase() == name.toLowerCase();
+    });
+    if (hasAnyWithName) {
+      _showDuplicatedErrorMessage();
+      return;
+    }
     final application = Application(
       name: name,
       description: description,
@@ -84,6 +93,17 @@ class ApplicationController {
   }
 
   Future<void> updateApplication({required Application application}) async {
+    final apps = [...applicationStore.applications];
+    apps.removeWhere((app) {
+      return app.id == application.id;
+    });
+    final hasAnyWithName = apps.any((app) {
+      return app.name.toLowerCase() == application.name.toLowerCase();
+    });
+    if (hasAnyWithName) {
+      _showDuplicatedErrorMessage();
+      return;
+    }
     final result = await updateApplicationUseCase.execute(application);
     result.fold(
       (error) {
@@ -107,5 +127,23 @@ class ApplicationController {
         applicationStore.deleteApplication(application);
       },
     );
+  }
+  void _showDuplicatedErrorMessage() {
+    FlashyFlushbar(
+      leadingWidget: const Icon(
+        Icons.error,
+        color: Colors.deepOrange,
+        size: 24,
+      ),
+      message: 'An item with that name already exists',
+      duration: const Duration(seconds: 5),
+      trailingWidget: IconButton(
+        icon: const Icon(Icons.close, color: Colors.black, size: 24),
+        onPressed: () {
+          FlashyFlushbar.cancel();
+        },
+      ),
+      isDismissible: false,
+    ).show();
   }
 }

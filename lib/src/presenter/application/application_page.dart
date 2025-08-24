@@ -28,7 +28,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
   Widget build(BuildContext context) {
     final store = controller.applicationStore;
     return Scaffold(
-      appBar: AppBar(title: const Text('Aplicações')),
+      appBar: AppBar(title: const Text('Applications')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListenableBuilder(
@@ -62,7 +62,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   onTap: () {
                     showCreateApplicationDialog();
                   },
-                  text: 'Nova aplicação',
+                  text: 'New application',
                 ),
               ],
             );
@@ -79,12 +79,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Nova aplicação'),
+          title: const Text('New application'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                decoration: const InputDecoration(labelText: 'Nome'),
+                decoration: const InputDecoration(labelText: 'Name'),
                 onChanged: (text) {
                   applicationName.value = text.trim();
                 },
@@ -94,7 +94,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 onChanged: (text) {
                   applicationDescription = text.trim();
                 },
-                decoration: const InputDecoration(labelText: 'Descrição'),
+                decoration: const InputDecoration(labelText: 'Description'),
               ),
             ],
           ),
@@ -103,7 +103,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               onPressed: () {
                 context.pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
             ValueListenableBuilder(
               valueListenable: applicationName,
@@ -118,7 +118,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           context.pop();
                         }
                       : null,
-                  child: const Text('Salvar'),
+                  child: const Text('Save'),
                 );
               },
             ),
@@ -135,12 +135,12 @@ class _ApplicationPageState extends State<ApplicationPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Editar aplicação'),
+          title: const Text('Edit application'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                decoration: const InputDecoration(labelText: 'Nome'),
+                decoration: const InputDecoration(labelText: 'Name'),
                 controller: TextEditingController(text: application.name),
                 onChanged: (text) {
                   applicationName.value = text.trim();
@@ -154,7 +154,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 onChanged: (text) {
                   applicationDescription = text.trim();
                 },
-                decoration: const InputDecoration(labelText: 'Descrição'),
+                decoration: const InputDecoration(labelText: 'Description'),
               ),
               const SizedBox(height: 16),
               TextButton(
@@ -163,7 +163,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                   showRemoveApplicationDialog(application);
                 },
                 child: Text(
-                  'Remover este aplicação',
+                  'Remove this application',
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
               ),
@@ -174,7 +174,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               onPressed: () {
                 context.pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
             ValueListenableBuilder(
               valueListenable: applicationName,
@@ -190,7 +190,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                           context.pop();
                         }
                       : null,
-                  child: const Text('Salvar'),
+                  child: const Text('Save'),
                 );
               },
             ),
@@ -207,14 +207,14 @@ class _ApplicationPageState extends State<ApplicationPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Remover aplicação'),
+          title: const Text('Remove application'),
           content: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Tem certeza que deseja remover o seguinte aplicação?',
+                'Are you sure you want to remove the following application?',
               ),
               const SizedBox(height: 8),
               Text(
@@ -230,7 +230,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
               onPressed: () {
                 context.pop();
               },
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -238,7 +238,7 @@ class _ApplicationPageState extends State<ApplicationPage> {
                 context.pop();
               },
               child: Text(
-                'Remover',
+                'Remove',
                 style: TextStyle(color: colorScheme.error),
               ),
             ),
