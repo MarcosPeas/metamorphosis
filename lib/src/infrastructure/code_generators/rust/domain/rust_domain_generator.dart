@@ -72,13 +72,16 @@ class RustDomainGenerator {
     final namePascal = vo.name.toPascalCase();
     String fieldType = '$entityNamePascal$namePascal';
     if (vo.isEnum) {
-      fieldType = namePascal;
+      fieldType = vo.enumName.toPascalCase();
     }
     if (vo.name == 'createdAt' || vo.name == 'updatedAt') {
       fieldType = 'DateTime<Utc>';
-    }
-    if (vo.isBoolean) {
+    } else if (vo.isBoolean) {
       fieldType = 'bool';
+    } else if (vo.isUUID) {
+      fieldType = 'String';
+    } else if (vo.isLongId) {
+      fieldType = 'u64';
     }
     return 'pub $name: $fieldType,';
   }
@@ -92,10 +95,16 @@ class RustDomainGenerator {
   static String _buildParams(Entity entity) {
     final params = entity.valueObjects.map((vo) {
       if (vo.isEnum) {
-        return '${vo.name.toSnakeCase()}: ${vo.name.toPascalCase()}';
+        return '${vo.name.toSnakeCase()}: ${vo.enumName.toPascalCase()}';
       }
       if (vo.name == 'createdAt' || vo.name == 'updatedAt') {
         return '${vo.name.toSnakeCase()}: Option<DateTime<Utc>>';
+      }
+      if (vo.isUUID) {
+        return '${vo.name.toSnakeCase()}: Option<String>';
+      }
+      if (vo.isLongId) {
+        return '${vo.name.toSnakeCase()}: Option<u64>';
       }
       return '${vo.name.toSnakeCase()}: ${vo.toRustType()}';
     });
@@ -128,6 +137,14 @@ class RustDomainGenerator {
         value = 'updated_at.unwrap_or_else(|| Utc::now())';
         voParam = '';
       }
+      if (vo.isUUID) {
+        value = vo.name.toSnakeCase();
+        voParam = '.unwrap_or(IdGenerator::v7())';
+      }
+      if (vo.isLongId) {
+        value = vo.name.toSnakeCase();
+        voParam = '.unwrap_or(${vo.idAutoincrementStartAt})';
+      }
       final ass = '$s$key: $value$voParam,';
       assignments += ass;
     }
@@ -142,6 +159,9 @@ class RustDomainGenerator {
 
   static String _buildImports(Entity entity) {
     String imports = '';
+    final contaisUUID = entity.valueObjects.any((vo) {
+      return vo.isUUID;
+    });
     final containsDates = entity.valueObjects.any((vo) {
       return vo.isAnyDate;
     });
@@ -155,8 +175,10 @@ class RustDomainGenerator {
     if (containsBigDecimals) {
       imports += 'use bigdecimal::BigDecimal;\n';
     }
-    imports +=
-        'use crate::domain::_core::id_generator::id_generator::IdGenerator;\n';
+    if (contaisUUID) {
+      imports +=
+          'use crate::domain::_core::id_generator::id_generator::IdGenerator;\n';
+    }
     imports += 'use crate::domain::_core::errors::domain_error::DomainError;\n';
     for (final vo in entity.valueObjects) {
       if (!vo.isValueObject) {
@@ -191,10 +213,10 @@ class RustDomainGenerator {
     final vos = entity.valueObjects.where((vo) => vo.isEnum);
     String enums = '';
     for (final vo in vos) {
-      final name = vo.name.toPascalCase();
+      final enumName = vo.enumName.toPascalCase();
       final values = vo.enumValues.split(',').map((e) => e.toPascalCase());
       final enumContent = _enumModel
-          .replaceAll('{name}', name)
+          .replaceAll('{name}', enumName)
           .replaceAll('{values}', values.join(', '));
       enums += '\n\n$enumContent';
     }
@@ -210,6 +232,9 @@ class RustDomainGenerator {
         continue;
       }
       if (vo.name == 'updatedAt') {
+        continue;
+      }
+      if (vo.isId) {
         continue;
       }
       final voSnack = vo.name.toSnakeCase();
@@ -240,17 +265,14 @@ class RustDomainGenerator {
 
 const _structModel = '''
 {imports}
-pub struct {name} {
-    id: String,    
+pub struct {name} { 
     {fields}
     errors: Vec<DomainError>,
 }
 impl {name} {
-    pub fn new(id: Option<String>, {params}) -> Self {
-        let mut errors: Vec<DomainError> = Vec::new();
-        let id = id.unwrap_or_else(|| IdGenerator::v7());
-        {name} {
-            id,{assignments}
+    pub fn new({params}) -> Self {
+        let mut errors: Vec<DomainError> = Vec::new();        
+        {name} {{assignments}
             errors,
         }
     }

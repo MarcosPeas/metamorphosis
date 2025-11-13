@@ -2,6 +2,7 @@ import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:archive/archive.dart';
 import 'package:metamorphis/src/domain/global_enumerator/entities/global_enumerator.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/rust/domain/rust_domain_generator.dart';
+import 'package:metamorphis/src/infrastructure/code_generators/rust/infrastructure/rust_infrastructure_generator.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/rust/settings_files/builds_generator.dart';
 
 import 'main_generator.dart';
@@ -19,10 +20,12 @@ class RustGenerator {
     final toml = TomlGenerator.generate(application);
     final builds = BuildsGenerator.generate(application);
     final domain = RustDomainGenerator.generate(application, enumerators);
+    final infrastructure = RustInfrastructureGenerator.generate(application);
     archive.addFile(main);
     archive.addFile(toml);
     builds.forEach(archive.addFile);
     domain.forEach(archive.addFile);
+    infrastructure.forEach(archive.addFile);
     return archive;
   }
 }

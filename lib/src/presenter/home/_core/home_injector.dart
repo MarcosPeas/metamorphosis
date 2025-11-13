@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:metamorphis/src/application/entity/delete_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/get_entities_by_application_use_case.dart';
 import 'package:metamorphis/src/application/entity/save_entity_use_case.dart';
+import 'package:metamorphis/src/application/entity/update_entities_use_case.dart';
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
 import 'package:metamorphis/src/application/global_enumerator/create_global_enumerator_use_case.dart';
 import 'package:metamorphis/src/application/global_enumerator/delete_global_enumerator_use_case.dart';
@@ -91,6 +92,9 @@ class HomeInjector {
     getIt.registerFactory<GetGlobalEnumeratorsByApplicationUseCase>(
       () => GetGlobalEnumeratorsByApplicationUseCase(repository: getIt()),
     );
+    getIt.registerFactory<UpdateEntitiesUseCase>(
+      () => UpdateEntitiesUseCase(repository: getIt()),
+    );
   }
 
   static void _injectControllers() {
@@ -104,6 +108,7 @@ class HomeInjector {
         updateEntityUseCase: getIt(),
         getEntitiesByApplicationUseCase: getIt(),
         getGlobalEnumeratorsByApplicationUseCase: getIt(),
+        updateEntitiesUseCase: getIt(),
       ),
     );
     getIt.registerFactory<ValueObjectsController>(

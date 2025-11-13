@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -93,7 +94,11 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                       );
                     },
                     onEditRule: (rule) {
-                      _showDialogUpdateValueObjectRule(index, valueObject, rule);
+                      _showDialogUpdateValueObjectRule(
+                        index,
+                        valueObject,
+                        rule,
+                      );
                     },
                     onValueObjectRuleTap: (rule) {
                       _showDialogCreateValueObjectGroupCondition(rule);
@@ -152,6 +157,31 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                       return DropdownMenuItem(value: type, child: Text(type));
                     }).toList(),
                   ),
+                  if (vo.type == 'ID - long(AUTO INCREMENT)') ...[
+                    const SizedBox(height: 4),
+                    TextField(
+                      inputFormatters: [CustomInputFormatters.onlyNumbers],
+                      decoration: const InputDecoration(
+                        labelText: 'Start value',
+                        hintText: '1',
+                      ),
+                      onChanged: (text) {
+                        if (text.isEmpty) {
+                          return;
+                        }
+                        valueObject.value = vo.copyWith(
+                          idAutoincrementStartAt:
+                              int.tryParse(text.trim()) ?? 1,
+                        );
+                      },
+                      onSubmitted: (text) {
+                        if (vo.requirementsAreCompleted) {
+                          controller.createValueObject(valueObject.value);
+                          context.pop();
+                        }
+                      },
+                    ),
+                  ],
                   if (vo.type == 'Enum') ...[
                     const SizedBox(height: 4),
                     TextField(
@@ -191,7 +221,9 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                       },
                     ),
                   ],
-                  if (vo.type != 'Enum') ...[
+                  if (vo.type != 'Enum' &&
+                      vo.type != 'bool' &&
+                      !vo.type.startsWith('ID')) ...[
                     const SizedBox(height: 16),
                     SwitchListTile(
                       title: const Text('Nullable'),
@@ -240,6 +272,9 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
     final nameController = TextEditingController(text: oldVO.name);
     final enumNameController = TextEditingController(text: oldVO.enumName);
     final enumValueController = TextEditingController(text: oldVO.enumValues);
+    final idStartAtController = TextEditingController(
+      text: '${oldVO.idAutoincrementStartAt}',
+    );
     showDialog(
       context: context,
       builder: (context) {
@@ -280,6 +315,32 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                       return DropdownMenuItem(value: type, child: Text(type));
                     }).toList(),
                   ),
+                  if (vo.type == 'ID - long(AUTO INCREMENT)') ...[
+                    const SizedBox(height: 4),
+                    TextField(
+                      controller: idStartAtController,
+                      inputFormatters: [CustomInputFormatters.onlyNumbers],
+                      decoration: const InputDecoration(
+                        labelText: 'Start value',
+                        hintText: '1',
+                      ),
+                      onChanged: (text) {
+                        if (text.isEmpty) {
+                          return;
+                        }
+                        valueObject.value = vo.copyWith(
+                          idAutoincrementStartAt:
+                              int.tryParse(text.trim()) ?? 1,
+                        );
+                      },
+                      onSubmitted: (text) {
+                        if (vo.requirementsAreCompleted) {
+                          controller.createValueObject(valueObject.value);
+                          context.pop();
+                        }
+                      },
+                    ),
+                  ],
                   if (vo.type == 'Enum') ...[
                     const SizedBox(height: 4),
                     TextField(
@@ -329,7 +390,9 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                       },
                     ),
                   ],
-                  if (vo.type != 'Enum') ...[
+                  if (vo.type != 'Enum' &&
+                      vo.type != 'bool' &&
+                      !vo.type.startsWith('ID')) ...[
                     const SizedBox(height: 16),
                     SwitchListTile(
                       title: const Text('Nullable'),
@@ -433,10 +496,10 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
   }
 
   void _showDialogUpdateValueObjectRule(
-      int viewIndex,
-      ValueObject valueObject,
-      ValueObjectRule rule,
-      ) {
+    int viewIndex,
+    ValueObject valueObject,
+    ValueObjectRule rule,
+  ) {
     final nameController = TextEditingController(text: rule.errorMessage);
     showDialog(
       context: context,
@@ -1005,8 +1068,8 @@ class _GroupConditionWidget extends StatelessWidget {
     final selectedLogicOperator = ValueNotifier('AND');
     final comparatorOperators = TypesUtils.conditions(valueObject.type);
     final selectedComparatorOperator = ValueNotifier(comparatorOperators.first);
-    final targetValueController = TextEditingController();
-    final shortOperators = ['is empty', 'is not empty'];
+    final targetValue = ValueNotifier('');
+    final targetValueController = TextEditingController();    
     showDialog(
       context: context,
       builder: (context) {
@@ -1020,6 +1083,7 @@ class _GroupConditionWidget extends StatelessWidget {
               return ValueListenableBuilder(
                 valueListenable: selectedComparatorOperator,
                 builder: (_, b, __) {
+                  final notNeedForTargt = selectedComparatorOperator.value.startsWith('is');
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1060,14 +1124,12 @@ class _GroupConditionWidget extends StatelessWidget {
                           );
                         },
                       ),
-                      if (!shortOperators.contains(
-                        selectedComparatorOperator.value,
-                      ))
+                      if (!notNeedForTargt) ...[
                         const SizedBox(height: 8),
-                      if (!shortOperators.contains(
-                        selectedComparatorOperator.value,
-                      ))
                         TextField(
+                          onChanged: (text) {
+                            targetValue.value = text.trim();
+                          },
                           controller: targetValueController,
                           inputFormatters: [
                             CustomInputFormatters.fromType(
@@ -1079,6 +1141,7 @@ class _GroupConditionWidget extends StatelessWidget {
                             labelText: 'Target value',
                           ),
                         ),
+                      ],
                       const SizedBox(height: 8),
                     ],
                   );
@@ -1093,17 +1156,29 @@ class _GroupConditionWidget extends StatelessWidget {
               },
               child: const Text('Cancel'),
             ),
-            TextButton(
-              onPressed: () {
-                context.pop();
-                controller.createValueObjectRuleCondition(
-                  group: groupCondition,
-                  logicOperator: selectedLogicOperator.value,
-                  comparatorOperator: selectedComparatorOperator.value,
-                  targetValue: targetValueController.text.trim(),
+            ListenableBuilder(
+              listenable: targetValue,
+              builder: (_, __) {
+                return ListenableBuilder(
+                  listenable: selectedComparatorOperator,
+                  builder: (_, __) {
+                    final notNeedForTargt = selectedComparatorOperator.value.startsWith('is');
+                    final isValid = notNeedForTargt || targetValue.value.trim().isNotEmpty;
+                    return TextButton(
+                      onPressed: isValid ? () {
+                        context.pop();
+                        controller.createValueObjectRuleCondition(
+                          group: groupCondition,
+                          logicOperator: selectedLogicOperator.value,
+                          comparatorOperator: selectedComparatorOperator.value,
+                          targetValue: targetValue.value,
+                        );
+                      }: null,
+                      child: const Text('OK'),
+                    );
+                  }
                 );
-              },
-              child: const Text('OK'),
+              }
             ),
           ],
         );

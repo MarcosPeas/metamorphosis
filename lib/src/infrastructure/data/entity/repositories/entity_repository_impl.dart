@@ -141,4 +141,30 @@ class EntityRepositoryImpl implements EntityRepository {
     // TODO: implement paginate
     throw UnimplementedError();
   }
+
+  @override
+  Future<List<Entity>> updateAll(List<Entity> entities) async {
+    try {
+      final batch = _firestore.batch();
+      for(final entity in entities) {
+        final model = EntityModel.fromEntity(entity);
+        final ref = _firestore.collection(_entityCollection).doc(entity.id);
+        batch.update(ref, model.toMap());
+      }
+      await batch.commit();
+      return entities;
+    } on auth.FirebaseAuthException catch (e, s) {
+      throw DomainException.of(
+        message: e.code,
+        trace: s.toString(),
+        context: 'EntityRepositoryImpl.updateAll',
+      );
+    } catch (e, s) {
+      throw DomainException.of(
+        message: 'Não foi possível atualizar as entidades',
+        trace: s.toString(),
+        context: 'EntityRepositoryImpl.updateAll',
+      );
+    }
+  }
 }

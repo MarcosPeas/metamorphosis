@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:metamorphis/src/application/entity/delete_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/get_entities_by_application_use_case.dart';
 import 'package:metamorphis/src/application/entity/save_entity_use_case.dart';
+import 'package:metamorphis/src/application/entity/update_entities_use_case.dart';
 import 'package:metamorphis/src/application/entity/update_entity_use_case.dart';
 import 'package:metamorphis/src/application/global_enumerator/get_global_enumerators_by_application_use_case.dart';
 import 'package:metamorphis/src/domain/_core/domain/repository.dart';
@@ -27,6 +28,7 @@ class HomeController {
   final GetEntitiesByApplicationUseCase getEntitiesByApplicationUseCase;
   final SaveEntityUseCase saveEntityUseCase;
   final UpdateEntityUseCase updateEntityUseCase;
+  final UpdateEntitiesUseCase updateEntitiesUseCase;
   final DeleteEntityUseCase deleteEntityUseCase;
   final GetGlobalEnumeratorsByApplicationUseCase
   getGlobalEnumeratorsByApplicationUseCase;
@@ -39,6 +41,7 @@ class HomeController {
     required this.updateEntityUseCase,
     required this.deleteEntityUseCase,
     required this.getGlobalEnumeratorsByApplicationUseCase,
+    required this.updateEntitiesUseCase,
   });
 
   Future<void> init() async {
@@ -109,7 +112,7 @@ class HomeController {
       return entity.name.toLowerCase() == name.toLowerCase();
     });
     if (hasAnyWithName) {
-      _showDuplicatedErrorMessage();
+      _showDuplicatedErrorMessage('An item with that name already exists');
       return;
     }
     final entity = Entity(name: name, applicationId: appStore.application!.id);
@@ -127,16 +130,17 @@ class HomeController {
     );
   }
 
-  Future<void> updateEntity({required Entity entity}) async {
+  Future<void> updateEntity({required Entity entity, required String name}) async {
+    entity.name = name;
     final entities = [...homeStore.entities];
     entities.removeWhere((item) {
       return item.id == entity.id;
     });
-    final hasAnyWithName = entities.any((entity) {
-      return entity.name.toLowerCase() == entity.name.toLowerCase();
+    final hasAnyWithName = entities.any((element) {
+      return element.name.toLowerCase() == entity.name.toLowerCase();
     });
     if (hasAnyWithName) {
-      _showDuplicatedErrorMessage();
+      _showDuplicatedErrorMessage('An item with that name already exists');
       return;
     }
     final result = await updateEntityUseCase.execute(entity);
@@ -168,8 +172,24 @@ class HomeController {
     );
   }
 
-  void _buildCode(GeneratorTarget target) {
+  Future<void> _updateToUsedEntities(GeneratorTarget target) async {
     homeStore.generating = true;
+    final entities = homeStore.entities;
+    for (final entity in entities) {
+      entity.changeToUsedInSchemeGeneration();
+    }
+    final result = await updateEntitiesUseCase.execute(entities);
+    result.fold((error) {
+      log(error.message);
+      log(error.trace);
+      _showDuplicatedErrorMessage('Unable to generate the requested project');
+    }, (_) {
+      homeStore.entities = entities;
+      _buildCode(target);
+    });
+  }
+
+  Future<void> _buildCode(GeneratorTarget target) async {
     final application = appStore.application!;
     application.entities = homeStore.entities;
     final name = ChangeCase(application.name).toSnakeCase();
@@ -207,21 +227,21 @@ class HomeController {
       devKey: anonKeyDev,
     );
     application.apiOptions = apiOptions;
-    _buildCode(target);
+    _updateToUsedEntities(target);
   }
 
-  void buildGolang() {
-    _buildCode(GeneratorTarget.rust);
+  void buildRust() {
+    _updateToUsedEntities(GeneratorTarget.rust);
   }
 
-  void _showDuplicatedErrorMessage() {
+  void _showDuplicatedErrorMessage(String message) {
     FlashyFlushbar(
       leadingWidget: const Icon(
         Icons.error,
         color: Colors.deepOrange,
         size: 24,
       ),
-      message: 'An item with that name already exists',
+      message: message,
       duration: const Duration(seconds: 5),
       trailingWidget: IconButton(
         icon: const Icon(Icons.close, color: Colors.black, size: 24),

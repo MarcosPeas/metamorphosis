@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/global_enumerator/entities/global_enumerator.dart';
 import 'package:metamorphis/src/presenter/_core/store.dart';

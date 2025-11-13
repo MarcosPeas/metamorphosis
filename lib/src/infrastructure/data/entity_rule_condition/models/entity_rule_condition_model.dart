@@ -97,10 +97,10 @@ class EntityRuleConditionModel extends EntityRuleCondition {
     ValueObjectModel? rightValueObject;
     ReferenceModel? composition;
     if (this.leftValueObject != null) {
-      leftValueObject = ValueObjectModel.fromValueObject(this.leftValueObject!);
+      leftValueObject = ValueObjectModel.fromEntity(this.leftValueObject!);
     }
     if (this.rightValueObject != null) {
-      rightValueObject = ValueObjectModel.fromValueObject(
+      rightValueObject = ValueObjectModel.fromEntity(
         this.rightValueObject!,
       );
     }

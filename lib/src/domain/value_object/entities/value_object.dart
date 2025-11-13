@@ -13,6 +13,10 @@ class ValueObject {
   late String _enumName;
   late String _enumValues;
   final String entityId;
+  late bool _usedInSchemeGeneration;
+  late SchemeStatus _status;
+  ValueObject? child;
+  final int idAutoincrementStartAt;
 
   ValueObject({
     String? id,
@@ -24,10 +28,16 @@ class ValueObject {
     required String enumName,
     required String enumValues,
     required this.entityId,
+    bool usedInSchemeGeneration = false,
+    SchemeStatus? status,
+    this.child,
+    this.idAutoincrementStartAt = 1,
   }) {
     this.id = id ?? const Uuid().v4();
     this.rules = rules ?? [];
     _enumName = enumName;
+    _usedInSchemeGeneration = usedInSchemeGeneration;
+    _status = status ?? SchemeStatus.created;
     _addEnumValues(enumValues);
   }
 
@@ -50,8 +60,18 @@ class ValueObject {
 
   bool get isEnum => type == 'Enum';
 
+  bool get isId => type.toUpperCase().startsWith('ID');
+
+  bool get isUUID => type == 'ID - String(UUID)';
+
+  bool get isLongId => type == 'ID - long(AUTO INCREMENT)';
+
   bool get isValueObject {
-    return !isEnum && !isBoolean && name != 'createdAt' && name != 'updatedAt';
+    return !isEnum &&
+        !isBoolean &&
+        name != 'createdAt' &&
+        name != 'updatedAt' &&
+        !isId;
   }
 
   void addRule(ValueObjectRule rule) {
@@ -152,6 +172,8 @@ class ValueObject {
     return isFloat || isDouble || isBigDecimal;
   }
 
+  get usedInSchemeGeneration => _usedInSchemeGeneration;
+
   void removeEnumValue(String value) {
     final valuesList = _enumValues.split(',');
     valuesList.remove(value.toConstantCase());
@@ -177,6 +199,12 @@ class ValueObject {
     return true;
   }
 
+  SchemeStatus get status => _status;
+
+  void changeStatus(SchemeStatus status) {
+    _status = status;
+  }
+
   ValueObject copyWith({
     String? id,
     String? name,
@@ -186,6 +214,7 @@ class ValueObject {
     List<ValueObjectRule>? rules,
     String? enumName,
     String? enumValues,
+    int? idAutoincrementStartAt,
   }) {
     return ValueObject(
       id: id ?? this.id,
@@ -197,6 +226,21 @@ class ValueObject {
       enumName: enumName ?? this.enumName,
       enumValues: enumValues ?? this.enumValues,
       entityId: entityId,
+      usedInSchemeGeneration: _usedInSchemeGeneration,
+      child: child,
+      idAutoincrementStartAt:
+          idAutoincrementStartAt ?? this.idAutoincrementStartAt,
     );
+  }
+
+  void changeToUsedInSchemeGeneration() {
+    if (child != null) {
+      child!.changeToUsedInSchemeGeneration();
+      return;
+    }
+    if (_usedInSchemeGeneration) {
+      return;
+    }
+    _usedInSchemeGeneration = true;
   }
 }

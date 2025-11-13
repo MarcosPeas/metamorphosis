@@ -5,7 +5,7 @@ import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_r
 import 'package:metamorphis/src/infrastructure/data/value_object_rule/models/value_object_rule_model.dart';
 
 class ValueObjectModel extends ValueObject {
-  ValueObjectModel({
+  ValueObjectModel._({
     required super.id,
     required super.name,
     required super.type,
@@ -15,10 +15,13 @@ class ValueObjectModel extends ValueObject {
     required super.enumValues,
     super.rules,
     required super.entityId,
+    required super.usedInSchemeGeneration,
+    required super.child,
+    required super.idAutoincrementStartAt,
   });
 
-  factory ValueObjectModel.fromValueObject(ValueObject valueObject) {
-    return ValueObjectModel(
+  factory ValueObjectModel.fromEntity(ValueObject valueObject) {
+    return ValueObjectModel._(
       id: valueObject.id,
       name: valueObject.name,
       type: valueObject.type,
@@ -28,6 +31,9 @@ class ValueObjectModel extends ValueObject {
       enumValues: valueObject.enumValues,
       rules: valueObject.rules,
       entityId: valueObject.entityId,
+      usedInSchemeGeneration: valueObject.usedInSchemeGeneration,
+      child: valueObject.child,
+      idAutoincrementStartAt: valueObject.idAutoincrementStartAt,
     );
   }
 
@@ -39,7 +45,11 @@ class ValueObjectModel extends ValueObject {
         rules.map((rule) => ValueObjectRuleModel.fromMap(rule)).toList(),
       );
     }
-    return ValueObjectModel(
+    ValueObject? child;
+    if (map['child'] != null) {
+      child = ValueObjectModel.fromMap(map['child']);
+    }
+    return ValueObjectModel._(
       id: map['id'],
       name: map['name'],
       type: map['type'],
@@ -49,6 +59,9 @@ class ValueObjectModel extends ValueObject {
       rules: rulesModel,
       enumName: map['enumName'] ?? '',
       enumValues: map['enumValues'] ?? '',
+      usedInSchemeGeneration: map['used_in_scheme_generation'] ?? false,
+      child: child,
+      idAutoincrementStartAt: map['idAutoincrementStartAt'] ?? 1,
     );
   }
 
@@ -63,6 +76,10 @@ class ValueObjectModel extends ValueObject {
       );
       return ruleModel.toMap();
     });
+    ValueObjectModel? child;
+    if (this.child != null) {
+      child = ValueObjectModel.fromEntity(this.child!);
+    }
     return {
       'id': id,
       'name': name,
@@ -73,6 +90,9 @@ class ValueObjectModel extends ValueObject {
       'rules': rulesJson,
       'enumName': enumName,
       'enumValues': enumValues,
+      'used_in_scheme_generation': usedInSchemeGeneration,
+      'child': child?.toMap(),
+      'idAutoincrementStartAt': idAutoincrementStartAt,
     };
   }
 

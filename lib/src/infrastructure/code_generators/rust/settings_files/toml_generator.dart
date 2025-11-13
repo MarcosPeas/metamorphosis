@@ -125,4 +125,5 @@ edition = "2021"
 [dependencies]
 uuid = { version = "1.17.0", features = ["v7"] }
 {chrono}{emailValidator}{documentValidator}{urlValidator}{regex}{bigDecimal}
+sqlx = { version = "0.8.6", features = ["runtime-tokio-rustls", "postgres", "chrono"] }
 ''';

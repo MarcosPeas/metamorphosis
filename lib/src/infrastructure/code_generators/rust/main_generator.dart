@@ -14,6 +14,7 @@ class MainGenerator {
 
 String _mainContent = '''
 mod domain;
+mod infrastructure;
 
 fn main() {
     println!("Hello, world!");

@@ -45,7 +45,7 @@ class DialogSelectTargetWidget extends StatelessWidget {
                     title: const Text('Rust'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
-                      controller.buildGolang();
+                      controller.buildRust();
                       context.pop();
                     },
                   ),

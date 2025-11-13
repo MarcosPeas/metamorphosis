@@ -41,135 +41,140 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         body: ListenableBuilder(
-          listenable: appStore,
+          listenable: homeStore,
           builder: (_, __) {
-            if (homeStore.loading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final entity = appStore.entity;
-            if (entity == null) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'No entity',
-                      style: textTheme.bodyLarge?.copyWith(
-                        color: colorScheme.onSurface,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        showCreateEntityDialog();
-                      },
-                      child: const Text('Create entity'),
-                    ),
-                  ],
-                ),
-              );
-            }
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ListenableBuilder(
-                  listenable: homeStore,
-                  builder: (context, _) {
-                    return Container(
-                      width: 206,
-                      height: double.infinity,
-                      color: colorScheme.primaryContainer,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          ColoredBox(
-                            color: colorScheme.primaryContainer,
-                            child: _MenuWidget(
-                              entity: entity,
-                              onTap: () {
-                                showEntitiesOptionsDialog(entity);
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          _MenuItems(
-                            index: homeStore.page,
-                            onTap: (index) {
-                              controller.pageController.jumpToPage(index);
-                              homeStore.page = index;
-                            },
-                          ),
-                          const SizedBox(height: 12),
-                          const Divider(),
-                          const SizedBox(height: 12),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              'Items',
-                              style: textTheme.titleMedium?.copyWith(
-                                color: colorScheme.onSecondaryContainer,
-                              ),
-                            ),
-                          ),
-                          _MenuItem(
-                            icon: Icons.assignment,
-                            title: 'Projects',
-                            selected: false,
-                            onTap: () => context.pushNamedAndRemoveUntil(
-                              ProjectRouters.projects,
-                            ),
-                          ),
-                          _MenuItem(
-                            icon: Icons.format_list_numbered,
-                            title: 'Global Enumerators',
-                            selected: false,
-                            onTap: () {
-                              controller.pageController.jumpToPage(5);
-                              homeStore.page = 5;
-                            },
-                          ),
-                          const Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                showDialogSelectTarget();
-                              },
-                              child: const Text('Generate Code'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: PageView(
-                      controller: controller.pageController,
+            return ListenableBuilder(
+              listenable: appStore,
+              builder: (_, __) {
+                if (homeStore.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final entity = appStore.entity;
+                if (entity == null) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        ValueObjectsPage(
-                          entity: entity,
-                          key: ValueKey(entity.id),
+                        Text(
+                          'No entity',
+                          style: textTheme.bodyLarge?.copyWith(
+                            color: colorScheme.onSurface,
+                          ),
                         ),
-                        UsedEnumeratorsPage(key: ValueKey(entity.id)),
-                        ReferencesPage(
-                          entities: homeStore.entities,
-                          key: ValueKey(entity.id),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            showCreateEntityDialog();
+                          },
+                          child: const Text('Create entity'),
                         ),
-                        EntityRulesPage(key: ValueKey(entity.id)),
-                        UseCasesPage(key: ValueKey(entity.id)),
-                        GlobalEnumeratorsPage(),
                       ],
                     ),
-                  ),
-                ),
-              ],
+                  );
+                }
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ListenableBuilder(
+                      listenable: homeStore,
+                      builder: (context, _) {
+                        return Container(
+                          width: 206,
+                          height: double.infinity,
+                          color: colorScheme.primaryContainer,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              ColoredBox(
+                                color: colorScheme.primaryContainer,
+                                child: _MenuWidget(
+                                  entity: entity,
+                                  onTap: () {
+                                    showEntitiesOptionsDialog(entity);
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              _MenuItems(
+                                index: homeStore.page,
+                                onTap: (index) {
+                                  controller.pageController.jumpToPage(index);
+                                  homeStore.page = index;
+                                },
+                              ),
+                              const SizedBox(height: 12),
+                              const Divider(),
+                              const SizedBox(height: 12),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Items',
+                                  style: textTheme.titleMedium?.copyWith(
+                                    color: colorScheme.onSecondaryContainer,
+                                  ),
+                                ),
+                              ),
+                              _MenuItem(
+                                icon: Icons.assignment,
+                                title: 'Projects',
+                                selected: false,
+                                onTap: () => context.pushNamedAndRemoveUntil(
+                                  ProjectRouters.projects,
+                                ),
+                              ),
+                              _MenuItem(
+                                icon: Icons.format_list_numbered,
+                                title: 'Global Enumerators',
+                                selected: false,
+                                onTap: () {
+                                  controller.pageController.jumpToPage(5);
+                                  homeStore.page = 5;
+                                },
+                              ),
+                              const Spacer(),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    showDialogSelectTarget();
+                                  },
+                                  child: const Text('Generate Code'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: PageView(
+                          controller: controller.pageController,
+                          children: [
+                            ValueObjectsPage(
+                              entity: entity,
+                              key: ValueKey(entity.id),
+                            ),
+                            UsedEnumeratorsPage(key: ValueKey(entity.id)),
+                            ReferencesPage(
+                              entities: homeStore.entities,
+                              key: ValueKey(entity.id),
+                            ),
+                            EntityRulesPage(key: ValueKey(entity.id)),
+                            UseCasesPage(key: ValueKey(entity.id)),
+                            GlobalEnumeratorsPage(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
             );
-          },
+          }
         ),
       ),
     );
@@ -342,7 +347,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void showEditEntityDialog(EntityViewModel entity) {
-    final applicationName = ValueNotifier(entity.name);
+    final entityName = ValueNotifier(entity.name);
     final nameController = TextEditingController(text: entity.name);
     showDialog(
       context: context,
@@ -354,9 +359,10 @@ class _HomePageState extends State<HomePage> {
             children: [
               TextField(
                 onSubmitted: (value) {
-                  if (applicationName.value.length > 2) {
+                  if (entityName.value.length > 2) {
                     controller.updateEntity(
-                      entity: entity.customCopyWith(name: applicationName.value),
+                      entity: entity,
+                      name: entityName.value,
                     );
                     context.pop();
                   }
@@ -364,7 +370,7 @@ class _HomePageState extends State<HomePage> {
                 controller: nameController,
                 decoration: const InputDecoration(labelText: 'Name'),
                 onChanged: (text) {
-                  applicationName.value = text.trim();
+                  entityName.value = text.trim();
                 },
               ),
             ],
@@ -377,15 +383,14 @@ class _HomePageState extends State<HomePage> {
               child: const Text('Cancel'),
             ),
             ValueListenableBuilder(
-              valueListenable: applicationName,
+              valueListenable: entityName,
               builder: (_, name, __) {
                 return TextButton(
                   onPressed: name.length > 2
                       ? () {
                           controller.updateEntity(
-                            entity: entity.customCopyWith(
-                              name: applicationName.value,
-                            ),
+                            entity: entity,
+                            name: entityName.value,
                           );
                           context.pop();
                         }

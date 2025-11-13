@@ -4,6 +4,8 @@ class TypesUtils {
   TypesUtils._();
 
   static List<String> types = [
+    'ID - String(UUID)',
+    'ID - long(AUTO INCREMENT)',
     'bool',
     'byte/int8',
     'short/int16',

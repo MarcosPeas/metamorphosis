@@ -12,7 +12,7 @@ import 'package:metamorphis/src/infrastructure/data/use_case/models/use_case_mod
 import 'package:metamorphis/src/infrastructure/data/value_object/models/value_object_model.dart';
 
 class EntityModel extends Entity {
-  EntityModel({
+  EntityModel._({
     required super.id,
     required super.name,
     required super.applicationId,
@@ -22,10 +22,13 @@ class EntityModel extends Entity {
     required super.references,
     required super.globalEnumerators,
     required super.child,
+    required super.usedInSchemeGeneration,
+    required super.version,
+    required super.schemeStatus,
   });
 
   factory EntityModel.fromEntity(Entity entity) {
-    return EntityModel(
+    return EntityModel._(
       id: entity.id,
       name: entity.name,
       applicationId: entity.applicationId,
@@ -35,6 +38,9 @@ class EntityModel extends Entity {
       references: entity.references,
       globalEnumerators: entity.globalEnumerators,
       child: entity.child,
+      version: entity.version,
+      usedInSchemeGeneration: entity.usedInSchemeGeneration,
+      schemeStatus: entity.schemeStatus,
     );
   }
 
@@ -67,7 +73,7 @@ class EntityModel extends Entity {
     if (map['child'] != null) {
       child = EntityModel.fromShortMap(map['child']);
     }
-    return EntityModel(
+    return EntityModel._(
       id: map['id'],
       name: map['name'],
       applicationId: map['applicationId'],
@@ -77,6 +83,9 @@ class EntityModel extends Entity {
       references: references,
       globalEnumerators: [],
       child: child,
+      usedInSchemeGeneration: map['usedInSchemeGeneration'] ?? false,
+      version: map['version'] ?? 1,
+      schemeStatus: SchemeStatus.fromString(map['schemeStatus']),
     );
   }
 
@@ -115,7 +124,7 @@ class EntityModel extends Entity {
     if (map['child'] != null) {
       child = EntityModel.fromMap(map['child']);
     }
-    return EntityModel(
+    return EntityModel._(
       id: map['id'],
       name: map['name'],
       applicationId: map['applicationId'],
@@ -125,6 +134,9 @@ class EntityModel extends Entity {
       references: references,
       globalEnumerators: globalEnumerators,
       child: child,
+      usedInSchemeGeneration: map['usedInSchemeGeneration'] ?? false,
+      version: map['version'] ?? 1,
+      schemeStatus: SchemeStatus.fromString(map['schemeStatus']),
     );
   }
 
@@ -134,7 +146,7 @@ class EntityModel extends Entity {
 
   Map<String, dynamic> toMap() {
     final valueObjectsModel = valueObjects.map((valueObject) {
-      return ValueObjectModel.fromValueObject(valueObject).toMap();
+      return ValueObjectModel.fromEntity(valueObject).toMap();
     }).toList();
     final useCasesModel = useCases.map((useCase) {
       return UseCaseModel.fromEntity(useCase).toMap();
@@ -151,7 +163,7 @@ class EntityModel extends Entity {
     }
     return {
       'id': id,
-      'name': name,
+      'name': thisName,
       'applicationId': applicationId,
       'valueObjects': valueObjectsModel,
       'useCases': useCasesModel,
@@ -161,6 +173,9 @@ class EntityModel extends Entity {
         return EntityGlobalEnumeratorModel.fromEntity(enumerator).toMap();
       }).toList(),
       'child': child?.toMap(),
+      'usedInSchemeGeneration': usedInSchemeGeneration,
+      'version': version,
+      'schemeStatus': schemeStatus.name,
     };
   }
 

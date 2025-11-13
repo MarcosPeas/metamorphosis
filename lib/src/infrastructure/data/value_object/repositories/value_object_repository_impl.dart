@@ -60,7 +60,7 @@ class ValueObjectRepositoryImpl implements ValueObjectRepository {
   Future<ValueObject> save(ValueObject application) async {
     try {
       final doc = _firestore.collection(collection).doc(application.id);
-      final applicationModel = ValueObjectModel.fromValueObject(application);
+      final applicationModel = ValueObjectModel.fromEntity(application);
       await doc.set(applicationModel.toMap());
       return applicationModel;
     } on auth.FirebaseAuthException catch (e, s) {
@@ -82,7 +82,7 @@ class ValueObjectRepositoryImpl implements ValueObjectRepository {
   Future<ValueObject> update(ValueObject valueObject) async {
     try {
       final doc = _firestore.collection(collection).doc(valueObject.id);
-      final valueObjectModel = ValueObjectModel.fromValueObject(valueObject);
+      final valueObjectModel = ValueObjectModel.fromEntity(valueObject);
       await doc.set(valueObjectModel.toMap());
       return valueObjectModel;
     } on auth.FirebaseAuthException catch (e, s) {
