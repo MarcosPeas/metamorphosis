@@ -43,10 +43,12 @@ class EntityRepositoryImpl implements EntityRepository {
           .collection(_entityCollection)
           .where(params.filterBy ?? '', isEqualTo: params.filterValue)
           .get();
+      final List<Entity> entities = [];
       final models = result.docs.map((e) {
         return EntityModel.fromMap(e.data());
       }).toList();
-      return models;
+      entities.addAll(models);
+      return entities;
     } on auth.FirebaseAuthException catch (e, s) {
       throw DomainException.of(
         message: e.code,
@@ -146,7 +148,7 @@ class EntityRepositoryImpl implements EntityRepository {
   Future<List<Entity>> updateAll(List<Entity> entities) async {
     try {
       final batch = _firestore.batch();
-      for(final entity in entities) {
+      for (final entity in entities) {
         final model = EntityModel.fromEntity(entity);
         final ref = _firestore.collection(_entityCollection).doc(entity.id);
         batch.update(ref, model.toMap());

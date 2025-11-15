@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -66,7 +65,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
               if (entityStore.loading) {
                 return const Center(child: CircularProgressIndicator());
               }
-              final entity = entityStore.entity;
+              final entity = entityStore.entity.getDeth;
               if (entity.valueObjects.isEmpty) {
                 return const Center(child: Text('No value objects'));
               }
@@ -101,7 +100,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
                       );
                     },
                     onValueObjectRuleTap: (rule) {
-                      _showDialogCreateValueObjectGroupCondition(rule);
+                      _showDialogCreateValueObjectGroupCondition(rule, valueObject);
                     },
                     controller: controller,
                   );
@@ -466,7 +465,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
     );
   }
 
-  void _showDialogCreateValueObjectGroupCondition(ValueObjectRule rule) {
+  void _showDialogCreateValueObjectGroupCondition(ValueObjectRule rule, ValueObject valueObject) {
     showDialog(
       context: context,
       builder: (context) {
@@ -475,6 +474,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
           content: ValueObjectGroupConditionsWidget(
             controller: controller,
             rule: rule,
+            valueObject: valueObject,
           ),
           actions: [
             TextButton(
@@ -826,6 +826,7 @@ class _EntityRuleWidget extends StatelessWidget {
       controller.createValueObjectGroupCondition(
         rule: rule,
         value: selectedType.value,
+        valueObject: valueObject,
       );
       return;
     }
@@ -871,6 +872,7 @@ class _EntityRuleWidget extends StatelessWidget {
                 controller.createValueObjectGroupCondition(
                   rule: rule,
                   value: selectedType.value,
+                  valueObject: valueObject,
                 );
               },
               child: const Text('OK'),
@@ -935,6 +937,7 @@ class _GroupConditionWidget extends StatelessWidget {
                                   controller.removeValueObjectGroupCondition(
                                     rule: rule,
                                     groupCondition: groupCondition,
+                                    valueObject: valueObject,
                                   );
                                 },
                               ),
@@ -947,6 +950,7 @@ class _GroupConditionWidget extends StatelessWidget {
                         controller: controller,
                         groupCondition: groupCondition,
                         valueObject: valueObject,
+                        rule: rule,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
@@ -1069,7 +1073,7 @@ class _GroupConditionWidget extends StatelessWidget {
     final comparatorOperators = TypesUtils.conditions(valueObject.type);
     final selectedComparatorOperator = ValueNotifier(comparatorOperators.first);
     final targetValue = ValueNotifier('');
-    final targetValueController = TextEditingController();    
+    final targetValueController = TextEditingController();
     showDialog(
       context: context,
       builder: (context) {
@@ -1083,7 +1087,8 @@ class _GroupConditionWidget extends StatelessWidget {
               return ValueListenableBuilder(
                 valueListenable: selectedComparatorOperator,
                 builder: (_, b, __) {
-                  final notNeedForTargt = selectedComparatorOperator.value.startsWith('is');
+                  final notNeedForTargt = selectedComparatorOperator.value
+                      .startsWith('is');
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1162,23 +1167,30 @@ class _GroupConditionWidget extends StatelessWidget {
                 return ListenableBuilder(
                   listenable: selectedComparatorOperator,
                   builder: (_, __) {
-                    final notNeedForTargt = selectedComparatorOperator.value.startsWith('is');
-                    final isValid = notNeedForTargt || targetValue.value.trim().isNotEmpty;
+                    final notNeedForTargt = selectedComparatorOperator.value
+                        .startsWith('is');
+                    final isValid =
+                        notNeedForTargt || targetValue.value.trim().isNotEmpty;
                     return TextButton(
-                      onPressed: isValid ? () {
-                        context.pop();
-                        controller.createValueObjectRuleCondition(
-                          group: groupCondition,
-                          logicOperator: selectedLogicOperator.value,
-                          comparatorOperator: selectedComparatorOperator.value,
-                          targetValue: targetValue.value,
-                        );
-                      }: null,
+                      onPressed: isValid
+                          ? () {
+                              context.pop();
+                              controller.createValueObjectRuleCondition(
+                                group: groupCondition,
+                                logicOperator: selectedLogicOperator.value,
+                                comparatorOperator:
+                                    selectedComparatorOperator.value,
+                                targetValue: targetValue.value,
+                                rule: rule,
+                                valueObject: valueObject,
+                              );
+                            }
+                          : null,
                       child: const Text('OK'),
                     );
-                  }
+                  },
                 );
-              }
+              },
             ),
           ],
         );
@@ -1285,6 +1297,8 @@ class _GroupConditionWidget extends StatelessWidget {
                   logicOperator: selectedLogicOperator.value,
                   comparatorOperator: selectedComparatorOperator.value,
                   targetValue: targetValueController.text.trim(),
+                  rule: rule,
+                  valueObject: valueObject,
                 );
               },
               child: const Text('OK'),
@@ -1467,6 +1481,8 @@ class _GroupConditionWidget extends StatelessWidget {
                   comparatorOperator: selectedComparatorOperator.value,
                   targetValue:
                       dateNotifier.value ?? targetValueController.text.trim(),
+                  rule: rule,
+                  valueObject: valueObject,
                 );
               },
               child: const Text('OK'),
@@ -1642,6 +1658,8 @@ class _GroupConditionWidget extends StatelessWidget {
                   comparatorOperator: selectedComparatorOperator.value,
                   targetValue:
                       dateNotifier.value ?? targetValueController.text.trim(),
+                  rule: rule,
+                  valueObject: valueObject,
                 );
               },
               child: const Text('OK'),
@@ -1812,6 +1830,8 @@ class _GroupConditionWidget extends StatelessWidget {
                   comparatorOperator: selectedComparatorOperator.value,
                   targetValue:
                       dateNotifier.value ?? targetValueController.text.trim(),
+                  rule: rule,
+                  valueObject: valueObject,
                 );
               },
               child: const Text('OK'),
@@ -1922,6 +1942,8 @@ class _GroupConditionWidget extends StatelessWidget {
                   logicOperator: selectedLogicOperator.value,
                   comparatorOperator: selectedComparatorOperator.value,
                   targetValue: targetValueController.text.trim(),
+                  rule: rule,
+                  valueObject: valueObject,
                 );
               },
               child: const Text('OK'),
@@ -1936,11 +1958,13 @@ class _GroupConditionWidget extends StatelessWidget {
 class _ConditionsWidget extends StatelessWidget {
   final ValueObjectsController controller;
   final ValueObjectGroupCondition groupCondition;
+  final ValueObjectRule rule;
   final ValueObject valueObject;
 
   const _ConditionsWidget({
     required this.controller,
     required this.groupCondition,
+    required this.rule,
     required this.valueObject,
   });
 
@@ -1984,6 +2008,8 @@ class _ConditionsWidget extends StatelessWidget {
                       controller.removeValueObjectRuleCondition(
                         group: groupCondition,
                         condition: condition,
+                        rule: rule,
+                        valueObject: valueObject,
                       );
                     },
                   ),

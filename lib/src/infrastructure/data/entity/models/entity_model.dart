@@ -25,6 +25,7 @@ class EntityModel extends Entity {
     required super.usedInSchemeGeneration,
     required super.version,
     required super.schemeStatus,
+    required super.parent,
   });
 
   factory EntityModel.fromEntity(Entity entity) {
@@ -41,10 +42,11 @@ class EntityModel extends Entity {
       version: entity.version,
       usedInSchemeGeneration: entity.usedInSchemeGeneration,
       schemeStatus: entity.schemeStatus,
+      parent: entity.parent,
     );
   }
 
-  factory EntityModel.fromShortMap(Map<String, dynamic> map) {
+  factory EntityModel.fromShortMap(Map<String, dynamic> map, [Entity? parent]) {
     final valueObjects = <ValueObject>[];
     final useCases = <UseCase>[];
     final entityRules = <EntityRule>[];
@@ -86,10 +88,11 @@ class EntityModel extends Entity {
       usedInSchemeGeneration: map['usedInSchemeGeneration'] ?? false,
       version: map['version'] ?? 1,
       schemeStatus: SchemeStatus.fromString(map['schemeStatus']),
+      parent: parent,
     );
   }
 
-  factory EntityModel.fromMap(Map<String, dynamic> map) {
+  factory EntityModel.fromMap(Map<String, dynamic> map, [Entity? parent]) {
     final valueObjects = <ValueObject>[];
     final useCases = <UseCase>[];
     final entityRules = <EntityRule>[];
@@ -137,6 +140,7 @@ class EntityModel extends Entity {
       usedInSchemeGeneration: map['usedInSchemeGeneration'] ?? false,
       version: map['version'] ?? 1,
       schemeStatus: SchemeStatus.fromString(map['schemeStatus']),
+      parent: parent,
     );
   }
 

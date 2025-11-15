@@ -12,6 +12,7 @@ class ApplicationModel extends Application {
     required super.isMicroservice,
     required super.projectId,
     required super.apiOptions,
+    required super.version,
   });
 
   factory ApplicationModel.fromEntity(Application application) {
@@ -23,6 +24,7 @@ class ApplicationModel extends Application {
       projectId: application.projectId,
       createdAt: application.createdAt,
       apiOptions: application.apiOptions,
+      version: application.version,
     );
   }
 
@@ -37,6 +39,7 @@ class ApplicationModel extends Application {
       apiOptions: map.containsKey('apiOptions')
           ? ApiOptionsModel.fromMap(map['apiOptions'])
           : ApiOptions.empty(),
+      version: map['version'] ?? 1,
     );
   }
 
@@ -53,6 +56,7 @@ class ApplicationModel extends Application {
       'projectId': projectId,
       'createdAt': createdAt.toIso8601String(),
       'apiOptions': ApiOptionsModel.fromEntity(apiOptions).toMap(),
+      'version': version,
     };
   }
 

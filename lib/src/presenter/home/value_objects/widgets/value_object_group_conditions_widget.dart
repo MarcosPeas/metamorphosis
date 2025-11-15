@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_rule.dart';
 import 'package:metamorphis/src/presenter/home/value_objects/value_objects_controller.dart';
 
 class ValueObjectGroupConditionsWidget extends StatelessWidget {
   final ValueObjectsController controller;
   final ValueObjectRule rule;
+  final ValueObject valueObject;
 
   const ValueObjectGroupConditionsWidget({
     super.key,
     required this.controller,
     required this.rule,
+    required this.valueObject,
   });
 
   @override
@@ -21,9 +24,7 @@ class ValueObjectGroupConditionsWidget extends StatelessWidget {
         const Text('Conditions'),
         TextButton(
           onPressed: () {
-            _showDialogCreateValueObjectGroupCondition(
-              context,
-            );
+            _showDialogCreateValueObjectGroupCondition(context);
           },
           child: const Text('Add condition group'),
         ),
@@ -53,14 +54,8 @@ class ValueObjectGroupConditionsWidget extends StatelessWidget {
                       selectedType.value = value.toString();
                     },
                     items: const [
-                      DropdownMenuItem(
-                        value: 'AND',
-                        child: Text('AND'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'OR',
-                        child: Text('OR'),
-                      ),
+                      DropdownMenuItem(value: 'AND', child: Text('AND')),
+                      DropdownMenuItem(value: 'OR', child: Text('OR')),
                     ],
                   );
                 },
@@ -80,6 +75,7 @@ class ValueObjectGroupConditionsWidget extends StatelessWidget {
                 controller.createValueObjectGroupCondition(
                   rule: rule,
                   value: selectedType.value,
+                  valueObject: valueObject,
                 );
               },
               child: const Text('OK'),

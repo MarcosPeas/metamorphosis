@@ -18,4 +18,11 @@ class ValueObjectRule {
       this.groupConditions = groupConditions ?? [];
     }
   }
+
+  void updateGroup(ValueObjectGroupCondition group) {
+    final index = groupConditions.indexWhere((g) => g.id == group.id);
+    if (index >= 0) {
+      groupConditions[index] = group;
+    }
+  }
 }

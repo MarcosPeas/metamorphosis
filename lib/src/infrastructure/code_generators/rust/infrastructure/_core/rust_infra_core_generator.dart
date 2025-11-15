@@ -11,7 +11,7 @@ class RustInfraCoreGenerator {
     final coreMod = RustUtils.genMod(path: _root, imports: ['db']);
     final dbMod = RustUtils.genMod(
       path: '$_root/db',
-      imports: ['app_state', 'db_builder', 'postgres'],
+      imports: ['app_state', 'db_builder', 'mysql'],
     );
     return [appState, dbBuilder, coreMod, dbMod];
   }
@@ -34,17 +34,17 @@ class RustInfraCoreGenerator {
 const _appStateContent = '''
 use std::sync::Arc;
 
-use sqlx::PgPool;
+use sqlx::MySqlPool;
 
 #[derive(Clone)]
 pub struct AppState {
-    pub pg_pool: Arc<PgPool>,
+    pub mysql_pool: Arc<MySqlPool>,
 }
 
 impl AppState {
-    pub fn with_pg(pg_pool: PgPool) -> Self {
+    pub fn with_pg(mysql_pool: MySqlPool) -> Self {
         AppState {
-            pg_pool: Arc::new(pg_pool),
+            mysql_pool: Arc::new(mysql_pool),
         }
     }
 }
@@ -60,7 +60,7 @@ pub trait DbBuilder {
 }
 
 pub enum ConnectionResult {
-    ConnectionPostgres(AppState),
+    ConnectionSuccess(AppState),
     ConnectionError(DomainError),
 }
 

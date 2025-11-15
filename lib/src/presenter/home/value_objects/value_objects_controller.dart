@@ -7,18 +7,20 @@ import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
 import 'package:metamorphis/src/domain/value_object_group_condition/entities/value_object_group_condition.dart';
 import 'package:metamorphis/src/domain/value_object_rule/entities/value_object_rule.dart';
 import 'package:metamorphis/src/domain/value_object_rule_condition/entities/value_object_rule_condition.dart';
+import 'package:metamorphis/src/presenter/_core/app_store.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/entity_view_model.dart';
+import 'package:metamorphis/src/presenter/home/_core/entity_store.dart';
 import 'package:uuid/uuid.dart';
-
-import '../_core/entity_store.dart';
 
 class ValueObjectsController {
   final EntityStore entityStore;
   final UpdateEntityUseCase updateEntityUseCase;
+  final AppStore appStore;
 
   ValueObjectsController({
     required this.entityStore,
     required this.updateEntityUseCase,
+    required this.appStore,
   }) {
     entityStore.loading = true;
   }
@@ -37,7 +39,7 @@ class ValueObjectsController {
       _showDuplicatedErrorMessage();
       return;
     }
-    entity.valueObjects.add(valueObject);
+    entity.changeValueObject(valueObject, appStore.version + 1);
     updateEntity();
   }
 
@@ -59,7 +61,7 @@ class ValueObjectsController {
       log('ValueObject with id ${valueObject.id} not found in entity.');
       return;
     }
-    entity.valueObjects[index] = valueObject;
+    entity.changeValueObject(valueObject, appStore.version + 1);    
     updateEntity();
   }
 
@@ -68,7 +70,7 @@ class ValueObjectsController {
     required int viewIndex,
   }) async {
     final entity = entityStore.entity;
-    entity.valueObjects.removeAt(viewIndex);
+    entity.removeValueObject(valueObject, appStore.version + 1);
     updateEntity();
   }
 
@@ -82,11 +84,13 @@ class ValueObjectsController {
       errorMessage: errorMessage,
       valueObjectId: valueObject.id,
     );
-    valueObject.addRule(rule);
+    entity.addRule(rule, valueObject);
     updateEntity();
   }
 
   Future<void> updateEntity() async {
+    final entity = entityStore.entity;
+    appStore.updateEntity(entity);
     final result = await updateEntityUseCase.execute(entityStore.entity);
     result.fold((exception) {
       log(exception.message);
@@ -97,6 +101,7 @@ class ValueObjectsController {
 
   void createValueObjectGroupCondition({
     required ValueObjectRule rule,
+    required ValueObject valueObject,
     required String value,
   }) {
     rule.groupConditions.add(
@@ -105,6 +110,8 @@ class ValueObjectsController {
         valueObjectRuleId: rule.id,
       ),
     );
+    final entity = entityStore.entity;
+    entity.updateRule(rule, valueObject);
     updateEntity();
   }
 
@@ -113,6 +120,8 @@ class ValueObjectsController {
     required String logicOperator,
     required String targetValue,
     required String comparatorOperator,
+    required ValueObjectRule rule,
+    required ValueObject valueObject,
   }) {
     final condition = ValueObjectRuleCondition(
       id: const Uuid().v4(),
@@ -122,22 +131,34 @@ class ValueObjectsController {
       valueObjectGroupConditionId: group.id,
     );
     group.conditions.add(condition);
+    rule.updateGroup(group);
+    final entity = entityStore.entity;
+    entity.updateRule(rule, valueObject);
     updateEntity();
   }
 
   void removeValueObjectRuleCondition({
     required ValueObjectGroupCondition group,
     required ValueObjectRuleCondition condition,
+    required ValueObject valueObject,
+    required ValueObjectRule rule,
   }) {
-    group.conditions.remove(condition);
+    group.removeCondition(condition);
+    rule.updateGroup(group);
+    valueObject.updateRule(rule);
+    final entity = entityStore.entity;
+    entity.updateRule(rule, valueObject);
     updateEntity();
   }
 
   void removeValueObjectGroupCondition({
     required ValueObjectRule rule,
     required ValueObjectGroupCondition groupCondition,
+    required ValueObject valueObject,
   }) {
     rule.groupConditions.remove(groupCondition);
+    final entity = entityStore.entity;
+    entity.updateRule(rule, valueObject);
     updateEntity();
   }
 
@@ -147,7 +168,7 @@ class ValueObjectsController {
   }) async {
     final entity = entityStore.entity;
     final valueObject = entity.valueObjects[viewIndex];
-    valueObject.removeRule(rule);
+    entity.removeRule(rule, valueObject);
     updateEntity();
   }
 
@@ -159,7 +180,7 @@ class ValueObjectsController {
     final entity = entityStore.entity;
     final valueObject = entity.valueObjects[viewIndex];
     rule.errorMessage = errorMessage.trim();
-    valueObject.updateRule(rule);
+    entity.updateRule(rule, valueObject);
     updateEntity();
   }
 

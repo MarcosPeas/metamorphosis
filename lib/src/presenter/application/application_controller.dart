@@ -79,6 +79,7 @@ class ApplicationController {
       isMicroservice: false,
       projectId: appStore.project!.id,
       apiOptions: ApiOptions.empty(),
+      version: 0,
     );
     final result = await saveApplicationUseCase.execute(application);
     result.fold(

@@ -109,12 +109,14 @@ class HomeInjector {
         getEntitiesByApplicationUseCase: getIt(),
         getGlobalEnumeratorsByApplicationUseCase: getIt(),
         updateEntitiesUseCase: getIt(),
+        updateApplicationUseCase: getIt(),
       ),
     );
     getIt.registerFactory<ValueObjectsController>(
       () => ValueObjectsController(
         entityStore: getIt(),
         updateEntityUseCase: getIt(),
+        appStore: getIt(),
       ),
     );
     getIt.registerFactory<UseCasesController>(

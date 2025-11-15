@@ -40,7 +40,7 @@ class RustPostgresGenerator {
             if (vo.name == 'id') {
               return '$sp12$voSnake VARCHAR(36) PRIMARY KEY';
             }
-            return '$sp12$voSnake ${vo.toDBType()}${!vo.isNullable ? ' NOT NULL' : ''}';
+            return '$sp12$voSnake ${vo.toMySqlType()}${!vo.isNullable ? ' NOT NULL' : ''}';
           })
           .join(',\n');
       sql += '\n$sp8)\n';

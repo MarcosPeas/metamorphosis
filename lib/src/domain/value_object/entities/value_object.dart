@@ -9,7 +9,7 @@ class ValueObject {
   String type;
   bool isNullable;
   bool isUnique;
-  late final List<ValueObjectRule> rules;
+  late final List<ValueObjectRule> _rules;
   late String _enumName;
   late String _enumValues;
   final String entityId;
@@ -34,7 +34,7 @@ class ValueObject {
     this.idAutoincrementStartAt = 1,
   }) {
     this.id = id ?? const Uuid().v4();
-    this.rules = rules ?? [];
+    _rules = rules ?? [];
     _enumName = enumName;
     _usedInSchemeGeneration = usedInSchemeGeneration;
     _status = status ?? SchemeStatus.created;
@@ -52,6 +52,25 @@ class ValueObject {
       enumValues: '',
       entityId: entity.id,
     );
+  }
+
+  List<ValueObjectRule> get rules => _rules;
+
+  void setRules(List<ValueObjectRule> rules) {
+    _rules = rules;
+  } 
+
+  int get maxLength {
+    for(final rule in _rules) {
+      for(final rc in rule.groupConditions) {
+        for(final cond in rc.conditions) {
+          if (cond.comparatorOperator == '') {
+
+          }
+        }
+      }
+    }
+    return 36;
   }
 
   String get enumName => _enumName;
@@ -74,19 +93,19 @@ class ValueObject {
         !isId;
   }
 
-  void addRule(ValueObjectRule rule) {
-    rules.add(rule);
+  void addNewRule(ValueObjectRule rule) {
+    _rules.add(rule);
   }
 
   void removeRule(ValueObjectRule rule) {
-    rules.remove(rule);
+    _rules.removeWhere((item) => item.id == rule.id);
   }
 
   bool ignoreRules() {
-    if (rules.isEmpty) {
+    if (_rules.isEmpty) {
       return true;
     }
-    final mRules = [...rules];
+    final mRules = [..._rules];
     mRules.removeWhere((r) => r.groupConditions.isEmpty);
     if (mRules.isEmpty) {
       return true;
@@ -95,9 +114,9 @@ class ValueObject {
   }
 
   void updateRule(ValueObjectRule rule) {
-    final index = rules.indexWhere((r) => r.id == rule.id);
+    final index = _rules.indexWhere((r) => r.id == rule.id);
     if (index != -1) {
-      rules[index] = rule;
+      _rules[index] = rule;
     }
   }
 
@@ -222,7 +241,7 @@ class ValueObject {
       type: type ?? this.type,
       isNullable: isNullable ?? this.isNullable,
       isUnique: isUnique ?? this.isUnique,
-      rules: rules ?? this.rules,
+      rules: rules ?? _rules,
       enumName: enumName ?? this.enumName,
       enumValues: enumValues ?? this.enumValues,
       entityId: entityId,

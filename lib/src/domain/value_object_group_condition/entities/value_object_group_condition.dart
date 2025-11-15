@@ -21,4 +21,8 @@ class ValueObjectGroupCondition {
       this.conditions = conditions ?? [];
     }
   }
+
+  void removeCondition(ValueObjectRuleCondition condition) {
+    conditions.removeWhere((item) => item.id == condition.id);
+  }
 }

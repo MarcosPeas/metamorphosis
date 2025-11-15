@@ -5,6 +5,7 @@ import 'package:archive/archive.dart';
 import 'package:change_case/change_case.dart';
 import 'package:flashy_flushbar/flashy_flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:metamorphis/src/application/application/update_application_use_case.dart';
 import 'package:metamorphis/src/application/entity/delete_entity_use_case.dart';
 import 'package:metamorphis/src/application/entity/get_entities_by_application_use_case.dart';
 import 'package:metamorphis/src/application/entity/save_entity_use_case.dart';
@@ -32,6 +33,7 @@ class HomeController {
   final DeleteEntityUseCase deleteEntityUseCase;
   final GetGlobalEnumeratorsByApplicationUseCase
   getGlobalEnumeratorsByApplicationUseCase;
+  final UpdateApplicationUseCase updateApplicationUseCase;
 
   HomeController({
     required this.appStore,
@@ -42,6 +44,7 @@ class HomeController {
     required this.deleteEntityUseCase,
     required this.getGlobalEnumeratorsByApplicationUseCase,
     required this.updateEntitiesUseCase,
+    required this.updateApplicationUseCase,
   });
 
   Future<void> init() async {
@@ -68,6 +71,7 @@ class HomeController {
       },
       (entities) {
         homeStore.entities = entities;
+        appStore.application?.addAllEntities(entities);
         if (entities.isNotEmpty) {
           appStore.entity = EntityViewModel.fromEntity(entities.first);
         }
@@ -115,7 +119,11 @@ class HomeController {
       _showDuplicatedErrorMessage('An item with that name already exists');
       return;
     }
-    final entity = Entity(name: name, applicationId: appStore.application!.id);
+    final entity = Entity(
+      name: name,
+      applicationId: appStore.application!.id,
+      version: appStore.application!.version + 1,
+    );
     final result = await saveEntityUseCase.execute(entity);
     result.fold(
       (error) {
@@ -130,8 +138,11 @@ class HomeController {
     );
   }
 
-  Future<void> updateEntity({required Entity entity, required String name}) async {
-    entity.name = name;
+  Future<void> updateEntity({
+    required Entity entity,
+    required String name,
+  }) async {
+    entity.changeName(name, appStore.application!.version + 1);
     final entities = [...homeStore.entities];
     entities.removeWhere((item) {
       return item.id == entity.id;
@@ -174,23 +185,31 @@ class HomeController {
 
   Future<void> _updateToUsedEntities(GeneratorTarget target) async {
     homeStore.generating = true;
-    final entities = homeStore.entities;
+    final entities = appStore.application!.entities;
     for (final entity in entities) {
       entity.changeToUsedInSchemeGeneration();
     }
     final result = await updateEntitiesUseCase.execute(entities);
-    result.fold((error) {
-      log(error.message);
-      log(error.trace);
-      _showDuplicatedErrorMessage('Unable to generate the requested project');
-    }, (_) {
-      homeStore.entities = entities;
-      _buildCode(target);
-    });
+    result.fold(
+      (error) {
+        log(error.message);
+        log(error.trace);
+        _showDuplicatedErrorMessage('Unable to generate the requested project');
+      },
+      (_) {
+        homeStore.entities = entities;
+        _buildCode(target);
+      },
+    );
+  }
+
+  Future<void> _updateApplication() async {
+    updateApplicationUseCase.execute(appStore.application!);
   }
 
   Future<void> _buildCode(GeneratorTarget target) async {
     final application = appStore.application!;
+    application.incrementVersion();
     application.entities = homeStore.entities;
     final name = ChangeCase(application.name).toSnakeCase();
     final archive = CodeGenerators.generateCode(
@@ -206,6 +225,7 @@ class HomeController {
     anchor.click();
     html.Url.revokeObjectUrl(url);
     homeStore.generating = false;
+    _updateApplication();
   }
 
   void buildFlutterWidthSupabase({

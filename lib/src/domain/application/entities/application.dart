@@ -1,10 +1,10 @@
+import 'package:metamorphis/src/domain/_core/exception/domain_error.dart';
+import 'package:metamorphis/src/domain/_core/exception/domain_exception.dart';
+import 'package:metamorphis/src/domain/application/value_objects/application_name.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/project/entities/project.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../_core/exception/domain_error.dart';
-import '../../_core/exception/domain_exception.dart';
-import '../value_objects/application_name.dart';
 import 'api_type.dart';
 
 class Application {
@@ -15,10 +15,10 @@ class Application {
   String projectId;
   late final DateTime createdAt;
   Project? project;
-  //List<BoundedContext> contexts = [];
   List<Entity> entities = [];
   final List<DomainError> errors = [];
   ApiOptions apiOptions;
+  late int version;
 
   Application({
     String? id,
@@ -28,6 +28,7 @@ class Application {
     required this.projectId,
     DateTime? createdAt,
     required this.apiOptions,
+    required this.version,
   }) {
     {
       this.id = id ?? const Uuid().v7();
@@ -37,12 +38,24 @@ class Application {
     }
   }
 
+  void addAllEntities(List<Entity> entities) {
+    this.entities.clear();
+    this.entities.addAll(entities);
+  }
+
   set name(String value) {
     _name = ApplicationName(value: value, errors: errors);
     _validate();
   }
 
   String get name => _name.value;
+
+  void incrementVersion() {
+    version++;
+    for (final entity in entities) {
+      entity.changeToUsedInSchemeGeneration();
+    }
+  }
 
   void _validate() {
     if (errors.isNotEmpty) {

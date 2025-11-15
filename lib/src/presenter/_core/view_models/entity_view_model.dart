@@ -13,7 +13,7 @@ class EntityViewModel extends Entity {
     required super.child,
     required super.schemeStatus,
     required super.usedInSchemeGeneration,
-    required super.version,
+    required super.version,    
   });
 
   factory EntityViewModel.fromEntity(Entity entity) {

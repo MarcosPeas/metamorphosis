@@ -18,4 +18,13 @@ class EntityRule {
       this.groupConditions = groupConditions ?? [];
     }
   }
+
+  EntityRule copyWith() {
+    return EntityRule(
+      id: id,
+      errorMessage: errorMessage,
+      entityId: entityId,
+      groupConditions: groupConditions,      
+    );
+  }
 }

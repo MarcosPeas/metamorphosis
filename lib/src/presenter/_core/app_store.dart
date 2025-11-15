@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/user/entities/user.dart';
 import 'package:metamorphis/src/presenter/_core/store.dart';
 import 'package:metamorphis/src/presenter/_core/view_models/project_view_model.dart';
@@ -19,6 +22,8 @@ class AppStore extends Store {
     notifyListeners();
   }
 
+  int get version => _application?.version ?? 0;
+
   ProjectViewModel? get project => _project;
 
   set project(ProjectViewModel? project) {
@@ -38,5 +43,17 @@ class AppStore extends Store {
   set entity(EntityViewModel? entity) {
     _entity = entity;
     notifyListeners();
+  }
+
+  void updateEntity(Entity entity) {
+    final index =
+        application?.entities.indexWhere((e) => e.id == entity.id) ?? -1;
+
+    log(application!.entities.length.toString());
+    log(application!.entities.map((e) => e.id).join(', '));
+    log('index: $index');
+    if (index >= 0) {
+      application?.entities[index] = entity;
+    }
   }
 }

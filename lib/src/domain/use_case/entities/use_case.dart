@@ -23,7 +23,7 @@ class UseCase {
     this.input,
     this.output,
     required this.entityId,
-    required List<String >jwtRules,
+    required List<String> jwtRules,
   }) {
     this.id = id ?? const Uuid().v4();
     _jwtRules = jwtRules;
@@ -38,6 +38,21 @@ class UseCase {
   }
 
   List<String> get jwtRules => _jwtRules;
+
+  UseCase copyWith() {
+    return UseCase(
+      id: id,
+      name: name,
+      useCaseType: useCaseType,
+      entityId: entityId,
+      jwtRules: jwtRules,
+      input: input,
+      isAscending: isAscending,
+      orderByField: orderByField,
+      output: output,
+      searchField: searchField,      
+    );
+  }
 }
 
 enum UseCaseType {

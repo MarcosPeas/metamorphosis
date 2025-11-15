@@ -24,6 +24,16 @@ class Reference {
     }
     return true;
   }
+
+  Reference copyWith() {
+    return Reference(
+      id: id,
+      autoLoad: autoLoad,
+      entity: entity,
+      name: name,
+      referenceType: referenceType,
+    );
+  }
 }
 
 enum ReferenceType {

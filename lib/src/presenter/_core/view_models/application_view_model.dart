@@ -9,6 +9,7 @@ class ApplicationViewModel extends Application {
     required super.projectId,
     required super.createdAt,
     required super.apiOptions,
+    required super.version,
   });
 
   factory ApplicationViewModel.fromEntity(Application application) {
@@ -20,6 +21,7 @@ class ApplicationViewModel extends Application {
       projectId: application.projectId,
       createdAt: application.createdAt,
       apiOptions: application.apiOptions,
+      version: application.version,
     );
   }
 }
