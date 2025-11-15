@@ -15,22 +15,37 @@ class RustMySQLGenerator {
 
   static List<ArchiveFile> generate(Application app) {
     List<ArchiveFile> schemes = [];
+    String schemesVersionImports = '';
+    String schemesVersionUsages = '';
     for (int i = 1; i <= app.version; i++) {
       final currentEntities = app.entities
           .map((e) => e.getByVersion(i))
           .where((e) => e != null)
           .toList();
       if (currentEntities.isNotEmpty) {
+        schemesVersionImports +=
+            '\nuse crate::infrastructure::_core::db::mysql::scheme_v$i;';
+        schemesVersionUsages += '\n    schemes.push(scheme_v$i::build());';
         final scheme = _generateSchemes(currentEntities, i);
         schemes.add(scheme);
       } else {
         log('Sem entidades na versão $i');
       }
     }
+
+    String builderContent = _builderContent.replaceAll(
+      '{schemesVersionImports}',
+      schemesVersionImports,
+    );
+    builderContent = builderContent.replaceAll(
+      '{shemeVersionUsages}',
+      schemesVersionUsages,
+    );
     final builder = RustUtils.genFile(
       path: '$_root/mysql_builder.rs',
-      content: _builderContent,
+      content: builderContent,
     );
+
     final mod = RustUtils.genMod(
       path: _root,
       imports: ['mysql_builder', ..._schemesVersions],
@@ -182,7 +197,7 @@ String changeType(Entity entity, ValueObject vo) {
 }
 
 const _builderContent = '''
-use sqlx::{MySql, Pool, Row, mysql::MySqlPoolOptions};{versionsImports}
+use sqlx::{MySql, Pool, Row, mysql::MySqlPoolOptions};{schemesVersionImports}
 
 use crate::{
     domain::_core::errors::domain_error::DomainError,
@@ -289,8 +304,7 @@ async fn build_scheme(version: i32, pool: Pool<MySql>) -> Pool<MySql> {
 }
 
 fn scripts() -> Vec<SchemeVersion> {
-    let mut schemes: Vec<SchemeVersion> = Vec::new();
-    schemes.push(scheme_v1::build());
+    let mut schemes: Vec<SchemeVersion> = Vec::new();{shemeVersionUsages}
     schemes
 }
 ''';
