@@ -23,7 +23,7 @@ class DataClass {
     }
   }
 
-  List<Field> get fields => List.unmodifiable(_fields);
+  List<Field> get fields => _fields;
 
   void addField(Field field) {
     _fields.add(field);

@@ -62,4 +62,8 @@ class Application {
       throw DomainException(errors: errors);
     }
   }
+
+  List<Entity> normalizedEntities() {
+    return entities.map((entity) => entity.normalized()).toList();
+  }
 }

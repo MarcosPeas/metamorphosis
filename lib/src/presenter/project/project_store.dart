@@ -4,7 +4,7 @@ import 'package:metamorphis/src/presenter/_core/store.dart';
 class ProjectStore extends Store {
   final _projects = <Project>[];
 
-  List<Project> get projects => List.unmodifiable(_projects);
+  List<Project> get projects => _projects;
 
   void setProjects(List<Project> projects) {
     _projects.addAll(projects);

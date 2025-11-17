@@ -163,6 +163,10 @@ class Entity {
     );
   }
 
+  Entity normalized() {
+    return _child?.normalized() ?? this;
+  }
+
   bool containsAnyUseCaseByType(UseCaseType type) {
     return useCases.any((useCase) => useCase.useCaseType == type);
   }

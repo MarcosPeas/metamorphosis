@@ -17,7 +17,7 @@ class RustDomainGenerator {
     List<GlobalEnumerator> enumerators,
   ) {
     final archiveFiles = <ArchiveFile>[];
-    final entities = application.entities;
+    final entities = application.normalizedEntities();
     final List<String> entitiesNames = [];
     for (final entity in entities) {
       archiveFiles.addAll(_generateEntityFile(entity));

@@ -16,9 +16,9 @@ class HomeStore extends Store {
     notifyListeners();
   }
 
-  List<Entity> get entities => List.unmodifiable(_entities);
+  List<Entity> get entities => _entities;
 
-  List<GlobalEnumerator> get enumerators => List.unmodifiable(_enumerators);
+  List<GlobalEnumerator> get enumerators => _enumerators;
 
   set entities(List<Entity> entities) {
     _entities.clear();

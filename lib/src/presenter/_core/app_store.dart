@@ -49,10 +49,13 @@ class AppStore extends Store {
     final index =
         application?.entities.indexWhere((e) => e.id == entity.id) ?? -1;
 
-    log(application!.entities.length.toString());
-    log(application!.entities.map((e) => e.id).join(', '));
-    log('index: $index');
     if (index >= 0) {
+      log(application!.entities.length.toString());
+      log(application!.entities.map((e) => e.id).join(', '));
+      log('index: $index');
+      log(
+        'List type: ${application!.entities.runtimeType}; original type: ${application?.entities[index].runtimeType}; new type: ${entity.runtimeType}',
+      );
       application?.entities[index] = entity;
     }
   }

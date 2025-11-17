@@ -4,7 +4,7 @@ import 'package:metamorphis/src/presenter/_core/store.dart';
 class ApplicationStore extends Store {
   final _applications = <Application>[];
 
-  List<Application> get applications => List.unmodifiable(_applications);
+  List<Application> get applications => _applications;
 
   void setApplications(List<Application> applications) {
     _applications.clear();
