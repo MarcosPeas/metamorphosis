@@ -2,9 +2,8 @@ import 'package:archive/archive.dart';
 import 'package:change_case/change_case.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
-import 'package:metamorphis/src/infrastructure/code_generators/_core/db_extension.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/rust/utils/rust_utils.dart';
-
+/*
 class RustPostgresGenerator {
   static final _root = 'src/infrastructure/_core/db/postgres';
 
@@ -22,12 +21,8 @@ class RustPostgresGenerator {
     List<ArchiveFile> result = [];
     String content = _schemeVersionContent;
     String sqlContent = '';
-    bool hasNextVersion = false;
     for (final entity in entities) {
-      final versionedEntity = entity.getByVersion(version);
-      if (versionedEntity == null) {
-        continue;
-      }
+      final versionedEntity = entity;
       String sp8 = '        ';
       String sp12 = '            ';
       final entitySnake = versionedEntity.name.toSnakeCase();
@@ -47,17 +42,10 @@ class RustPostgresGenerator {
       sql += '$sp8"#\n';
       sql += '$sp8.to_string(),\n';
       sqlContent += sql;
-      if (versionedEntity.hasChild()) {
-        hasNextVersion = true;
-      }
     }
     content = content.replaceAll('{sql}', sqlContent);
     final schemeV1 = RustUtils.genFile(path: '$_root/scheme_v$version.rs', content: content);
-    result.add(schemeV1);
-    if (hasNextVersion) {
-      final newResult = _generateSchemes(entities, version + 1);
-      result.addAll(newResult);
-    }
+    result.add(schemeV1);    
     return result;
   }
 }
@@ -194,3 +182,4 @@ pub fn build() -> SchemeVersion {
     }
 }
 ''';
+*/

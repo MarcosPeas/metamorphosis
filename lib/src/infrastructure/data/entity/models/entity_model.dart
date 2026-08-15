@@ -21,11 +21,6 @@ class EntityModel extends Entity {
     required super.entityRules,
     required super.references,
     required super.globalEnumerators,
-    required super.child,
-    required super.usedInSchemeGeneration,
-    required super.version,
-    required super.schemeStatus,
-    required super.parent,
   });
 
   factory EntityModel.fromEntity(Entity entity) {
@@ -38,11 +33,6 @@ class EntityModel extends Entity {
       entityRules: entity.entityRules,
       references: entity.references,
       globalEnumerators: entity.globalEnumerators,
-      child: entity.child,
-      version: entity.version,
-      usedInSchemeGeneration: entity.usedInSchemeGeneration,
-      schemeStatus: entity.schemeStatus,
-      parent: entity.parent,
     );
   }
 
@@ -70,11 +60,7 @@ class EntityModel extends Entity {
       map['references'].forEach((map) {
         references.add(ReferenceModel.fromMap(map));
       });
-    }
-    Entity? child;
-    if (map['child'] != null) {
-      child = EntityModel.fromShortMap(map['child']);
-    }
+    }    
     return EntityModel._(
       id: map['id'],
       name: map['name'],
@@ -84,11 +70,6 @@ class EntityModel extends Entity {
       entityRules: entityRules,
       references: references,
       globalEnumerators: [],
-      child: child,
-      usedInSchemeGeneration: map['usedInSchemeGeneration'] ?? false,
-      version: map['version'] ?? 1,
-      schemeStatus: SchemeStatus.fromString(map['schemeStatus']),
-      parent: parent,
     );
   }
 
@@ -123,10 +104,6 @@ class EntityModel extends Entity {
         globalEnumerators.add(EntityGlobalEnumeratorModel.fromMap(item));
       });
     }
-    Entity? child;
-    if (map['child'] != null) {
-      child = EntityModel.fromMap(map['child']);
-    }
     return EntityModel._(
       id: map['id'],
       name: map['name'],
@@ -136,11 +113,6 @@ class EntityModel extends Entity {
       entityRules: entityRules,
       references: references,
       globalEnumerators: globalEnumerators,
-      child: child,
-      usedInSchemeGeneration: map['usedInSchemeGeneration'] ?? false,
-      version: map['version'] ?? 1,
-      schemeStatus: SchemeStatus.fromString(map['schemeStatus']),
-      parent: parent,
     );
   }
 
@@ -161,10 +133,6 @@ class EntityModel extends Entity {
     final referencesModel = references.map((entityList) {
       return ReferenceModel.fromEntity(entityList).toMap();
     }).toList();
-    EntityModel? child;
-    if (this.child != null) {
-      child = EntityModel.fromEntity(this.child!);
-    }
     return {
       'id': id,
       'name': thisName,
@@ -176,10 +144,6 @@ class EntityModel extends Entity {
       'globalEnumerators': globalEnumerators.map((enumerator) {
         return EntityGlobalEnumeratorModel.fromEntity(enumerator).toMap();
       }).toList(),
-      'child': child?.toMap(),
-      'usedInSchemeGeneration': usedInSchemeGeneration,
-      'version': version,
-      'schemeStatus': schemeStatus.name,
     };
   }
 

@@ -9,6 +9,7 @@ class VersionedEntity {
   final VersionedEntityScreenshot entityScreenshot;
   String? _oldName;
   final int version;
+  bool applied;
 
   VersionedEntity({
     String? id,
@@ -16,6 +17,7 @@ class VersionedEntity {
     required this.entityScreenshot,
     String? oldName,
     required this.version,
+    this.applied = false,
   }) {
     this.id = id ?? Uuid().v7();
     _oldName = oldName;
@@ -24,6 +26,10 @@ class VersionedEntity {
   bool get isCreated => type == VersionedType.created;
 
   String? get oldName => _oldName;
+
+  bool get isUpdated => type == VersionedType.updated;
+  
+  bool get isDeleted => type == VersionedType.deleted;
 
   set oldName(String? value) {
     if (_oldName != null && !isCreated) {
@@ -47,6 +53,10 @@ class VersionedEntity {
       (item) => item.valueObject.id == vo.id,
     );
     return result.firstOrNull;
+  }
+
+  void apply() {
+    applied = true;
   }
 }
 

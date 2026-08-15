@@ -4,6 +4,7 @@ import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/global_enumerator/entities/global_enumerator.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
+import 'package:metamorphis/src/domain/versioned_entity/entities/versioned_entity.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/rust/domain/enumerators/rust_enumerators_generator.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/rust/utils/rust_type_extension.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/rust/utils/rust_utils.dart';
@@ -17,7 +18,7 @@ class RustDomainGenerator {
     List<GlobalEnumerator> enumerators,
   ) {
     final archiveFiles = <ArchiveFile>[];
-    final entities = application.normalizedEntities();
+    final entities = application.entities;
     final List<String> entitiesNames = [];
     for (final entity in entities) {
       archiveFiles.addAll(_generateEntityFile(entity));

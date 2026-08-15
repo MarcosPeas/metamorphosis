@@ -65,7 +65,7 @@ class _ValueObjectsPageState extends State<ValueObjectsPage> {
               if (entityStore.loading) {
                 return const Center(child: CircularProgressIndicator());
               }
-              final entity = entityStore.entity.getDeth;
+              final entity = entityStore.entity;
               if (entity.valueObjects.isEmpty) {
                 return const Center(child: Text('No value objects'));
               }

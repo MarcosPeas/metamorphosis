@@ -24,4 +24,12 @@ class ValueObjectScreeshot {
       isUnique: valueObject.isUnique,
     );
   }
+
+  bool get isEnum => type == 'Enum';
+
+  bool get isId => type.toUpperCase().startsWith('ID');
+
+  bool get isUUID => type == 'ID - String(UUID)';
+
+  bool get isLongId => type == 'ID - long(AUTO INCREMENT)';
 }

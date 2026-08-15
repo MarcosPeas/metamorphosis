@@ -5,23 +5,24 @@ import 'package:change_case/change_case.dart';
 import 'package:metamorphis/src/domain/application/entities/application.dart';
 import 'package:metamorphis/src/domain/entity/entities/entity.dart';
 import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
+import 'package:metamorphis/src/domain/versioned_entity/entities/versioned_entity.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/_core/db_extension.dart';
 import 'package:metamorphis/src/infrastructure/code_generators/rust/utils/rust_utils.dart';
-
+/*
 class RustMySQLGenerator {
   static final _root = 'src/infrastructure/_core/db/mysql';
 
   static final List<String> _schemesVersions = [];
 
-  static List<ArchiveFile> generate(Application app) {
+  static List<ArchiveFile> generate(
+    Application app,
+    List<VersionedEntity> entities,
+  ) {
     List<ArchiveFile> schemes = [];
     String schemesVersionImports = '';
     String schemesVersionUsages = '';
     for (int i = 1; i <= app.version; i++) {
-      final currentEntities = app.entities
-          .map((e) => e.getByVersion(i))
-          .where((e) => e != null)
-          .toList();
+      final currentEntities = entities.where((ve) => ve.version == i).toList();
       if (currentEntities.isNotEmpty) {
         schemesVersionImports +=
             '\nuse crate::infrastructure::_core::db::mysql::scheme_v$i;';
@@ -54,20 +55,15 @@ class RustMySQLGenerator {
     return [mod, builder, ...schemes];
   }
 
-  static ArchiveFile _generateSchemes(List<Entity?> entities, int version) {
+  static ArchiveFile _generateSchemes(List<VersionedEntity> versionedEntities, int version) {
     String content = _schemeVersionContent;
     String sqlContent = '';
-    for (final entity in entities) {
-      if (entity == null) {
-        continue;
-      }
-      log('Generating scheme for ${entity.name}');
-      if (entity.parent != null) {
-        final sql = modifyTable(entity);
-        sqlContent += sql;
-      } else {
-        final sql = createTable(entity);
-        sqlContent += sql;
+    for (final versionedEntity in versionedEntities) {
+      log('Generating scheme for ${versionedEntity.entityScreenshot.name}');
+      if (versionedEntity.isCreated) {
+        sqlContent += createTable(versionedEntity);
+      } else if (versionedEntity.isUpdated){
+        sqlContent += modifyTable(versionedEntity);
       }
     }
     content = content.replaceAll('{sql}', sqlContent);
@@ -81,15 +77,17 @@ class RustMySQLGenerator {
   }
 }
 
-String createTable(Entity entity) {
+String createTable(VersionedEntity versionedEntity) {
   String sp8 = '        ';
   String sp12 = '            ';
+  final entity = versionedEntity.entityScreenshot;
   final entitySnake = entity.name.toSnakeCase();
 
   String sql = '\n${sp8}r#"\n';
   sql += '${sp8}CREATE TABLE IF NOT EXISTS $entitySnake (\n';
   sql += entity.valueObjects
-      .map((vo) {
+      .map((vvo) {
+        final vo = vvo.valueObject;
         final voSnake = vo.name.toSnakeCase();
         if (vo.isUUID) {
           return '$sp12$voSnake VARCHAR(36) PRIMARY KEY';
@@ -105,7 +103,7 @@ String createTable(Entity entity) {
   return sql;
 }
 
-String modifyTable(Entity entity) {
+String modifyTable(VersionedEntity entity) {
   final modifiers = entity.getModifiers();
   String sql = '';
   for (final modifier in modifiers) {
@@ -321,3 +319,4 @@ pub fn build() -> SchemeVersion {
     }
 }
 ''';
+*/

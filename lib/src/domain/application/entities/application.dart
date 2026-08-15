@@ -52,18 +52,11 @@ class Application {
 
   void incrementVersion() {
     version++;
-    for (final entity in entities) {
-      entity.changeToUsedInSchemeGeneration();
-    }
   }
 
   void _validate() {
     if (errors.isNotEmpty) {
       throw DomainException(errors: errors);
     }
-  }
-
-  List<Entity> normalizedEntities() {
-    return entities.map((entity) => entity.normalized()).toList();
   }
 }

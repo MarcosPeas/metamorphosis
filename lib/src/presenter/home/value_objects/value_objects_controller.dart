@@ -39,7 +39,7 @@ class ValueObjectsController {
       _showDuplicatedErrorMessage();
       return;
     }
-    entity.changeValueObject(valueObject, appStore.version + 1);
+    entity.changeValueObject(valueObject);
     updateEntity();
   }
 
@@ -61,7 +61,7 @@ class ValueObjectsController {
       log('ValueObject with id ${valueObject.id} not found in entity.');
       return;
     }
-    entity.changeValueObject(valueObject, appStore.version + 1);    
+    entity.changeValueObject(valueObject);    
     updateEntity();
   }
 
@@ -70,7 +70,7 @@ class ValueObjectsController {
     required int viewIndex,
   }) async {
     final entity = entityStore.entity;
-    entity.removeValueObject(valueObject, appStore.version + 1);
+    entity.removeValueObject(valueObject);
     updateEntity();
   }
 
@@ -78,13 +78,6 @@ class ValueObjectsController {
     required String errorMessage,
     required int viewIndex,
   }) async {
-    final entity = entityStore.entity;
-    final valueObject = entity.valueObjects[viewIndex];
-    final rule = ValueObjectRule(
-      errorMessage: errorMessage,
-      valueObjectId: valueObject.id,
-    );
-    entity.addRule(rule, valueObject);
     updateEntity();
   }
 
@@ -110,8 +103,6 @@ class ValueObjectsController {
         valueObjectRuleId: rule.id,
       ),
     );
-    final entity = entityStore.entity;
-    entity.updateRule(rule, valueObject);
     updateEntity();
   }
 
@@ -132,8 +123,6 @@ class ValueObjectsController {
     );
     group.conditions.add(condition);
     rule.updateGroup(group);
-    final entity = entityStore.entity;
-    entity.updateRule(rule, valueObject);
     updateEntity();
   }
 
@@ -146,8 +135,6 @@ class ValueObjectsController {
     group.removeCondition(condition);
     rule.updateGroup(group);
     valueObject.updateRule(rule);
-    final entity = entityStore.entity;
-    entity.updateRule(rule, valueObject);
     updateEntity();
   }
 
@@ -157,8 +144,6 @@ class ValueObjectsController {
     required ValueObject valueObject,
   }) {
     rule.groupConditions.remove(groupCondition);
-    final entity = entityStore.entity;
-    entity.updateRule(rule, valueObject);
     updateEntity();
   }
 
@@ -166,9 +151,6 @@ class ValueObjectsController {
     required int viewIndex,
     required ValueObjectRule rule,
   }) async {
-    final entity = entityStore.entity;
-    final valueObject = entity.valueObjects[viewIndex];
-    entity.removeRule(rule, valueObject);
     updateEntity();
   }
 
@@ -177,10 +159,7 @@ class ValueObjectsController {
     required int viewIndex,
     required ValueObjectRule rule,
   }) {
-    final entity = entityStore.entity;
-    final valueObject = entity.valueObjects[viewIndex];
     rule.errorMessage = errorMessage.trim();
-    entity.updateRule(rule, valueObject);
     updateEntity();
   }
 

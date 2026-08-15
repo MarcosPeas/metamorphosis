@@ -1,7 +1,7 @@
-import 'package:metamorphis/src/domain/value_object/entities/value_object.dart';
+import 'package:metamorphis/src/domain/versioned_entity/entities/value_object_screeshot.dart';
 
-extension DBTypeExtension on ValueObject {
-  String toMySqlType() {
+extension DBTypeExtension on ValueObjectScreeshot  {
+  String toMySqlType(int maxLength) {
     Map<String, String> types = {
       'bool': 'BOOLEAN',
       'byte/int8': 'INT',

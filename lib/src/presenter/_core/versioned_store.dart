@@ -164,38 +164,6 @@ class VersionedStore extends ChangeNotifier {
     return VersionedEntity(type: type, entityScreenshot: ves, version: version);
   }
 
-  VersionedValueObject _getVersionedValueObject(
-    VersionedEntity entity,
-    ValueObject valueObject,
-    ValueObject oldValueObject,
-    int version,
-    VersionedType type,
-  ) {
-    final index = entity.entityScreenshot.valueObjects.indexWhere(
-      (item) => item.id == valueObject.id,
-    );
-    if (index >= 0) {
-      return entity.entityScreenshot.valueObjects[index];
-    }
-    return VersionedValueObject(
-      valueObject: ValueObjectScreeshot(
-        id: valueObject.id,
-        name: valueObject.name,
-        type: valueObject.type,
-        isNullable: valueObject.isNullable,
-        isUnique: valueObject.isUnique,
-      ),
-      oldValueObject: ValueObjectScreeshot(
-        id: oldValueObject.id,
-        name: oldValueObject.name,
-        type: oldValueObject.type,
-        isNullable: oldValueObject.isNullable,
-        isUnique: oldValueObject.isUnique,
-      ),
-      type: type,
-    );
-  }
-
   void clear() {
     entities.clear();
   }

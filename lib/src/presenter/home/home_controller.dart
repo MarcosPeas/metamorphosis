@@ -122,7 +122,6 @@ class HomeController {
     final entity = Entity(
       name: name,
       applicationId: appStore.application!.id,
-      version: appStore.application!.version + 1,
     );
     final result = await saveEntityUseCase.execute(entity);
     result.fold(
@@ -142,7 +141,7 @@ class HomeController {
     required Entity entity,
     required String name,
   }) async {
-    entity.changeName(name, appStore.application!.version + 1);
+    entity.changeName(name);
     final entities = [...homeStore.entities];
     entities.removeWhere((item) {
       return item.id == entity.id;
@@ -186,9 +185,6 @@ class HomeController {
   Future<void> _updateToUsedEntities(GeneratorTarget target) async {
     homeStore.generating = true;
     final entities = appStore.application!.entities;
-    for (final entity in entities) {
-      entity.changeToUsedInSchemeGeneration();
-    }
     final result = await updateEntitiesUseCase.execute(entities);
     result.fold(
       (error) {
@@ -216,6 +212,7 @@ class HomeController {
       application: application,
       target: target,
       enumerators: homeStore.enumerators,
+      entities: [],
     );
     final zipData = ZipEncoder().encode(archive);
     final blob = html.Blob([zipData], 'application/zip');
